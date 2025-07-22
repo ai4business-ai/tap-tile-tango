@@ -1,14 +1,11 @@
 import React from 'react';
 import { Bell, ChevronRight } from 'lucide-react';
 import { TapCard } from '@/components/ui/tap-card';
-
 const Index = () => {
   const handleCardClick = (cardName: string) => {
     console.log(`Clicked: ${cardName}`);
   };
-
-  return (
-    <div className="min-h-screen bg-background p-4 max-w-sm mx-auto">
+  return <div className="min-h-screen bg-background p-4 max-w-sm mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
@@ -24,10 +21,7 @@ const Index = () => {
       </div>
 
       {/* Tasks Section */}
-      <TapCard 
-        className="mb-4"
-        onClick={() => handleCardClick('Ваши задания')}
-      >
+      <TapCard className="mb-4" onClick={() => handleCardClick('Ваши задания')}>
         <div className="bg-card rounded-xl p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold text-foreground">Ваши задания</h2>
@@ -40,18 +34,16 @@ const Index = () => {
       </TapCard>
 
       {/* Module Card */}
-      <TapCard 
-        className="mb-4"
-        onClick={() => handleCardClick('Модуль 3.1')}
-      >
+      <TapCard className="mb-4" onClick={() => handleCardClick('Модуль 3.1')}>
         <div className="bg-card rounded-xl p-4 shadow-sm flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-purple-accent rounded-lg flex items-center justify-center">
               <div className="w-4 h-4 bg-task-red rounded-sm transform rotate-45"></div>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Модуль 3.1</p>
-              <p className="text-sm font-medium text-foreground">Создание комплексных презентаций</p>
+              <p className="text-sm text-muted-foreground">Модуль 3.2
+            </p>
+              <p className="text-sm font-medium text-foreground">Когортный анализ и SQL</p>
             </div>
           </div>
           <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -59,10 +51,7 @@ const Index = () => {
       </TapCard>
 
       {/* Progress Card */}
-      <TapCard 
-        className="mb-4"
-        onClick={() => handleCardClick('Мой прогресс')}
-      >
+      <TapCard className="mb-4" onClick={() => handleCardClick('Мой прогресс')}>
         <div className="bg-purple-gradient rounded-xl p-4 text-white relative overflow-hidden">
           <h3 className="text-lg font-semibold mb-1">Мой прогресс</h3>
           <p className="text-sm opacity-90 mb-4">5 навыков</p>
@@ -74,10 +63,7 @@ const Index = () => {
       </TapCard>
 
       {/* My Tasks Card */}
-      <TapCard 
-        className="mb-4"
-        onClick={() => handleCardClick('Мои задания')}
-      >
+      <TapCard className="mb-4" onClick={() => handleCardClick('Мои задания')}>
         <div className="bg-green-gradient rounded-xl p-4 text-white relative overflow-hidden">
           <h3 className="text-lg font-semibold mb-1">Мои задания</h3>
           <p className="text-sm opacity-90 mb-4">15 заданий</p>
@@ -88,9 +74,7 @@ const Index = () => {
       </TapCard>
 
       {/* Webinar Records Card */}
-      <TapCard 
-        onClick={() => handleCardClick('Записи вебинаров')}
-      >
+      <TapCard onClick={() => handleCardClick('Записи вебинаров')}>
         <div className="bg-purple-gradient rounded-xl p-4 text-white relative overflow-hidden">
           <h3 className="text-lg font-semibold mb-1">Записи вебинаров</h3>
           <p className="text-sm opacity-90 mb-4">6 вебинаров</p>
@@ -99,8 +83,6 @@ const Index = () => {
           </button>
         </div>
       </TapCard>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
