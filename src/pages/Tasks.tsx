@@ -5,6 +5,14 @@ import { useNavigate } from 'react-router-dom';
 const Tasks = () => {
   const navigate = useNavigate();
 
+  const handleTaskClick = (taskTitle: string) => {
+    if (taskTitle === "Анализ данных") {
+      navigate('/tasks/data-analysis');
+    } else {
+      console.log(`Clicked: ${taskTitle}`);
+    }
+  };
+
   const tasks = [
     {
       title: "Работа с презентациями",
@@ -57,7 +65,11 @@ const Tasks = () => {
       {/* Tasks List */}
       <div className="space-y-4">
         {tasks.map((task, index) => (
-          <div key={index} className="bg-card rounded-xl p-4 pb-16 shadow-sm relative">
+          <div 
+            key={index} 
+            className="bg-card rounded-xl p-4 pb-16 shadow-sm relative cursor-pointer hover:bg-muted/20 transition-colors"
+            onClick={() => handleTaskClick(task.title)}
+          >
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-1">{task.title}</h3>
               <p className="text-sm text-muted-foreground mb-3">{task.count}</p>
