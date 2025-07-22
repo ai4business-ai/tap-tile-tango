@@ -10,7 +10,7 @@ const Tasks = () => {
       title: "Работа с презентациями",
       count: "3 задания",
       badge: "+1",
-      isLocked: false
+      isLocked: true
     },
     {
       title: "Анализ данных", 
@@ -57,14 +57,12 @@ const Tasks = () => {
       {/* Tasks List */}
       <div className="space-y-4">
         {tasks.map((task, index) => (
-          <div key={index} className="bg-card rounded-xl p-4 shadow-sm relative">
+          <div key={index} className="bg-card rounded-xl p-4 pb-16 shadow-sm relative">
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-1">{task.title}</h3>
-              <p className="text-sm text-muted-foreground">{task.count}</p>
-            </div>
-            
-            {/* Badge */}
-            <div className="absolute bottom-4 left-4">
+              <p className="text-sm text-muted-foreground mb-3">{task.count}</p>
+              
+              {/* Badge positioned below text */}
               <span className="bg-purple-accent text-white text-sm font-medium px-2 py-1 rounded-lg">
                 {task.badge}
               </span>
