@@ -1,4 +1,4 @@
-// src/lib/telegram.ts
+// src/lib/telegram.ts - Исправленная версия
 
 interface TelegramWebApp {
   initData: string;
@@ -65,14 +65,18 @@ declare global {
 export class TelegramAPI {
   private static instance: TelegramAPI;
   private webApp: TelegramWebApp;
+  private isRealTelegram: boolean;
 
   private constructor() {
-    if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+    // Проверяем, действительно ли мы в Telegram
+    this.isRealTelegram = this.checkIfRealTelegram();
+    
+    if (this.isRealTelegram) {
       this.webApp = window.Telegram.WebApp;
       this.initializeWebApp();
+      console.log('✅ Telegram WebApp инициализирован');
     } else {
-      // Fallback for development
-      console.warn('Telegram WebApp не доступен. Работаем в режиме разработки.');
+      console.warn('⚠️ Telegram WebApp не доступен. Работаем в режиме разработки.');
       this.webApp = this.createMockWebApp();
     }
   }
@@ -82,6 +86,20 @@ export class TelegramAPI {
       TelegramAPI.instance = new TelegramAPI();
     }
     return TelegramAPI.instance;
+  }
+
+  private checkIfRealTelegram(): boolean {
+    // Более строгая проверка на реальный Telegram
+    return (
+      typeof window !== 'undefined' &&
+      window.Telegram?.WebApp &&
+      window.Telegram.WebApp.platform !== undefined &&
+      window.Telegram.WebApp.version !== undefined &&
+      // Дополнительная проверка: в реальном Telegram есть initData
+      (window.Telegram.WebApp.initData?.length > 0 || 
+       // Или хотя бы есть пользователь в initDataUnsafe
+       window.Telegram.WebApp.initDataUnsafe?.user)
+    );
   }
 
   private initializeWebApp(): void {
@@ -114,10 +132,10 @@ export class TelegramAPI {
       backgroundColor: '#ffffff',
       BackButton: {
         isVisible: false,
-        show: () => console.log('BackButton.show()'),
-        hide: () => console.log('BackButton.hide()'),
-        onClick: (callback: () => void) => console.log('BackButton.onClick()'),
-        offClick: (callback: () => void) => console.log('BackButton.offClick()'),
+        show: () => console.log('🔄 BackButton.show()'),
+        hide: () => console.log('🔄 BackButton.hide()'),
+        onClick: (callback: () => void) => console.log('🔄 BackButton.onClick()'),
+        offClick: (callback: () => void) => console.log('🔄 BackButton.offClick()'),
       },
       MainButton: {
         text: '',
@@ -125,31 +143,33 @@ export class TelegramAPI {
         textColor: '#ffffff',
         isVisible: false,
         isActive: true,
-        setText: (text: string) => console.log('MainButton.setText():', text),
-        onClick: (callback: () => void) => console.log('MainButton.onClick()'),
-        offClick: (callback: () => void) => console.log('MainButton.offClick()'),
-        show: () => console.log('MainButton.show()'),
-        hide: () => console.log('MainButton.hide()'),
-        enable: () => console.log('MainButton.enable()'),
-        disable: () => console.log('MainButton.disable()'),
-        showProgress: () => console.log('MainButton.showProgress()'),
-        hideProgress: () => console.log('MainButton.hideProgress()'),
+        setText: (text: string) => console.log('🔄 MainButton.setText():', text),
+        onClick: (callback: () => void) => console.log('🔄 MainButton.onClick()'),
+        offClick: (callback: () => void) => console.log('🔄 MainButton.offClick()'),
+        show: () => console.log('🔄 MainButton.show()'),
+        hide: () => console.log('🔄 MainButton.hide()'),
+        enable: () => console.log('🔄 MainButton.enable()'),
+        disable: () => console.log('🔄 MainButton.disable()'),
+        showProgress: () => console.log('🔄 MainButton.showProgress()'),
+        hideProgress: () => console.log('🔄 MainButton.hideProgress()'),
       },
-      ready: () => console.log('WebApp.ready()'),
-      expand: () => console.log('WebApp.expand()'),
-      close: () => console.log('WebApp.close()'),
-      sendData: (data: string) => console.log('WebApp.sendData():', data),
+      ready: () => console.log('🔄 WebApp.ready()'),
+      expand: () => console.log('🔄 WebApp.expand()'),
+      close: () => console.log('🔄 WebApp.close()'),
+      sendData: (data: string) => console.log('🔄 WebApp.sendData() [MOCK]:', data),
       showPopup: (params, callback) => {
-        console.log('WebApp.showPopup():', params);
+        console.log('🔄 WebApp.showPopup() [MOCK]:', params);
         if (callback) callback('ok');
       },
       showAlert: (message, callback) => {
-        console.log('WebApp.showAlert():', message);
+        console.log('🔄 WebApp.showAlert() [MOCK]:', message);
+        alert(`[MOCK TELEGRAM] ${message}`);
         if (callback) callback();
       },
       showConfirm: (message, callback) => {
-        console.log('WebApp.showConfirm():', message);
-        if (callback) callback(true);
+        console.log('🔄 WebApp.showConfirm() [MOCK]:', message);
+        const result = confirm(`[MOCK TELEGRAM] ${message}`);
+        if (callback) callback(result);
       },
     };
   }
@@ -181,28 +201,47 @@ export class TelegramAPI {
     this.webApp.BackButton.hide();
   }
 
-  // Отправка данных в бот
+  // Отправка данных в бот - ИСПРАВЛЕНО
   sendDataToBot(data: any): void {
     const jsonData = JSON.stringify(data);
+    
+    if (!this.isRealTelegram) {
+      console.error('❌ ОШИБКА: Попытка отправить данные боту в режиме разработки!');
+      console.log('📤 Данные которые должны были отправиться:', data);
+      alert(`❌ Не в Telegram!\n\nДанные: ${JSON.stringify(data, null, 2)}\n\nПожалуйста, откройте приложение через Telegram бота.`);
+      return;
+    }
+
+    console.log('📤 Отправляем данные боту:', data);
     this.webApp.sendData(jsonData);
   }
 
   // Показ всплывающих окон
   showAlert(message: string): Promise<void> {
     return new Promise((resolve) => {
+      if (!this.isRealTelegram) {
+        alert(`[РЕЖИМ РАЗРАБОТКИ] ${message}`);
+        resolve();
+        return;
+      }
       this.webApp.showAlert(message, () => resolve());
     });
   }
 
   showConfirm(message: string): Promise<boolean> {
     return new Promise((resolve) => {
+      if (!this.isRealTelegram) {
+        const result = confirm(`[РЕЖИМ РАЗРАБОТКИ] ${message}`);
+        resolve(result);
+        return;
+      }
       this.webApp.showConfirm(message, (confirmed) => resolve(confirmed));
     });
   }
 
   // Проверка, запущено ли приложение в Telegram
   isInTelegram(): boolean {
-    return typeof window !== 'undefined' && !!window.Telegram?.WebApp;
+    return this.isRealTelegram;
   }
 
   // Получение данных пользователя
@@ -213,6 +252,18 @@ export class TelegramAPI {
   // Закрытие мини-приложения
   close(): void {
     this.webApp.close();
+  }
+
+  // Новый метод для отладки
+  getDebugInfo() {
+    return {
+      isRealTelegram: this.isRealTelegram,
+      platform: this.webApp.platform,
+      version: this.webApp.version,
+      hasInitData: !!this.webApp.initData,
+      hasUser: !!this.webApp.initDataUnsafe?.user,
+      colorScheme: this.webApp.colorScheme
+    };
   }
 }
 
