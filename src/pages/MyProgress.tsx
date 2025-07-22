@@ -291,8 +291,7 @@ const MyProgress = () => {
               {renderProgressBars(skill.progress, skill.availableNext)}
             </div>
             
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>еще {skill.target} до цели</span>
+            <div className="flex items-center justify-end text-xs text-muted-foreground">
               <span>{skill.date}</span>
             </div>
           </div>
