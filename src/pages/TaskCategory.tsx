@@ -102,8 +102,7 @@ const TaskCategory = () => {
             </div>
             
             {/* Task Button */}
-            <button className="w-full bg-primary text-primary-foreground px-4 py-3 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
-              <div className="w-4 h-4 border border-current rounded-sm"></div>
+            <button className="w-full bg-primary text-primary-foreground px-4 py-3 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center">
               Задание
             </button>
           </div>
