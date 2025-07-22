@@ -21,8 +21,8 @@ export class OpenAIService {
 
   constructor(apiKey?: string, assistantId?: string) {
     // В продакшене эти значения должны приходить с бэкенда
-    this.apiKey = apiKey || process.env.REACT_APP_OPENAI_API_KEY || '';
-    this.assistantId = assistantId || process.env.REACT_APP_OPENAI_ASSISTANT_ID || '';
+    this.apiKey = apiKey || '';
+    this.assistantId = assistantId || '';
   }
 
   // Метод для проверки домашнего задания
