@@ -1,16 +1,23 @@
 import React from 'react';
-import { Bell, ChevronRight } from 'lucide-react';
+import { Bell, ChevronRight, Target } from 'lucide-react';
 import { TapCard } from '@/components/ui/tap-card';
+import { useNavigate } from 'react-router-dom';
 const Index = () => {
+  const navigate = useNavigate();
+  
   const handleCardClick = (cardName: string) => {
-    console.log(`Clicked: ${cardName}`);
+    if (cardName === 'Ваши задания' || cardName === 'Мои задания') {
+      navigate('/tasks');
+    } else {
+      console.log(`Clicked: ${cardName}`);
+    }
   };
   return <div className="min-h-screen bg-background p-4 max-w-sm mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-            <div className="w-6 h-6 bg-primary rounded-full"></div>
+            <Target className="w-6 h-6 text-primary" />
           </div>
           <div>
             <h1 className="text-lg font-semibold text-foreground">Моя цель</h1>
@@ -27,8 +34,13 @@ const Index = () => {
             <h2 className="text-lg font-semibold text-foreground">Ваши задания</h2>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </div>
-          <div className="w-full bg-gray-light rounded-full h-2">
-            <div className="bg-progress-blue h-2 rounded-full w-1/4"></div>
+          <div className="flex gap-1">
+            {[...Array(5)].map((_, index) => (
+              <div 
+                key={index}
+                className={`h-2 flex-1 rounded-full ${index === 0 ? 'bg-progress-blue' : 'bg-gray-light'}`}
+              />
+            ))}
           </div>
         </div>
       </TapCard>
