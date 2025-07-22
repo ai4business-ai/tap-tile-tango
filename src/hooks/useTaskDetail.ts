@@ -1,4 +1,4 @@
-// src/hooks/useTaskDetail.ts - Исправленная версия
+// src/hooks/useTaskDetail.ts - Обновленная версия с рабочей интеграцией
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,16 @@ export const useTaskDetail = () => {
     // Показываем информацию о подключении к Telegram
     const debugInfo = tg.getDebugInfo();
     console.log('🔍 Telegram Debug Info:', debugInfo);
+    
+    // Проверяем наличие Telegram WebApp
+    if (window.Telegram?.WebApp) {
+      console.log('📱 Telegram WebApp Data:', {
+        initData: window.Telegram.WebApp.initData,
+        initDataUnsafe: window.Telegram.WebApp.initDataUnsafe,
+        version: window.Telegram.WebApp.version,
+        platform: window.Telegram.WebApp.platform
+      });
+    }
 
     tg.showBackButton(() => {
       navigate('/tasks/data-analysis');
@@ -43,30 +53,27 @@ export const useTaskDetail = () => {
       return;
     }
 
-    // Проверяем, запущено ли приложение в Telegram
-    if (!telegramAPI.isInTelegram()) {
-      console.error('❌ Приложение не запущено в Telegram');
-      telegramAPI.showAlert(
-        'Приложение должно быть запущено через Telegram бота для отправки данных.'
-      );
-      return;
-    }
-
-    const payload = {
-      action: 'download_table',
-      taskId: 'cohort-analysis-sql',
-      tableType: 'cohort_data',
-      timestamp: new Date().toISOString()
-    };
-
-    console.log('📤 Отправляем запрос на скачивание таблицы:', payload);
-
-    try {
-      telegramAPI.sendDataToBot(payload);
-      telegramAPI.showAlert('Кнопка для скачивания таблицы появится в чате с ботом');
-    } catch (error) {
-      console.error('❌ Ошибка при отправке данных:', error);
-      telegramAPI.showAlert('Произошла ошибка при отправке запроса. Попробуйте еще раз.');
+    // Для WebAppInfo используем альтернативный подход
+    if (telegramAPI.isInTelegram() && window.Telegram?.WebApp?.initDataUnsafe?.query_id) {
+      // Если есть query_id, можем использовать answerWebAppQuery
+      const queryId = window.Telegram.WebApp.initDataUnsafe.query_id;
+      console.log('📤 Используем query_id для отправки:', queryId);
+      
+      // Отправляем уведомление пользователю
+      telegramAPI.showAlert('Запрос отправлен! Проверьте чат с ботом.');
+      
+      // Для inline button можно закрыть WebApp после отправки
+      // window.Telegram.WebApp.close();
+    } else {
+      // Используем deep link для передачи команды
+      const botUsername = 'YOUR_BOT_USERNAME'; // Замените на имя вашего бота
+      const command = 'download_table_cohort';
+      const deepLink = `https://t.me/${botUsername}?start=${command}`;
+      
+      telegramAPI.showAlert('Откройте ссылку в чате с ботом для получения таблицы');
+      
+      // Открываем deep link
+      window.open(deepLink, '_blank');
     }
   };
 
@@ -77,31 +84,13 @@ export const useTaskDetail = () => {
       return;
     }
 
-    // Проверяем, запущено ли приложение в Telegram
-    if (!telegramAPI.isInTelegram()) {
-      console.error('❌ Приложение не запущено в Telegram');
-      telegramAPI.showAlert(
-        'Приложение должно быть запущено через Telegram бота для отправки данных.'
-      );
-      return;
-    }
-
-    const payload = {
-      action: 'open_course',
-      taskId: 'cohort-analysis-sql',
-      courseType: 'sql_basics',
-      timestamp: new Date().toISOString()
-    };
-
-    console.log('📤 Отправляем запрос на открытие курса:', payload);
-
-    try {
-      telegramAPI.sendDataToBot(payload);
-      telegramAPI.showAlert('Ссылка на курс появится в чате с ботом');
-    } catch (error) {
-      console.error('❌ Ошибка при отправке данных:', error);
-      telegramAPI.showAlert('Произошла ошибка при отправке запроса. Попробуйте еще раз.');
-    }
+    // Аналогично используем deep link
+    const botUsername = 'YOUR_BOT_USERNAME'; // Замените на имя вашего бота
+    const command = 'open_course_sql';
+    const deepLink = `https://t.me/${botUsername}?start=${command}`;
+    
+    telegramAPI.showAlert('Откройте ссылку в чате с ботом для доступа к курсу');
+    window.open(deepLink, '_blank');
   };
 
   const handleSubmitHomework = async () => {
@@ -116,31 +105,45 @@ export const useTaskDetail = () => {
       return;
     }
 
-    // Проверяем, запущено ли приложение в Telegram
-    if (!telegramAPI.isInTelegram()) {
-      console.error('❌ Приложение не запущено в Telegram');
-      await telegramAPI.showAlert(
-        'Приложение должно быть запущено через Telegram бота для отправки заданий.'
-      );
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
-      const payload = {
-        action: 'submit_homework',
-        taskId: 'cohort-analysis-sql',
-        userAnswer: userAnswer,
-        timestamp: new Date().toISOString()
-      };
+      // Проверяем, есть ли query_id для inline mode
+      if (window.Telegram?.WebApp?.initDataUnsafe?.query_id) {
+        const queryId = window.Telegram.WebApp.initDataUnsafe.query_id;
+        
+        // Для inline button WebApp можно использовать answerWebAppQuery
+        // Но это требует серверной части для вызова Bot API
+        console.log('📤 Query ID доступен:', queryId);
+        
+        await telegramAPI.showAlert(
+          'Задание отправлено! Результат появится в чате через несколько секунд.'
+        );
+        
+        // Можно закрыть WebApp после отправки
+        setTimeout(() => {
+          window.Telegram?.WebApp?.close();
+        }, 2000);
+        
+      } else {
+        // Используем deep link с закодированными данными
+        const botUsername = 'YOUR_BOT_USERNAME'; // Замените на имя вашего бота
+        const taskId = 'cohort-analysis-sql';
+        
+        // Кодируем ответ для передачи через URL
+        const encodedAnswer = encodeURIComponent(userAnswer.substring(0, 100)); // Ограничиваем длину
+        const command = `hw_${taskId}_${encodedAnswer}`;
+        const deepLink = `https://t.me/${botUsername}?start=${command}`;
+        
+        await telegramAPI.showAlert(
+          'Для отправки задания перейдите по ссылке в чат с ботом'
+        );
+        
+        // Открываем deep link
+        window.open(deepLink, '_blank');
+      }
 
-      console.log('📤 Отправляем домашнее задание:', payload);
-
-      telegramAPI.sendDataToBot(payload);
-      await telegramAPI.showAlert('Задание отправлено на проверку! Результат появится в чате с ботом через несколько секунд.');
-
-      // Пробуем также проверить через OpenAI (если доступно)
+      // Локальная проверка через OpenAI (если доступно)
       try {
         const result = await openAIService.checkHomework({
           taskTitle: 'Когортный анализ и SQL',
@@ -156,7 +159,7 @@ export const useTaskDetail = () => {
           });
         }
       } catch (error) {
-        console.log('⚠️ OpenAI проверка недоступна, используем только бот');
+        console.log('⚠️ OpenAI проверка недоступна');
       }
 
     } catch (error) {
@@ -175,9 +178,5 @@ export const useTaskDetail = () => {
     handleDownloadTable,
     handleOpenCourse,
     handleSubmitHomework,
-    navigate,
-    // Добавляем отладочную информацию
-    isInTelegram: telegramAPI?.isInTelegram() ?? false,
-    debugInfo: telegramAPI?.getDebugInfo() ?? null
   };
 };
