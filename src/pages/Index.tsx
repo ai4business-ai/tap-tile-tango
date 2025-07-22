@@ -79,7 +79,7 @@ const Index = () => {
           <button className="bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium">
             Навык прокачен
           </button>
-          <div className="absolute top-0 right-0 text-6xl opacity-30">📈</div>
+          
         </div>
       </TapCard>
 
