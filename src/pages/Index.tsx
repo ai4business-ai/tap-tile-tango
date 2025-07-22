@@ -1,9 +1,6 @@
 import React from 'react';
 import { Bell, ChevronRight } from 'lucide-react';
 import { TapCard } from '@/components/ui/tap-card';
-import characterImage from '@/assets/character.png';
-import cameraImage from '@/assets/camera.png';
-import profilePlaceholder from '@/assets/profile-placeholder.png';
 
 const Index = () => {
   const handleCardClick = (cardName: string) => {
@@ -15,12 +12,8 @@ const Index = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gray-300 overflow-hidden">
-            <img 
-              src={profilePlaceholder} 
-              alt="Profile" 
-              className="w-full h-full object-cover"
-            />
+          <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+            <div className="w-6 h-6 bg-primary rounded-full"></div>
           </div>
           <div>
             <h1 className="text-lg font-semibold text-foreground">Моя цель</h1>
@@ -91,13 +84,6 @@ const Index = () => {
           <button className="bg-green-accent text-white px-4 py-2 rounded-lg text-sm font-medium">
             +5 заданий
           </button>
-          <div className="absolute bottom-0 right-0 w-16 h-16">
-            <img 
-              src={characterImage} 
-              alt="Character" 
-              className="w-full h-full object-contain"
-            />
-          </div>
         </div>
       </TapCard>
 
@@ -111,13 +97,6 @@ const Index = () => {
           <button className="bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium">
             Смотреть
           </button>
-          <div className="absolute bottom-2 right-4 w-10 h-10">
-            <img 
-              src={cameraImage} 
-              alt="Camera" 
-              className="w-full h-full object-contain opacity-80"
-            />
-          </div>
         </div>
       </TapCard>
     </div>
