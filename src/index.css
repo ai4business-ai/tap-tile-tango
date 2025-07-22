@@ -8,7 +8,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 97%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -35,6 +35,15 @@ All colors MUST be HSL.
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
+
+    /* Education app specific colors */
+    --progress-blue: 198 93% 60%;
+    --purple-gradient: 260 60% 75%;
+    --purple-accent: 260 40% 50%;
+    --green-gradient: 142 76% 36%;
+    --green-accent: 142 69% 58%;
+    --task-red: 0 84% 60%;
+    --gray-light: 220 13% 91%;
 
     --radius: 0.5rem;
 

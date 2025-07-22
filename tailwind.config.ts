@@ -61,7 +61,15 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Education app colors
+				'progress-blue': 'hsl(var(--progress-blue))',
+				'purple-gradient': 'hsl(var(--purple-gradient))',
+				'purple-accent': 'hsl(var(--purple-accent))',
+				'green-gradient': 'hsl(var(--green-gradient))',
+				'green-accent': 'hsl(var(--green-accent))',
+				'task-red': 'hsl(var(--task-red))',
+				'gray-light': 'hsl(var(--gray-light))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +92,17 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'tap-scale': {
+					'0%': { transform: 'scale(1)' },
+					'50%': { transform: 'scale(0.96)' },
+					'100%': { transform: 'scale(1)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'tap-scale': 'tap-scale 0.15s ease-out'
 			}
 		}
 	},
