@@ -178,5 +178,6 @@ export const useTaskDetail = () => {
     handleDownloadTable,
     handleOpenCourse,
     handleSubmitHomework,
+    navigate
   };
 };

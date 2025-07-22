@@ -94,6 +94,16 @@ export class WebAppAPIService {
 // Экспортируем singleton instance
 export const webAppAPI = new WebAppAPIService();
 
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import TelegramAPI from '@/lib/telegram';
+
+interface CheckResult {
+  score: number;
+  feedback: string;
+  suggestions?: string[];
+}
+
 // Обновленный хук с использованием серверного API
 export const useTaskDetailWithAPI = () => {
   const navigate = useNavigate();

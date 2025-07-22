@@ -46,13 +46,7 @@ interface TelegramWebApp {
   showConfirm(message: string, callback?: (confirmed: boolean) => void): void;
 }
 
-declare global {
-  interface Window {
-    Telegram: {
-      WebApp: TelegramWebApp;
-    };
-  }
-}
+// Using existing global declaration from telegram.ts
 
 export class TelegramAPIEnhanced {
   private static instance: TelegramAPIEnhanced;
@@ -212,7 +206,6 @@ export class TelegramAPIEnhanced {
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TelegramAPIEnhanced } from '@/lib/telegram-enhanced';
 
 interface CheckResult {
   score: number;
