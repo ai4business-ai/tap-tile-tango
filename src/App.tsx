@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Tasks from "./pages/Tasks";
 import TaskCategory from "./pages/TaskCategory";
 import TaskDetail from "./pages/TaskDetail";
+import WebinarRecords from "./pages/WebinarRecords";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -61,6 +62,7 @@ const App = () => {
             <Route path="/tasks" element={<Tasks />} />
             <Route path="/tasks/:category" element={<TaskCategory />} />
             <Route path="/task-detail" element={<TaskDetail />} />
+            <Route path="/webinar-records" element={<WebinarRecords />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -8,6 +8,8 @@ const Index = () => {
   const handleCardClick = (cardName: string) => {
     if (cardName === 'Ваши задания' || cardName === 'Мои задания') {
       navigate('/tasks');
+    } else if (cardName === 'Записи вебинаров') {
+      navigate('/webinar-records');
     } else {
       console.log(`Clicked: ${cardName}`);
     }
