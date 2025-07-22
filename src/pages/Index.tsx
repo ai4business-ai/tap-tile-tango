@@ -3,6 +3,7 @@ import { Bell, ChevronRight } from 'lucide-react';
 import { TapCard } from '@/components/ui/tap-card';
 import characterImage from '@/assets/character.png';
 import cameraImage from '@/assets/camera.png';
+import profilePlaceholder from '@/assets/profile-placeholder.png';
 
 const Index = () => {
   const handleCardClick = (cardName: string) => {
@@ -16,7 +17,7 @@ const Index = () => {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gray-300 overflow-hidden">
             <img 
-              src="/placeholder.svg" 
+              src={profilePlaceholder} 
               alt="Profile" 
               className="w-full h-full object-cover"
             />
