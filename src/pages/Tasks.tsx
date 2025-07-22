@@ -57,23 +57,25 @@ const Tasks = () => {
       {/* Tasks List */}
       <div className="space-y-4">
         {tasks.map((task, index) => (
-          <div key={index} className="bg-card rounded-xl p-4 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-purple-accent rounded-lg flex items-center justify-center">
-                  <span className="bg-task-red text-white text-xs font-medium px-1.5 py-0.5 rounded">
-                    {task.badge}
-                  </span>
-                </div>
-                <div>
-                  <h3 className="text-base font-medium text-foreground">{task.title}</h3>
-                  <p className="text-sm text-muted-foreground">{task.count}</p>
-                </div>
-              </div>
-              {task.isLocked && (
-                <Lock className="w-5 h-5 text-muted-foreground" />
-              )}
+          <div key={index} className="bg-card rounded-xl p-4 shadow-sm relative">
+            <div>
+              <h3 className="text-lg font-semibold text-foreground mb-1">{task.title}</h3>
+              <p className="text-sm text-muted-foreground">{task.count}</p>
             </div>
+            
+            {/* Badge */}
+            <div className="absolute bottom-4 left-4">
+              <span className="bg-purple-accent text-white text-sm font-medium px-2 py-1 rounded-lg">
+                {task.badge}
+              </span>
+            </div>
+            
+            {/* Lock icon */}
+            {task.isLocked && (
+              <div className="absolute bottom-4 right-4">
+                <Lock className="w-6 h-6 text-muted-foreground" />
+              </div>
+            )}
           </div>
         ))}
       </div>
