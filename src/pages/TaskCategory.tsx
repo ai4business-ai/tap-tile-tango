@@ -1,11 +1,11 @@
 import React from 'react';
 import { ArrowLeft, AlertCircle, CheckCircle, Lock } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
-
 const TaskCategory = () => {
   const navigate = useNavigate();
-  const { category } = useParams();
-
+  const {
+    category
+  } = useParams();
   const handleTaskClick = (taskTitle: string) => {
     if (taskTitle === 'Когортный анализ и SQL') {
       navigate('/task-detail');
@@ -13,80 +13,61 @@ const TaskCategory = () => {
       console.log(`Clicked: ${taskTitle}`);
     }
   };
-
   const categoryData = {
     'data-analysis': {
       title: 'Анализ данных',
       count: '3 задания',
-      tasks: [
-        {
-          title: 'Когортный анализ и SQL',
-          description: 'Проведение когортного анализа на основе данных в различных таблицах, а также формирование SQL запросов при помощи GPT',
-          status: 'Новое',
-          statusType: 'new'
-        },
-        {
-          title: 'Выявление аномалий',
-          description: 'Поиск и выявление аномалий, анализ их причин на основе данных и формирование гипотез улучшения',
-          status: 'Доработки',
-          statusType: 'rework'
-        },
-        {
-          title: 'Поиск данных в таблицах',
-          description: 'Проанализируешь сложные таблицы на предмет поиска конкретных данных',
-          status: 'Проверено',
-          statusType: 'completed'
-        }
-      ]
+      tasks: [{
+        title: 'Когортный анализ и SQL',
+        description: 'Проведение когортного анализа на основе данных в различных таблицах, а также формирование SQL запросов при помощи GPT',
+        status: 'Новое',
+        statusType: 'new'
+      }, {
+        title: 'Выявление аномалий',
+        description: 'Поиск и выявление аномалий, анализ их причин на основе данных и формирование гипотез улучшения',
+        status: 'Доработки',
+        statusType: 'rework'
+      }, {
+        title: 'Поиск данных в таблицах',
+        description: 'Проанализируешь сложные таблицы на предмет поиска конкретных данных',
+        status: 'Проверено',
+        statusType: 'completed'
+      }]
     }
   };
-
   const currentCategory = categoryData[category as keyof typeof categoryData];
-
   if (!currentCategory) {
     return <div>Категория не найдена</div>;
   }
-
   const getStatusBadge = (statusType: string, status: string) => {
     switch (statusType) {
       case 'new':
-        return (
-          <span className="bg-purple-accent text-white text-sm font-medium px-3 py-1 rounded-full">
+        return <span className="bg-purple-accent text-white text-sm font-medium px-3 py-1 rounded-full">
             {status}
-          </span>
-        );
+          </span>;
       case 'rework':
-        return (
-          <div className="flex items-center gap-2">
+        return <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-task-red" />
             <span className="bg-task-red/10 text-task-red text-sm font-medium px-3 py-1 rounded-full">
               {status}
             </span>
-          </div>
-        );
+          </div>;
       case 'completed':
-        return (
-          <div className="flex items-center gap-2">
+        return <div className="flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-green-accent" />
             <span className="bg-green-accent/10 text-green-accent text-sm font-medium px-3 py-1 rounded-full">
               {status}
             </span>
-          </div>
-        );
+          </div>;
       default:
         return null;
     }
   };
-
-  return (
-    <div className="min-h-screen bg-background p-4 max-w-sm mx-auto">
+  return <div className="min-h-screen bg-background p-4 max-w-sm mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <button 
-            onClick={() => navigate('/tasks')}
-            className="w-8 h-8 flex items-center justify-center"
-          >
+          <button onClick={() => navigate('/tasks')} className="w-8 h-8 flex items-center justify-center">
             <ArrowLeft className="w-6 h-6 text-foreground" />
           </button>
           <div>
@@ -95,26 +76,16 @@ const TaskCategory = () => {
           </div>
         </div>
         <div className="bg-white rounded-lg p-2">
-          <img 
-            src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
-            alt="Билайн логотип" 
-            className="w-16 h-auto"
-          />
+          <img src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" alt="Билайн логотип" className="w-16 h-auto" />
         </div>
       </div>
 
       {/* Tasks List */}
       <div className="space-y-4">
-        {currentCategory.tasks.map((task, index) => (
-          <div key={index} className="bg-card rounded-xl p-4 shadow-sm">
-            {/* Status Badge and Points */}
-            <div className="mb-3 flex items-center justify-between">
+        {currentCategory.tasks.map((task, index) => <div key={index} className="bg-card rounded-xl p-4 shadow-sm">
+            {/* Status Badge */}
+            <div className="mb-3">
               {getStatusBadge(task.statusType, task.status)}
-              {task.statusType === 'completed' && (
-                <div className="bg-green-accent/20 text-green-accent text-sm font-semibold px-3 py-1 rounded-full">
-                  +1 балл
-                </div>
-              )}
             </div>
             
             {/* Task Content */}
@@ -124,27 +95,12 @@ const TaskCategory = () => {
             </div>
             
             {/* Task Button */}
-            {task.title === 'Когортный анализ и SQL' ? (
-              <button 
-                onClick={() => handleTaskClick(task.title)}
-                className="w-full bg-primary text-primary-foreground px-4 py-3 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center"
-              >
-                Задание
-              </button>
-            ) : (
-              <button 
-                disabled
-                className="w-full bg-muted text-muted-foreground px-4 py-3 rounded-lg text-sm font-medium cursor-not-allowed flex items-center justify-center gap-2"
-              >
+            {task.title === 'Когортный анализ и SQL' ? <button onClick={() => handleTaskClick(task.title)} className="w-full bg-primary text-primary-foreground px-4 py-3 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center">Составь промпт-запрос, который составит формулу расчета среднего арифметического значения по сумме транзакций клиента.</button> : <button disabled className="w-full bg-muted text-muted-foreground px-4 py-3 rounded-lg text-sm font-medium cursor-not-allowed flex items-center justify-center gap-2">
                 <Lock className="w-4 h-4" />
                 Задание
-              </button>
-            )}
-          </div>
-        ))}
+              </button>}
+          </div>)}
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default TaskCategory;
