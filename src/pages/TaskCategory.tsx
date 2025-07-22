@@ -94,11 +94,13 @@ const TaskCategory = () => {
             <p className="text-sm text-muted-foreground">{currentCategory.count}</p>
           </div>
         </div>
-        <img 
-          src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
-          alt="Билайн логотип" 
-          className="w-20 h-auto"
-        />
+        <div className="bg-white rounded-lg p-2">
+          <img 
+            src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
+            alt="Билайн логотип" 
+            className="w-16 h-auto"
+          />
+        </div>
       </div>
 
       {/* Tasks List */}

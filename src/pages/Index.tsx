@@ -16,11 +16,13 @@ const Index = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <img 
-            src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
-            alt="Билайн логотип" 
-            className="w-24 h-auto"
-          />
+          <div className="bg-white rounded-lg p-2">
+            <img 
+              src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
+              alt="Билайн логотип" 
+              className="w-20 h-auto"
+            />
+          </div>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
               <Target className="w-6 h-6 text-primary" />
