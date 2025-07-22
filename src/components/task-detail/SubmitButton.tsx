@@ -11,7 +11,7 @@ interface SubmitButtonProps {
 
 export const SubmitButton = ({ onClick, isSubmitting, disabled }: SubmitButtonProps) => {
   return (
-    <div className="fixed bottom-4 left-4 right-4 max-w-sm mx-auto">
+    <div className="mt-6 mb-4 px-4 max-w-sm mx-auto">
       <Button 
         onClick={onClick}
         disabled={disabled}
