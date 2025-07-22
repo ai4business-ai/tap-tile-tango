@@ -107,9 +107,14 @@ const TaskCategory = () => {
       <div className="space-y-4">
         {currentCategory.tasks.map((task, index) => (
           <div key={index} className="bg-card rounded-xl p-4 shadow-sm">
-            {/* Status Badge */}
-            <div className="mb-3">
+            {/* Status Badge and Points */}
+            <div className="mb-3 flex items-center justify-between">
               {getStatusBadge(task.statusType, task.status)}
+              {task.statusType === 'completed' && (
+                <div className="bg-green-accent/20 text-green-accent text-sm font-semibold px-3 py-1 rounded-full">
+                  +1 балл
+                </div>
+              )}
             </div>
             
             {/* Task Content */}
