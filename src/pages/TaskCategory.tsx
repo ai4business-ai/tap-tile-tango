@@ -76,7 +76,7 @@ const TaskCategory = () => {
           </div>
         </div>
         <div className="bg-white rounded-lg p-2">
-          <img src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" alt="Билайн логотип" className="w-16 h-auto" />
+          
         </div>
       </div>
 
@@ -95,7 +95,9 @@ const TaskCategory = () => {
             </div>
             
             {/* Task Button */}
-            {task.title === 'Когортный анализ и SQL' ? <button onClick={() => handleTaskClick(task.title)} className="w-full bg-primary text-primary-foreground px-4 py-3 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center">Составь промпт-запрос, который составит формулу расчета среднего арифметического значения по сумме транзакций клиента.</button> : <button disabled className="w-full bg-muted text-muted-foreground px-4 py-3 rounded-lg text-sm font-medium cursor-not-allowed flex items-center justify-center gap-2">
+            {task.title === 'Когортный анализ и SQL' ? <button onClick={() => handleTaskClick(task.title)} className="w-full bg-primary text-primary-foreground px-4 py-3 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center">
+                Задание
+              </button> : <button disabled className="w-full bg-muted text-muted-foreground px-4 py-3 rounded-lg text-sm font-medium cursor-not-allowed flex items-center justify-center gap-2">
                 <Lock className="w-4 h-4" />
                 Задание
               </button>}
