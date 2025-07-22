@@ -10,6 +10,8 @@ const Index = () => {
       navigate('/tasks');
     } else if (cardName === 'Записи вебинаров') {
       navigate('/webinar-records');
+    } else if (cardName === 'Мой прогресс') {
+      navigate('/my-progress');
     } else {
       console.log(`Clicked: ${cardName}`);
     }
