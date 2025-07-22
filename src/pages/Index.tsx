@@ -16,12 +16,19 @@ const Index = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-            <Target className="w-6 h-6 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-lg font-semibold text-foreground">Моя цель</h1>
-            <p className="text-sm text-muted-foreground">Достичь уровень 3 "AI-Native"</p>
+          <img 
+            src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
+            alt="Билайн логотип" 
+            className="w-24 h-auto"
+          />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+              <Target className="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-foreground">Моя цель</h1>
+              <p className="text-sm text-muted-foreground">Достичь уровень 3 "AI-Native"</p>
+            </div>
           </div>
         </div>
         <Bell className="w-6 h-6 text-muted-foreground" />

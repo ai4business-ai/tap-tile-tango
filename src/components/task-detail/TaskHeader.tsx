@@ -24,12 +24,19 @@ export const TaskHeader = ({ onBack, onClose, title, subtitle }: TaskHeaderProps
           <p className="text-sm text-muted-foreground">{subtitle}</p>
         </div>
       </div>
-      <button 
-        onClick={onClose}
-        className="w-10 h-10 bg-muted rounded-2xl flex items-center justify-center"
-      >
-        <X className="w-5 h-5 text-foreground" />
-      </button>
+      <div className="flex items-center gap-3">
+        <img 
+          src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
+          alt="Билайн логотип" 
+          className="w-16 h-auto"
+        />
+        <button 
+          onClick={onClose}
+          className="w-10 h-10 bg-muted rounded-2xl flex items-center justify-center"
+        >
+          <X className="w-5 h-5 text-foreground" />
+        </button>
+      </div>
     </div>
   );
 };

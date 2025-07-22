@@ -81,17 +81,24 @@ const TaskCategory = () => {
   return (
     <div className="min-h-screen bg-background p-4 max-w-sm mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <button 
-          onClick={() => navigate('/tasks')}
-          className="w-8 h-8 flex items-center justify-center"
-        >
-          <ArrowLeft className="w-6 h-6 text-foreground" />
-        </button>
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">{currentCategory.title}</h1>
-          <p className="text-sm text-muted-foreground">{currentCategory.count}</p>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={() => navigate('/tasks')}
+            className="w-8 h-8 flex items-center justify-center"
+          >
+            <ArrowLeft className="w-6 h-6 text-foreground" />
+          </button>
+          <div>
+            <h1 className="text-xl font-semibold text-foreground">{currentCategory.title}</h1>
+            <p className="text-sm text-muted-foreground">{currentCategory.count}</p>
+          </div>
         </div>
+        <img 
+          src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
+          alt="Билайн логотип" 
+          className="w-20 h-auto"
+        />
       </div>
 
       {/* Tasks List */}
