@@ -58,6 +58,10 @@ const TaskCategory = () => {
             <span className="bg-green-accent/10 text-green-accent text-sm font-medium px-3 py-1 rounded-full">
               {status}
             </span>
+            <div className="flex items-center gap-1 bg-amber-50 text-amber-700 text-xs font-medium px-2 py-1 rounded-full border border-amber-200">
+              <span className="text-amber-600">+1</span>
+              <span>балл</span>
+            </div>
           </div>;
       default:
         return null;
