@@ -9,6 +9,7 @@ const MyProgress = () => {
     {
       title: "Анализ данных",
       progress: 2, // из 3
+      targetLevel: 3, // целевой уровень
       availableNext: true, // третье задание доступно
       scorePercent: 67,
       target: 1.5,
@@ -18,6 +19,7 @@ const MyProgress = () => {
     {
       title: "Работа с презентациями",
       progress: 2, // из 3  
+      targetLevel: 2, // целевой уровень
       availableNext: false,
       scorePercent: 67,
       target: 0.5,
@@ -27,6 +29,7 @@ const MyProgress = () => {
     {
       title: "Поиск и исследования",
       progress: 2, // из 3
+      targetLevel: 2, // целевой уровень
       availableNext: false,
       scorePercent: 67,
       target: 1.0,
@@ -36,6 +39,7 @@ const MyProgress = () => {
     {
       title: "Работа с текстом",
       progress: 2, // из 3
+      targetLevel: 2, // целевой уровень
       availableNext: false,
       scorePercent: 67,
       target: 1.5,
@@ -45,6 +49,7 @@ const MyProgress = () => {
     {
       title: "Креатив и визуализация",
       progress: 2, // из 3
+      targetLevel: 2, // целевой уровень
       availableNext: false,
       scorePercent: 67,
       target: 3.0,
@@ -95,74 +100,169 @@ const MyProgress = () => {
       <div className="relative bg-card rounded-xl p-6 mb-6 h-80 overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative w-60 h-60">
-            {/* Pentagon background */}
             <svg className="absolute inset-0 w-full h-full" viewBox="0 0 240 240">
-              {/* Grid lines */}
               <defs>
-                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgb(229 231 235)" strokeWidth="1"/>
-                </pattern>
-              </defs>
-              
-              {/* Pentagon shape filled with gradient */}
-              <polygon
-                points="120,20 180,80 160,160 80,160 60,80"
-                fill="url(#pentagonGradient)"
-                stroke="rgb(139 92 246)"
-                strokeWidth="2"
-              />
-              
-              <defs>
-                <linearGradient id="pentagonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="rgb(139 92 246)" stopOpacity="0.3"/>
-                  <stop offset="100%" stopColor="rgb(139 92 246)" stopOpacity="0.1"/>
+                {/* Gradients */}
+                <linearGradient id="radarGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="rgb(139 92 246)" stopOpacity="0.2"/>
+                  <stop offset="100%" stopColor="rgb(139 92 246)" stopOpacity="0.05"/>
+                </linearGradient>
+                <linearGradient id="targetGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="rgb(139 92 246)" stopOpacity="0.1"/>
+                  <stop offset="100%" stopColor="rgb(139 92 246)" stopOpacity="0.02"/>
                 </linearGradient>
               </defs>
               
-              {/* Pentagon outline */}
+              {/* Pentagon grid lines (3 levels) */}
+              {[1, 2, 3].map((level) => {
+                const scale = level / 3;
+                const points = skills.map((_, index) => {
+                  const angle = (index * 72 - 90) * Math.PI / 180;
+                  const radius = 80 * scale;
+                  const x = 120 + Math.cos(angle) * radius;
+                  const y = 120 + Math.sin(angle) * radius;
+                  return `${x},${y}`;
+                }).join(' ');
+                
+                return (
+                  <polygon
+                    key={level}
+                    points={points}
+                    fill="none"
+                    stroke="rgb(229 231 235)"
+                    strokeWidth="1"
+                    opacity={0.5}
+                  />
+                );
+              })}
+              
+              {/* Axis lines */}
+              {skills.map((_, index) => {
+                const angle = (index * 72 - 90) * Math.PI / 180;
+                const x = 120 + Math.cos(angle) * 80;
+                const y = 120 + Math.sin(angle) * 80;
+                
+                return (
+                  <line
+                    key={index}
+                    x1="120"
+                    y1="120"
+                    x2={x}
+                    y2={y}
+                    stroke="rgb(229 231 235)"
+                    strokeWidth="1"
+                    opacity={0.3}
+                  />
+                );
+              })}
+              
+              {/* Target level polygon (dashed) */}
               <polygon
-                points="120,20 180,80 160,160 80,160 60,80"
-                fill="none"
-                stroke="rgb(229 231 235)"
-                strokeWidth="1"
+                points={skills.map((skill, index) => {
+                  const angle = (index * 72 - 90) * Math.PI / 180;
+                  const radius = (skill.targetLevel / 3) * 80;
+                  const x = 120 + Math.cos(angle) * radius;
+                  const y = 120 + Math.sin(angle) * radius;
+                  return `${x},${y}`;
+                }).join(' ')}
+                fill="url(#targetGradient)"
+                stroke="rgb(139 92 246)"
+                strokeWidth="2"
+                strokeDasharray="5,5"
+                opacity="0.6"
+              />
+              
+              {/* Current progress polygon */}
+              <polygon
+                points={skills.map((skill, index) => {
+                  const angle = (index * 72 - 90) * Math.PI / 180;
+                  const radius = (skill.progress / 3) * 80;
+                  const x = 120 + Math.cos(angle) * radius;
+                  const y = 120 + Math.sin(angle) * radius;
+                  return `${x},${y}`;
+                }).join(' ')}
+                fill="url(#radarGradient)"
+                stroke="rgb(139 92 246)"
+                strokeWidth="3"
+              />
+              
+              {/* Progress points */}
+              {skills.map((skill, index) => {
+                const angle = (index * 72 - 90) * Math.PI / 180;
+                const radius = (skill.progress / 3) * 80;
+                const x = 120 + Math.cos(angle) * radius;
+                const y = 120 + Math.sin(angle) * radius;
+                
+                return (
+                  <circle
+                    key={index}
+                    cx={x}
+                    cy={y}
+                    r="4"
+                    fill="rgb(139 92 246)"
+                    stroke="white"
+                    strokeWidth="2"
+                  />
+                );
+              })}
+              
+              {/* Target points */}
+              {skills.map((skill, index) => {
+                const angle = (index * 72 - 90) * Math.PI / 180;
+                const radius = (skill.targetLevel / 3) * 80;
+                const x = 120 + Math.cos(angle) * radius;
+                const y = 120 + Math.sin(angle) * radius;
+                
+                return (
+                  <circle
+                    key={`target-${index}`}
+                    cx={x}
+                    cy={y}
+                    r="3"
+                    fill="none"
+                    stroke="rgb(139 92 246)"
+                    strokeWidth="2"
+                    opacity="0.6"
+                  />
+                );
+              })}
+              
+              {/* Center point */}
+              <circle
+                cx="120"
+                cy="120"
+                r="3"
+                fill="rgb(139 92 246)"
               />
             </svg>
             
             {/* Skills labels positioned around pentagon */}
             {skills.map((skill, index) => {
-              const positions = [
-                { x: '50%', y: '10%', textAlign: 'center' }, // top
-                { x: '85%', y: '35%', textAlign: 'left' },   // top-right
-                { x: '80%', y: '85%', textAlign: 'left' },   // bottom-right
-                { x: '20%', y: '85%', textAlign: 'right' },  // bottom-left
-                { x: '15%', y: '35%', textAlign: 'right' }   // top-left
-              ];
-              
-              const position = positions[index];
+              const angle = (index * 72 - 90) * Math.PI / 180;
+              const labelRadius = 105;
+              const x = 120 + Math.cos(angle) * labelRadius;
+              const y = 120 + Math.sin(angle) * labelRadius;
               
               return (
                 <div
                   key={index}
-                  className="absolute transform -translate-x-1/2 -translate-y-1/2"
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 text-center"
                   style={{
-                    left: position.x,
-                    top: position.y,
-                    textAlign: position.textAlign as any
+                    left: `${(x / 240) * 100}%`,
+                    top: `${(y / 240) * 100}%`
                   }}
                 >
-                  <p className="text-xs text-muted-foreground whitespace-nowrap font-medium">
-                    {skill.title}
+                  <p className="text-xs text-muted-foreground whitespace-nowrap font-medium leading-tight">
+                    {skill.title.split(' ')[0]}
                   </p>
+                  {skill.title.split(' ').length > 1 && (
+                    <p className="text-xs text-muted-foreground whitespace-nowrap font-medium leading-tight">
+                      {skill.title.split(' ').slice(1).join(' ')}
+                    </p>
+                  )}
                 </div>
               );
             })}
-            
-            {/* Center icon */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <div className="w-8 h-8 bg-purple-accent/20 rounded-full flex items-center justify-center">
-                <div className="w-4 h-4 bg-purple-accent rounded-full"></div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
