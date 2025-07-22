@@ -1,10 +1,18 @@
 import React from 'react';
-import { ArrowLeft, AlertCircle, CheckCircle } from 'lucide-react';
+import { ArrowLeft, AlertCircle, CheckCircle, Lock } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const TaskCategory = () => {
   const navigate = useNavigate();
   const { category } = useParams();
+
+  const handleTaskClick = (taskTitle: string) => {
+    if (taskTitle === 'Когортный анализ и SQL') {
+      navigate('/task-detail');
+    } else {
+      console.log(`Clicked: ${taskTitle}`);
+    }
+  };
 
   const categoryData = {
     'data-analysis': {
@@ -102,9 +110,22 @@ const TaskCategory = () => {
             </div>
             
             {/* Task Button */}
-            <button className="w-full bg-primary text-primary-foreground px-4 py-3 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center">
-              Задание
-            </button>
+            {task.title === 'Когортный анализ и SQL' ? (
+              <button 
+                onClick={() => handleTaskClick(task.title)}
+                className="w-full bg-primary text-primary-foreground px-4 py-3 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center"
+              >
+                Задание
+              </button>
+            ) : (
+              <button 
+                disabled
+                className="w-full bg-muted text-muted-foreground px-4 py-3 rounded-lg text-sm font-medium cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <Lock className="w-4 h-4" />
+                Задание
+              </button>
+            )}
           </div>
         ))}
       </div>
