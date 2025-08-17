@@ -64,9 +64,17 @@ const Index = () => {
         <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-4 text-white relative overflow-hidden shadow-xl">
           <h3 className="text-lg font-semibold mb-1">Мой прогресс</h3>
           <p className="text-sm opacity-90 mb-4">8 навыков</p>
-          <button className="bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium">
-            Навык прокачен
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+              🔍 <span>Искатель</span>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+              📊 <span>Аналитик</span>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+              ⚙️ <span>Инженер</span>
+            </div>
+          </div>
           
         </div>
       </TapCard>
