@@ -13,27 +13,27 @@ const SkillAssignments = () => {
         "Basic": {
           status: "completed", // completed, planned, locked
           assignments: [
-            "Найти и обобщить информацию по рабочему вопросу за 5 минут",
-            "Проанализировать Word/PDF документ объемом 20+ страниц и создать executive summary на 1 страницу",
-            "Проверить факты и данные через множественные источники с оценкой достоверности",
-            "Создать саммари документа/статьи"
+            { text: "Найти и обобщить информацию по рабочему вопросу за 5 минут", status: "completed" },
+            { text: "Проанализировать Word/PDF документ объемом 20+ страниц и создать executive summary на 1 страницу", status: "planned", taskId: "document-analysis" },
+            { text: "Проверить факты и данные через множественные источники с оценкой достоверности", status: "completed" },
+            { text: "Создать саммари документа/статьи", status: "completed" }
           ]
         },
         "Pro": {
           status: "planned",
           assignments: [
-            "Освоить Deep Research: научиться формулировать исследовательские вопросы и использовать режим глубокого поиска для комплексного анализа",
-            "Объединить и проанализировать информацию из 5+ документов разных форматов (PDF, Excel, Word) по одному проекту",
-            "Создать сравнительный анализ 3+ решений/подходов с матрицей критериев",
-            "Построить базу знаний по проекту с системой тегов и быстрого поиска"
+            { text: "Освоить Deep Research: научиться формулировать исследовательские вопросы и использовать режим глубокого поиска для комплексного анализа", status: "planned", taskId: "deep-research" },
+            { text: "Объединить и проанализировать информацию из 5+ документов разных форматов (PDF, Excel, Word) по одному проекту", status: "completed" },
+            { text: "Создать сравнительный анализ 3+ решений/подходов с матрицей критериев", status: "completed" },
+            { text: "Построить базу знаний по проекту с системой тегов и быстрого поиска", status: "completed" }
           ]
         },
         "AI-Native": {
           status: "planned",
           assignments: [
-            "Создать специализированного GPT/агента для анализа документов вашей отрасли",
-            "Разработать систему автоматической проверки фактов и валидации данных",
-            "Построить персональную систему knowledge mining из корпоративных документов"
+            { text: "Создать специализированного GPT/агента для анализа документов вашей отрасли", status: "planned", taskId: "specialized-gpt" },
+            { text: "Разработать систему автоматической проверки фактов и валидации данных", status: "completed" },
+            { text: "Построить персональную систему knowledge mining из корпоративных документов", status: "completed" }
           ]
         }
       }
@@ -95,31 +95,44 @@ const SkillAssignments = () => {
                 <div className="h-px bg-gradient-to-r from-primary/50 to-transparent"></div>
               </div>
               
-              <div className="space-y-3">
-                {levelData.assignments.map((assignment, index) => (
-                  <div 
-                    key={index}
-                    className="bg-background/30 rounded-xl p-3 border border-white/5 hover:bg-background/50 transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-foreground">{assignment}</p>
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                        levelData.status === 'completed' 
-                          ? 'border-green-500 bg-green-500' 
-                          : levelData.status === 'planned'
-                          ? 'border-yellow-400/50'
-                          : 'border-gray-400/30'
-                      }`}>
-                        {levelData.status === 'completed' && (
-                          <div className="w-2 h-2 rounded-full bg-white"></div>
-                        )}
-                        {levelData.status === 'planned' && (
-                          <div className="w-2 h-2 rounded-full bg-yellow-400/50"></div>
-                        )}
+               <div className="space-y-3">
+                {levelData.assignments.map((assignment, index) => {
+                  const handleAssignmentClick = () => {
+                    if (assignment.taskId && assignment.status === 'planned') {
+                      navigate(`/task/${assignment.taskId}`);
+                    }
+                  };
+
+                  return (
+                    <div 
+                      key={index}
+                      onClick={handleAssignmentClick}
+                      className={`bg-background/30 rounded-xl p-3 border border-white/5 transition-colors ${
+                        assignment.taskId && assignment.status === 'planned' 
+                          ? 'hover:bg-background/50 cursor-pointer' 
+                          : 'cursor-default'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium text-foreground">{assignment.text}</p>
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                          assignment.status === 'completed' 
+                            ? 'border-green-500 bg-green-500' 
+                            : assignment.status === 'planned'
+                            ? 'border-yellow-400/50'
+                            : 'border-gray-400/30'
+                        }`}>
+                          {assignment.status === 'completed' && (
+                            <div className="w-2 h-2 rounded-full bg-white"></div>
+                          )}
+                          {assignment.status === 'planned' && (
+                            <div className="w-2 h-2 rounded-full bg-yellow-400/50"></div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           );
