@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowLeft, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const MyProgress = () => {
   const navigate = useNavigate();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  const skills = [
+  const [skills, setSkills] = useState([
     {
       title: "Исследования и обработка информации",
       progress: 3,
@@ -86,7 +90,23 @@ const MyProgress = () => {
       scorePercent: 33,
       isGoalAchieved: true
     }
-  ];
+  ]);
+
+  const updateSkillTargetLevel = (skillIndex: number, newTargetLevel: number) => {
+    setSkills(prevSkills => 
+      prevSkills.map((skill, index) => 
+        index === skillIndex 
+          ? { 
+              ...skill, 
+              targetLevel: newTargetLevel,
+              proSelected: newTargetLevel >= 2,
+              aiNativeSelected: newTargetLevel >= 3,
+              isGoalAchieved: skill.progress >= newTargetLevel
+            }
+          : skill
+      )
+    );
+  };
 
   const renderProgressBars = (skill: any) => {
     const levels = ['Basic', 'Pro', 'AI-Native'];
@@ -157,9 +177,44 @@ const MyProgress = () => {
             <p className="text-sm text-muted-foreground">8 навыков</p>
           </div>
         </div>
-        <button className="w-8 h-8 flex items-center justify-center">
-          <Settings className="w-6 h-6 text-muted-foreground" />
-        </button>
+        <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+          <DialogTrigger asChild>
+            <button className="w-8 h-8 flex items-center justify-center">
+              <Settings className="w-6 h-6 text-muted-foreground" />
+            </button>
+          </DialogTrigger>
+          <DialogContent className="bg-card/95 backdrop-blur-lg border-white/10 max-w-md max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-foreground">Настройка целевых уровней</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 mt-4">
+              {skills.map((skill, index) => (
+                <div key={index} className="space-y-2">
+                  <h4 className="text-sm font-medium text-foreground">{skill.title}</h4>
+                  <Select 
+                    value={skill.targetLevel.toString()} 
+                    onValueChange={(value) => updateSkillTargetLevel(index, parseInt(value))}
+                  >
+                    <SelectTrigger className="bg-background/50 border-white/20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border-white/10 backdrop-blur-lg">
+                      <SelectItem value="1">Basic</SelectItem>
+                      <SelectItem value="2">Pro</SelectItem>
+                      <SelectItem value="3">AI-Native</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              ))}
+              <Button 
+                onClick={() => setIsSettingsOpen(false)}
+                className="w-full mt-6 bg-primary hover:bg-primary/90"
+              >
+                Сохранить
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Skills Diagram - Radar Chart */}
