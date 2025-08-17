@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, FileText, Target, CheckCircle, Send, Bot } from 'lucide-react';
+import { ArrowLeft, FileText, Target, CheckCircle, Send, Bot, ChevronDown, ChevronUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,10 +11,14 @@ const TaskDocumentAnalysis = () => {
   const navigate = useNavigate();
   const { sendMessage, isLoading } = useChatAssistant();
   const [userAnswer, setUserAnswer] = useState('');
-  const [isAnswerFocused, setIsAnswerFocused] = useState(false);
   const [isChatMode, setIsChatMode] = useState(false);
   const [chatMessages, setChatMessages] = useState<{role: 'user' | 'tutor', content: string}[]>([]);
   const [currentMessage, setCurrentMessage] = useState('');
+  
+  // States for controlling block visibility
+  const [showDescription, setShowDescription] = useState(true);
+  const [showTask, setShowTask] = useState(true);
+  const [showCriteria, setShowCriteria] = useState(true);
 
   const handleSubmitTask = () => {
     if (userAnswer.trim()) {
@@ -74,12 +78,34 @@ const TaskDocumentAnalysis = () => {
       {/* Task Description */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <FileText className="w-5 h-5 text-primary" />
-            Описание задания
+          <CardTitle className="flex items-center justify-between text-base">
+            <div className="flex items-center gap-2">
+              <FileText className="w-5 h-5 text-primary" />
+              Описание задания
+            </div>
+            {userAnswer.trim() && !showDescription && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowDescription(true)}
+                className="h-6 px-2"
+              >
+                <ChevronDown className="w-4 h-4" />
+              </Button>
+            )}
+            {userAnswer.trim() && showDescription && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowDescription(false)}
+                className="h-6 px-2"
+              >
+                <ChevronUp className="w-4 h-4" />
+              </Button>
+            )}
           </CardTitle>
         </CardHeader>
-        {!isAnswerFocused && (
+        {(!userAnswer.trim() || showDescription) && (
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground leading-relaxed">
               Представьте, что ваш руководитель переслал вам годовой отчет конкурента (или отраслевое исследование) со словами: "Посмотри, пожалуйста, что там важного. Мне нужны ключевые выводы к завтрашнему совещанию". У вас есть 30 минут и документ на 20+ страниц.
@@ -91,12 +117,34 @@ const TaskDocumentAnalysis = () => {
       {/* Task Requirements */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Target className="w-5 h-5 text-primary" />
-            Ваша задача
+          <CardTitle className="flex items-center justify-between text-base">
+            <div className="flex items-center gap-2">
+              <Target className="w-5 h-5 text-primary" />
+              Ваша задача
+            </div>
+            {userAnswer.trim() && !showTask && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowTask(true)}
+                className="h-6 px-2"
+              >
+                <ChevronDown className="w-4 h-4" />
+              </Button>
+            )}
+            {userAnswer.trim() && showTask && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowTask(false)}
+                className="h-6 px-2"
+              >
+                <ChevronUp className="w-4 h-4" />
+              </Button>
+            )}
           </CardTitle>
         </CardHeader>
-        {!isAnswerFocused && (
+        {(!userAnswer.trim() || showTask) && (
           <CardContent className="space-y-3">
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-foreground">Шаги выполнения:</h4>
@@ -116,12 +164,34 @@ const TaskDocumentAnalysis = () => {
       {/* Success Criteria */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <CheckCircle className="w-5 h-5 text-primary" />
-            Критерии успешного выполнения
+          <CardTitle className="flex items-center justify-between text-base">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-primary" />
+              Критерии успешного выполнения
+            </div>
+            {userAnswer.trim() && !showCriteria && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowCriteria(true)}
+                className="h-6 px-2"
+              >
+                <ChevronDown className="w-4 h-4" />
+              </Button>
+            )}
+            {userAnswer.trim() && showCriteria && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowCriteria(false)}
+                className="h-6 px-2"
+              >
+                <ChevronUp className="w-4 h-4" />
+              </Button>
+            )}
           </CardTitle>
         </CardHeader>
-        {!isAnswerFocused && (
+        {(!userAnswer.trim() || showCriteria) && (
           <CardContent className="space-y-2">
             <ul className="space-y-1 text-sm text-muted-foreground">
               <li>• Executive summary читается за 2-3 минуты</li>
@@ -160,8 +230,6 @@ const TaskDocumentAnalysis = () => {
             <Textarea
               value={userAnswer}
               onChange={(e) => setUserAnswer(e.target.value)}
-              onFocus={() => setIsAnswerFocused(true)}
-              onBlur={() => setIsAnswerFocused(false)}
               placeholder="Опишите выбранный документ, ваш промпт для ИИ и приложите получившееся executive summary..."
               className="min-h-[150px]"
             />
