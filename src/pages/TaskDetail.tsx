@@ -21,7 +21,7 @@ const TaskDetail = () => {
   } = useTaskDetail();
 
   return (
-    <div className="min-h-screen bg-background p-4 max-w-sm mx-auto">
+    <div className="min-h-screen p-4 max-w-sm mx-auto">
       <TaskHeader
         onBack={() => navigate('/tasks/data-analysis')}
         onClose={() => navigate('/tasks/data-analysis')}

@@ -16,11 +16,11 @@ const Index = () => {
       console.log(`Clicked: ${cardName}`);
     }
   };
-  return <div className="min-h-screen bg-background p-4 max-w-sm mx-auto">
+  return <div className="min-h-screen p-4 max-w-sm mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="bg-white rounded-lg p-2">
+          <div className="glass rounded-2xl p-3">
             <img 
               src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
               alt="Билайн логотип" 
@@ -28,7 +28,7 @@ const Index = () => {
             />
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full glass flex items-center justify-center">
               <Target className="w-6 h-6 text-primary" />
             </div>
             <div>
@@ -42,7 +42,7 @@ const Index = () => {
 
       {/* Tasks Section */}
       <TapCard className="mb-4" onClick={() => handleCardClick('Ваши задания')}>
-        <div className="bg-card rounded-xl p-4 shadow-sm">
+        <div className="glass-card rounded-2xl p-4 shadow-xl">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold text-foreground">Ваши задания</h2>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -60,7 +60,7 @@ const Index = () => {
 
       {/* Module Card */}
       <TapCard className="mb-4" onClick={() => handleCardClick('Модуль 3.1')}>
-        <div className="bg-card rounded-xl p-4 shadow-sm flex items-center justify-between">
+        <div className="glass-card rounded-2xl p-4 shadow-xl flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-purple-accent rounded-lg flex items-center justify-center">
               <div className="w-4 h-4 bg-task-red rounded-sm transform rotate-45"></div>
@@ -77,9 +77,9 @@ const Index = () => {
 
       {/* Progress Card */}
       <TapCard className="mb-4" onClick={() => handleCardClick('Мой прогресс')}>
-        <div className="bg-purple-gradient rounded-xl p-4 text-white relative overflow-hidden">
+        <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-4 text-white relative overflow-hidden shadow-xl">
           <h3 className="text-lg font-semibold mb-1">Мой прогресс</h3>
-          <p className="text-sm opacity-90 mb-4">5 навыков</p>
+          <p className="text-sm opacity-90 mb-4">8 навыков</p>
           <button className="bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium">
             Навык прокачен
           </button>
@@ -89,18 +89,18 @@ const Index = () => {
 
       {/* My Tasks Card */}
       <TapCard className="mb-4" onClick={() => handleCardClick('Мои задания')}>
-        <div className="bg-green-gradient rounded-xl p-4 text-white relative overflow-hidden">
+        <div className="bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl p-4 text-white relative overflow-hidden shadow-xl">
           <h3 className="text-lg font-semibold mb-1">Мои задания</h3>
-          <p className="text-sm opacity-90 mb-4">15 заданий</p>
-          <button className="bg-green-accent text-white px-4 py-2 rounded-lg text-sm font-medium">
-            +5 заданий
+          <p className="text-sm opacity-90 mb-4">89 заданий</p>
+          <button className="bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-lg">
+            +24 задания
           </button>
         </div>
       </TapCard>
 
       {/* Webinar Records Card */}
       <TapCard onClick={() => handleCardClick('Записи вебинаров')}>
-        <div className="bg-purple-gradient rounded-xl p-4 text-white relative overflow-hidden">
+        <div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-4 text-white relative overflow-hidden shadow-xl">
           <h3 className="text-lg font-semibold mb-1">Записи вебинаров</h3>
           <p className="text-sm opacity-90 mb-4">6 вебинаров</p>
           <button className="bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium">

@@ -20,7 +20,7 @@ const WebinarRecords = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 max-w-sm mx-auto">
+    <div className="min-h-screen p-4 max-w-sm mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
@@ -35,7 +35,7 @@ const WebinarRecords = () => {
             <p className="text-sm text-muted-foreground">6 записей</p>
           </div>
         </div>
-        <div className="bg-white rounded-lg p-2">
+        <div className="glass rounded-2xl p-3">
           <img 
             src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
             alt="Билайн логотип" 
@@ -47,7 +47,7 @@ const WebinarRecords = () => {
       {/* Webinar List */}
       <div className="space-y-4">
         {webinars.map((webinar) => (
-          <div key={webinar.id} className="bg-card rounded-xl p-4 shadow-sm">
+          <div key={webinar.id} className="glass-card rounded-2xl p-4 shadow-xl">
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">{webinar.title}</h3>

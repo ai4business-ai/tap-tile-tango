@@ -67,7 +67,7 @@ const TaskCategory = () => {
         return null;
     }
   };
-  return <div className="min-h-screen bg-background p-4 max-w-sm mx-auto">
+  return <div className="min-h-screen p-4 max-w-sm mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
@@ -79,14 +79,18 @@ const TaskCategory = () => {
             <p className="text-sm text-muted-foreground">{currentCategory.count}</p>
           </div>
         </div>
-        <div className="bg-white rounded-lg p-2">
-          
+        <div className="glass rounded-2xl p-3">
+          <img 
+            src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
+            alt="Билайн логотип" 
+            className="w-16 h-auto"
+          />
         </div>
       </div>
 
       {/* Tasks List */}
       <div className="space-y-4">
-        {currentCategory.tasks.map((task, index) => <div key={index} className="bg-card rounded-xl p-4 shadow-sm">
+        {currentCategory.tasks.map((task, index) => <div key={index} className="glass-card rounded-2xl p-4 shadow-xl">
             {/* Status Badge */}
             <div className="mb-3">
               {getStatusBadge(task.statusType, task.status)}
