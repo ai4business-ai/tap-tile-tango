@@ -83,13 +83,11 @@ const Index = () => {
               <span>Общий прогресс</span>
               <span>18/89</span>
             </div>
-            <div className="flex gap-1">
-              {[...Array(5)].map((_, index) => (
-                <div 
-                  key={index}
-                  className={`h-2 flex-1 rounded-full ${index === 0 ? 'bg-white' : 'bg-white/30'}`}
-                />
-              ))}
+            <div className="w-full bg-white/30 rounded-full h-2">
+              <div 
+                className="bg-white h-2 rounded-full transition-all duration-500" 
+                style={{ width: '20%' }}
+              />
             </div>
           </div>
           
