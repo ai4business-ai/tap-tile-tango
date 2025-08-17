@@ -196,7 +196,7 @@ const TaskDocumentAnalysis = () => {
           </CardTitle>
         </CardHeader>
         {shouldShowTask && (
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-foreground">Шаги выполнения:</h4>
               <ul className="space-y-1 text-sm text-muted-foreground">
@@ -207,6 +207,24 @@ const TaskDocumentAnalysis = () => {
                 <li>• Практические рекомендации</li>
                 <li>• Все это на 1 странице A4</li>
               </ul>
+            </div>
+            
+            <div className="space-y-3">
+              <h4 className="text-sm font-medium text-foreground">Примеры документов:</h4>
+              <div className="grid grid-cols-1 gap-2">
+                <div className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/50 cursor-pointer hover:bg-muted/60 transition-colors">
+                  <FileText className="w-5 h-5 text-blue-600" />
+                  <span className="text-sm text-foreground">Маркетинговое исследование о конкурентах</span>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/50 cursor-pointer hover:bg-muted/60 transition-colors">
+                  <FileText className="w-5 h-5 text-green-600" />
+                  <span className="text-sm text-foreground">Отчет за квартал</span>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/50 cursor-pointer hover:bg-muted/60 transition-colors">
+                  <FileText className="w-5 h-5 text-purple-600" />
+                  <span className="text-sm text-foreground">Влияние нейросетей на бизнес-процессы</span>
+                </div>
+              </div>
             </div>
           </CardContent>
         )}
