@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { ArrowLeft, FileText, Target, CheckCircle, Send, Bot, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, FileText, Target, CheckCircle, Send, Bot, ChevronDown, ChevronUp, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useChatAssistant } from '@/hooks/useChatAssistant';
+import { useToast } from '@/hooks/use-toast';
 
 // Helper function to format assistant messages into paragraphs
 const formatAssistantMessage = (content: string): string[] => {
@@ -42,6 +43,7 @@ const formatAssistantMessage = (content: string): string[] => {
 const TaskDocumentAnalysis = () => {
   const navigate = useNavigate();
   const { sendMessage, isLoading } = useChatAssistant();
+  const { toast } = useToast();
   const [userAnswer, setUserAnswer] = useState('');
   const [isChatMode, setIsChatMode] = useState(false);
   const [chatMessages, setChatMessages] = useState<{role: 'user' | 'tutor', content: string}[]>([]);
@@ -106,6 +108,29 @@ const TaskDocumentAnalysis = () => {
           content: 'Извините, произошла ошибка. Попробуйте еще раз.' 
         }]);
       }
+    }
+  };
+
+  const handleDocumentDownload = (fileName: string, displayName: string) => {
+    try {
+      const link = document.createElement('a');
+      link.href = `/documents/${fileName}`;
+      link.download = fileName;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast({
+        title: "Файл скачан",
+        description: `"${displayName}" готов к использованию`,
+      });
+    } catch (error) {
+      toast({
+        title: "Ошибка скачивания",
+        description: "Не удалось скачать файл. Попробуйте еще раз.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -212,17 +237,29 @@ const TaskDocumentAnalysis = () => {
             <div className="space-y-3">
               <h4 className="text-sm font-medium text-foreground">Примеры документов:</h4>
               <div className="grid grid-cols-1 gap-2">
-                <div className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/50 cursor-pointer hover:bg-muted/60 transition-colors">
+                <div 
+                  className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/50 cursor-pointer hover:bg-muted/60 transition-colors"
+                  onClick={() => handleDocumentDownload('marketing-research-competitors.pdf', 'Маркетинговое исследование о конкурентах')}
+                >
                   <FileText className="w-5 h-5 text-blue-600" />
-                  <span className="text-sm text-foreground">Маркетинговое исследование о конкурентах</span>
+                  <span className="text-sm text-foreground flex-1">Маркетинговое исследование о конкурентах</span>
+                  <Download className="w-4 h-4 text-muted-foreground" />
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/50 cursor-pointer hover:bg-muted/60 transition-colors">
+                <div 
+                  className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/50 cursor-pointer hover:bg-muted/60 transition-colors"
+                  onClick={() => handleDocumentDownload('quarterly-report.pdf', 'Отчет за квартал')}
+                >
                   <FileText className="w-5 h-5 text-green-600" />
-                  <span className="text-sm text-foreground">Отчет за квартал</span>
+                  <span className="text-sm text-foreground flex-1">Отчет за квартал</span>
+                  <Download className="w-4 h-4 text-muted-foreground" />
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/50 cursor-pointer hover:bg-muted/60 transition-colors">
+                <div 
+                  className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/50 cursor-pointer hover:bg-muted/60 transition-colors"
+                  onClick={() => handleDocumentDownload('ai-business-impact.pdf', 'Влияние нейросетей на бизнес-процессы')}
+                >
                   <FileText className="w-5 h-5 text-purple-600" />
-                  <span className="text-sm text-foreground">Влияние нейросетей на бизнес-процессы</span>
+                  <span className="text-sm text-foreground flex-1">Влияние нейросетей на бизнес-процессы</span>
+                  <Download className="w-4 h-4 text-muted-foreground" />
                 </div>
               </div>
             </div>
