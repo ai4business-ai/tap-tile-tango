@@ -41,57 +41,6 @@ const TaskDocumentAnalysis = () => {
     }
   };
 
-  if (isChatMode) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 max-w-sm mx-auto">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
-          <button 
-            onClick={() => setIsChatMode(false)}
-            className="w-8 h-8 flex items-center justify-center"
-          >
-            <ArrowLeft className="w-6 h-6 text-foreground" />
-          </button>
-          <div className="flex items-center gap-2">
-            <Bot className="w-5 h-5 text-primary" />
-            <div>
-              <h1 className="text-xl font-semibold text-foreground">Чат с тьютором</h1>
-              <p className="text-sm text-muted-foreground">Улучшаем ваш ответ</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Chat Messages */}
-        <div className="flex-1 space-y-4 mb-4 max-h-[60vh] overflow-y-auto">
-          {chatMessages.map((message, index) => (
-            <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[80%] p-3 rounded-lg ${
-                message.role === 'user' 
-                  ? 'bg-primary text-primary-foreground' 
-                  : 'bg-muted text-muted-foreground'
-              }`}>
-                <p className="text-sm">{message.content}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Message Input */}
-        <div className="flex gap-2">
-          <Input
-            value={currentMessage}
-            onChange={(e) => setCurrentMessage(e.target.value)}
-            placeholder="Введите ваш ответ..."
-            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            className="flex-1"
-          />
-          <Button onClick={handleSendMessage} size="icon">
-            <Send className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 max-w-sm mx-auto">
@@ -180,17 +129,61 @@ const TaskDocumentAnalysis = () => {
       {/* Answer Form */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-base">Ваш ответ</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            {isChatMode && <Bot className="w-5 h-5 text-primary" />}
+            {isChatMode ? 'Чат с тьютором' : 'Ваш ответ'}
+          </CardTitle>
+          {isChatMode && (
+            <button 
+              onClick={() => setIsChatMode(false)}
+              className="text-sm text-muted-foreground hover:text-foreground"
+            >
+              ← Вернуться к ответу
+            </button>
+          )}
         </CardHeader>
         <CardContent>
-          <Textarea
-            value={userAnswer}
-            onChange={(e) => setUserAnswer(e.target.value)}
-            onFocus={() => setIsAnswerFocused(true)}
-            onBlur={() => setIsAnswerFocused(false)}
-            placeholder="Опишите выбранный документ, ваш промпт для ИИ и приложите получившееся executive summary..."
-            className="min-h-[150px]"
-          />
+          {!isChatMode ? (
+            <Textarea
+              value={userAnswer}
+              onChange={(e) => setUserAnswer(e.target.value)}
+              onFocus={() => setIsAnswerFocused(true)}
+              onBlur={() => setIsAnswerFocused(false)}
+              placeholder="Опишите выбранный документ, ваш промпт для ИИ и приложите получившееся executive summary..."
+              className="min-h-[150px]"
+            />
+          ) : (
+            <div className="space-y-4">
+              {/* Chat Messages */}
+              <div className="max-h-[300px] overflow-y-auto space-y-3">
+                {chatMessages.map((message, index) => (
+                  <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-[80%] p-3 rounded-lg text-sm ${
+                      message.role === 'user' 
+                        ? 'bg-primary text-primary-foreground' 
+                        : 'bg-muted text-muted-foreground'
+                    }`}>
+                      {message.content}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Message Input */}
+              <div className="flex gap-2">
+                <Input
+                  value={currentMessage}
+                  onChange={(e) => setCurrentMessage(e.target.value)}
+                  placeholder="Введите ваш ответ..."
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                  className="flex-1"
+                />
+                <Button onClick={handleSendMessage} size="icon">
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
