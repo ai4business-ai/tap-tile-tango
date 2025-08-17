@@ -7,6 +7,38 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useChatAssistant } from '@/hooks/useChatAssistant';
 
+// Helper function to format assistant messages into paragraphs
+const formatAssistantMessage = (content: string): string[] => {
+  if (!content) return [content];
+  
+  // Split by double line breaks or sentences that seem like natural paragraph breaks
+  const paragraphs = content
+    .split(/\n\n+|\. (?=[А-ЯA-Z])/g)
+    .map(p => p.trim())
+    .filter(p => p.length > 0);
+  
+  // If no natural breaks found, split long text into smaller chunks
+  if (paragraphs.length === 1 && content.length > 200) {
+    const sentences = content.split(/\. (?=[а-яё])/gi);
+    const chunks: string[] = [];
+    let currentChunk = '';
+    
+    sentences.forEach(sentence => {
+      if (currentChunk.length + sentence.length > 150 && currentChunk) {
+        chunks.push(currentChunk.trim());
+        currentChunk = sentence;
+      } else {
+        currentChunk += (currentChunk ? '. ' : '') + sentence;
+      }
+    });
+    
+    if (currentChunk) chunks.push(currentChunk.trim());
+    return chunks.length > 1 ? chunks : paragraphs;
+  }
+  
+  return paragraphs;
+};
+
 const TaskDocumentAnalysis = () => {
   const navigate = useNavigate();
   const { sendMessage, isLoading } = useChatAssistant();
@@ -255,7 +287,17 @@ const TaskDocumentAnalysis = () => {
                          ? 'bg-primary text-primary-foreground' 
                          : 'bg-muted text-muted-foreground'
                      }`}>
-                       {message.content}
+                       {message.role === 'tutor' ? (
+                         <div className="space-y-2">
+                           {formatAssistantMessage(message.content).map((paragraph, pIndex) => (
+                             <p key={pIndex} className="leading-relaxed">
+                               {paragraph.endsWith('.') ? paragraph : paragraph + '.'}
+                             </p>
+                           ))}
+                         </div>
+                       ) : (
+                         <div className="leading-relaxed">{message.content}</div>
+                       )}
                      </div>
                    </div>
                  ))}
