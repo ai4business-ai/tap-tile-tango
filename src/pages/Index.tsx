@@ -12,6 +12,8 @@ const Index = () => {
       navigate('/webinar-records');
     } else if (cardName === 'Мой прогресс') {
       navigate('/my-progress');
+    } else if (cardName === 'Анализ данных') {
+      navigate('/tasks/data-analysis');
     } else {
       console.log(`Clicked: ${cardName}`);
     }
@@ -59,16 +61,15 @@ const Index = () => {
       </TapCard>
 
       {/* Module Card */}
-      <TapCard className="mb-4" onClick={() => handleCardClick('Модуль 3.1')}>
+      <TapCard className="mb-4" onClick={() => handleCardClick('Анализ данных')}>
         <div className="glass-card rounded-2xl p-4 shadow-xl flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-purple-accent rounded-lg flex items-center justify-center">
               <div className="w-4 h-4 bg-task-red rounded-sm transform rotate-45"></div>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Модуль 3.2
-            </p>
-              <p className="text-sm font-medium text-foreground">Когортный анализ и SQL</p>
+              <p className="text-sm text-muted-foreground">Модуль 3.2</p>
+              <p className="text-sm font-medium text-foreground">Анализ данных</p>
             </div>
           </div>
           <ChevronRight className="w-5 h-5 text-muted-foreground" />
