@@ -19,6 +19,11 @@ const TaskDocumentAnalysis = () => {
   const [showDescription, setShowDescription] = useState(true);
   const [showTask, setShowTask] = useState(true);
   const [showCriteria, setShowCriteria] = useState(true);
+  
+  // Auto-hide blocks when user starts typing
+  const shouldShowDescription = userAnswer.trim() ? showDescription : true;
+  const shouldShowTask = userAnswer.trim() ? showTask : true;
+  const shouldShowCriteria = userAnswer.trim() ? showCriteria : true;
 
   const handleSubmitTask = () => {
     if (userAnswer.trim()) {
@@ -105,7 +110,7 @@ const TaskDocumentAnalysis = () => {
             )}
           </CardTitle>
         </CardHeader>
-        {(!userAnswer.trim() || showDescription) && (
+        {shouldShowDescription && (
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground leading-relaxed">
               Представьте, что ваш руководитель переслал вам годовой отчет конкурента (или отраслевое исследование) со словами: "Посмотри, пожалуйста, что там важного. Мне нужны ключевые выводы к завтрашнему совещанию". У вас есть 30 минут и документ на 20+ страниц.
@@ -144,7 +149,7 @@ const TaskDocumentAnalysis = () => {
             )}
           </CardTitle>
         </CardHeader>
-        {(!userAnswer.trim() || showTask) && (
+        {shouldShowTask && (
           <CardContent className="space-y-3">
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-foreground">Шаги выполнения:</h4>
@@ -191,7 +196,7 @@ const TaskDocumentAnalysis = () => {
             )}
           </CardTitle>
         </CardHeader>
-        {(!userAnswer.trim() || showCriteria) && (
+        {shouldShowCriteria && (
           <CardContent className="space-y-2">
             <ul className="space-y-1 text-sm text-muted-foreground">
               <li>• Executive summary читается за 2-3 минуты</li>
@@ -236,7 +241,7 @@ const TaskDocumentAnalysis = () => {
           ) : (
             <div className="space-y-4">
               {/* Chat Messages */}
-              <div className="max-h-[300px] overflow-y-auto space-y-3">
+              <div className="max-h-[400px] overflow-y-auto space-y-3">
                 {chatMessages.map((message, index) => (
                   <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[80%] p-3 rounded-lg text-sm ${
