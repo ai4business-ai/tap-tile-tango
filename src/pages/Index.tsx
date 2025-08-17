@@ -37,7 +37,7 @@ const Index = () => {
             </div>
           </div>
         </div>
-        <Bell className="w-6 h-6 text-muted-foreground" />
+        
       </div>
 
       {/* Tasks Section */}
