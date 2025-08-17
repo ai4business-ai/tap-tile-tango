@@ -52,7 +52,7 @@ const Index = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Модуль 3.2</p>
-              <p className="text-sm font-medium text-foreground">Анализ данных</p>
+              <p className="text-sm font-medium text-foreground">Анализ Word/PDF документа</p>
             </div>
           </div>
           <ChevronRight className="w-5 h-5 text-muted-foreground" />
