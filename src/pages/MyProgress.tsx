@@ -8,91 +8,122 @@ const MyProgress = () => {
   const skills = [
     {
       title: "Исследования и обработка информации",
-      progress: 2,
-      targetLevel: 2,
-      availableNext: false,
-      scorePercent: 67,
-      date: "20 апреля в 14:00",
-      isNew: false
+      progress: 3,
+      targetLevel: 3,
+      basicCompleted: true,
+      proSelected: true,
+      aiNativeSelected: true,
+      scorePercent: 100,
+      isGoalAchieved: false
     },
     {
       title: "Создание контента",
-      progress: 2,
-      targetLevel: 2,
-      availableNext: false,
-      scorePercent: 67,
-      date: "20 апреля в 14:00",
-      isNew: false
+      progress: 1,
+      targetLevel: 3,
+      basicCompleted: true,
+      proSelected: true,
+      aiNativeSelected: true,
+      scorePercent: 33,
+      isGoalAchieved: false
     },
     {
       title: "Анализ и визуализация данных",
-      progress: 2,
+      progress: 1,
       targetLevel: 3,
-      availableNext: true,
-      scorePercent: 67,
-      date: "20 апреля в 14:00",
-      isNew: true
+      basicCompleted: true,
+      proSelected: true,
+      aiNativeSelected: true,
+      scorePercent: 33,
+      isGoalAchieved: false
     },
     {
       title: "Автоматизация процессов",
-      progress: 2,
-      targetLevel: 2,
-      availableNext: false,
-      scorePercent: 67,
-      date: "20 апреля в 14:00",
-      isNew: false
+      progress: 1,
+      targetLevel: 1,
+      basicCompleted: true,
+      proSelected: false,
+      aiNativeSelected: false,
+      scorePercent: 33,
+      isGoalAchieved: true
     },
     {
       title: "Решение задач и принятие решений",
-      progress: 2,
-      targetLevel: 2,
-      availableNext: false,
-      scorePercent: 67,
-      date: "20 апреля в 14:00",
-      isNew: false
+      progress: 1,
+      targetLevel: 1,
+      basicCompleted: true,
+      proSelected: false,
+      aiNativeSelected: false,
+      scorePercent: 33,
+      isGoalAchieved: true
     },
     {
       title: "Коммуникация и работа в команде",
-      progress: 2,
-      targetLevel: 2,
-      availableNext: false,
-      scorePercent: 67,
-      date: "20 апреля в 14:00",
-      isNew: false
+      progress: 1,
+      targetLevel: 1,
+      basicCompleted: true,
+      proSelected: false,
+      aiNativeSelected: false,
+      scorePercent: 33,
+      isGoalAchieved: true
     },
     {
       title: "Продуктивность",
-      progress: 2,
-      targetLevel: 2,
-      availableNext: false,
-      scorePercent: 67,
-      date: "20 апреля в 14:00",
-      isNew: false
+      progress: 1,
+      targetLevel: 3,
+      basicCompleted: true,
+      proSelected: true,
+      aiNativeSelected: true,
+      scorePercent: 33,
+      isGoalAchieved: false
     },
     {
       title: "Управление знаниями",
-      progress: 2,
-      targetLevel: 2,
-      availableNext: false,
-      scorePercent: 67,
-      date: "20 апреля в 14:00",
-      isNew: false
+      progress: 1,
+      targetLevel: 1,
+      basicCompleted: true,
+      proSelected: false,
+      aiNativeSelected: false,
+      scorePercent: 33,
+      isGoalAchieved: true
     }
   ];
 
-  const renderProgressBars = (progress: number, availableNext: boolean = false, total: number = 3) => {
+  const renderProgressBars = (skill: any) => {
+    const levels = ['Basic', 'Pro', 'AI-Native'];
+    
     return (
-      <div className="flex gap-1">
-        {[...Array(total)].map((_, index) => (
-          <div 
-            key={index}
-            className={`h-2 flex-1 rounded-full ${
-              index < progress ? 'bg-green-500' : 
-              index === progress && availableNext ? 'bg-yellow-400' : 
-              'bg-gray-200'
-            }`}
-          />
-        ))}
+      <div className="space-y-2">
+        <div className="flex gap-1">
+          {levels.map((level, index) => {
+            let bgColor = 'bg-gray-200';
+            
+            // Completed levels
+            if (index < skill.progress) {
+              bgColor = 'bg-green-500';
+            }
+            // Selected but not completed levels  
+            else if (
+              (index === 1 && skill.proSelected && !skill.basicCompleted) ||
+              (index === 2 && skill.aiNativeSelected && skill.progress < 3) ||
+              (index === 1 && skill.proSelected && skill.progress === 1) ||
+              (index === 2 && skill.aiNativeSelected && skill.progress <= 2)
+            ) {
+              bgColor = 'bg-yellow-400';
+            }
+            
+            return (
+              <div 
+                key={index}
+                className={`h-2 flex-1 rounded-full ${bgColor}`}
+              />
+            );
+          })}
+        </div>
+        <div className="flex justify-between text-xs text-muted-foreground">
+          {levels.map((level, index) => (
+            <span key={index} className="text-[10px]">{level}</span>
+          ))}
+        </div>
       </div>
     );
   };
@@ -293,28 +324,27 @@ const MyProgress = () => {
       <div className="space-y-3">
         {skills.map((skill, index) => (
           <div key={index} className="bg-card/60 backdrop-blur-lg rounded-2xl p-4 border border-white/10 shadow-lg">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                {skill.isNew && (
-                  <span className="bg-purple-accent text-white text-xs px-2 py-1 rounded-full">
-                    Новое
+                {skill.isGoalAchieved && (
+                  <span className="bg-gradient-to-r from-green-400 to-emerald-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                    🎯 Цель достигнута
                   </span>
                 )}
                 <h3 className="text-base font-semibold text-foreground">{skill.title}</h3>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-purple-accent rounded-full flex items-center justify-center text-white font-bold text-xs">
+                {skill.isGoalAchieved && (
+                  <div className="text-green-500 text-lg">🏆</div>
+                )}
+                <div className={`w-10 h-10 ${skill.isGoalAchieved ? 'bg-gradient-to-r from-green-400 to-emerald-500' : 'bg-purple-accent'} rounded-full flex items-center justify-center text-white font-bold text-xs`}>
                   {skill.scorePercent}%
                 </div>
               </div>
             </div>
             
             <div className="mb-2">
-              {renderProgressBars(skill.progress, skill.availableNext)}
-            </div>
-            
-            <div className="flex items-center justify-end text-xs text-muted-foreground">
-              <span>{skill.date}</span>
+              {renderProgressBars(skill)}
             </div>
           </div>
         ))}
