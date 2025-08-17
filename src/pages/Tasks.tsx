@@ -6,7 +6,7 @@ const Tasks = () => {
   const navigate = useNavigate();
 
   const handleTaskClick = (taskTitle: string) => {
-    if (taskTitle === "Анализ данных") {
+    if (taskTitle === "Анализ и визуализация данных") {
       navigate('/tasks/data-analysis');
     } else {
       console.log(`Clicked: ${taskTitle}`);
@@ -15,39 +15,65 @@ const Tasks = () => {
 
   const tasks = [
     {
-      title: "Работа с презентациями",
-      count: "3 задания",
-      badge: "+1",
-      isLocked: true
+      title: "Исследования и обработка информации",
+      count: "12 заданий",
+      badge: "+3",
+      isLocked: false,
+      levels: ["Basic", "Pro", "AI-Native"]
     },
     {
-      title: "Анализ данных", 
-      count: "3 задания",
-      badge: "+1",
-      isLocked: false
+      title: "Создание контента", 
+      count: "11 заданий",
+      badge: "+3",
+      isLocked: true,
+      levels: ["Basic", "Pro", "AI-Native"]
     },
     {
-      title: "Поиск и исследования",
-      count: "3 задания", 
-      badge: "+1",
-      isLocked: true
+      title: "Анализ и визуализация данных",
+      count: "11 заданий", 
+      badge: "+3",
+      isLocked: false,
+      levels: ["Basic", "Pro", "AI-Native"]
     },
     {
-      title: "Работа с текстом",
-      count: "3 задания",
-      badge: "+1", 
-      isLocked: true
+      title: "Автоматизация процессов",
+      count: "11 заданий",
+      badge: "+3", 
+      isLocked: true,
+      levels: ["Basic", "Pro", "AI-Native"]
     },
     {
-      title: "Креатив и визуализация",
-      count: "3 задания",
-      badge: "+1",
-      isLocked: true
+      title: "Решение задач и принятие решений",
+      count: "11 заданий",
+      badge: "+3",
+      isLocked: true,
+      levels: ["Basic", "Pro", "AI-Native"]
+    },
+    {
+      title: "Коммуникация и работа в команде",
+      count: "11 заданий",
+      badge: "+3",
+      isLocked: true,
+      levels: ["Basic", "Pro", "AI-Native"]
+    },
+    {
+      title: "Продуктивность",
+      count: "11 заданий",
+      badge: "+3",
+      isLocked: true,
+      levels: ["Basic", "Pro", "AI-Native"]
+    },
+    {
+      title: "Управление знаниями",
+      count: "11 заданий",
+      badge: "+3",
+      isLocked: true,
+      levels: ["Basic", "Pro", "AI-Native"]
     }
   ];
 
   return (
-    <div className="min-h-screen bg-background p-4 max-w-sm mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 max-w-sm mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
@@ -59,7 +85,7 @@ const Tasks = () => {
           </button>
           <div>
             <h1 className="text-xl font-semibold text-foreground">Мои задания</h1>
-            <p className="text-sm text-muted-foreground">15 заданий</p>
+            <p className="text-sm text-muted-foreground">89 заданий</p>
           </div>
         </div>
         <div className="bg-white rounded-lg p-2">
@@ -76,7 +102,7 @@ const Tasks = () => {
         {tasks.map((task, index) => (
           <div 
             key={index} 
-            className="bg-card rounded-xl p-4 pb-16 shadow-sm relative cursor-pointer hover:bg-muted/20 transition-colors"
+            className="bg-card/60 backdrop-blur-lg rounded-2xl p-4 pb-16 shadow-lg relative cursor-pointer hover:bg-card/80 transition-colors border border-white/10"
             onClick={() => handleTaskClick(task.title)}
           >
             <div>
