@@ -7,52 +7,74 @@ const MyProgress = () => {
 
   const skills = [
     {
-      title: "Анализ данных",
-      progress: 2, // из 3
-      targetLevel: 3, // целевой уровень
-      availableNext: true, // третье задание доступно
+      title: "Исследования и обработка информации",
+      progress: 2,
+      targetLevel: 2,
+      availableNext: false,
       scorePercent: 67,
-      target: 1.5,
+      date: "20 апреля в 14:00",
+      isNew: false
+    },
+    {
+      title: "Создание контента",
+      progress: 2,
+      targetLevel: 2,
+      availableNext: false,
+      scorePercent: 67,
+      date: "20 апреля в 14:00",
+      isNew: false
+    },
+    {
+      title: "Анализ и визуализация данных",
+      progress: 2,
+      targetLevel: 3,
+      availableNext: true,
+      scorePercent: 67,
       date: "20 апреля в 14:00",
       isNew: true
     },
     {
-      title: "Работа с презентациями",
-      progress: 2, // из 3  
-      targetLevel: 2, // целевой уровень
+      title: "Автоматизация процессов",
+      progress: 2,
+      targetLevel: 2,
       availableNext: false,
       scorePercent: 67,
-      target: 0.5,
       date: "20 апреля в 14:00",
       isNew: false
     },
     {
-      title: "Поиск и исследования",
-      progress: 2, // из 3
-      targetLevel: 2, // целевой уровень
+      title: "Решение задач и принятие решений",
+      progress: 2,
+      targetLevel: 2,
       availableNext: false,
       scorePercent: 67,
-      target: 1.0,
       date: "20 апреля в 14:00",
       isNew: false
     },
     {
-      title: "Работа с текстом",
-      progress: 2, // из 3
-      targetLevel: 2, // целевой уровень
+      title: "Коммуникация и работа в команде",
+      progress: 2,
+      targetLevel: 2,
       availableNext: false,
       scorePercent: 67,
-      target: 1.5,
       date: "20 апреля в 14:00",
       isNew: false
     },
     {
-      title: "Креатив и визуализация",
-      progress: 2, // из 3
-      targetLevel: 2, // целевой уровень
+      title: "Продуктивность",
+      progress: 2,
+      targetLevel: 2,
       availableNext: false,
       scorePercent: 67,
-      target: 3.0,
+      date: "20 апреля в 14:00",
+      isNew: false
+    },
+    {
+      title: "Управление знаниями",
+      progress: 2,
+      targetLevel: 2,
+      availableNext: false,
+      scorePercent: 67,
       date: "20 апреля в 14:00",
       isNew: false
     }
@@ -76,7 +98,7 @@ const MyProgress = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 max-w-sm mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 max-w-sm mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
@@ -88,7 +110,7 @@ const MyProgress = () => {
           </button>
           <div>
             <h1 className="text-xl font-semibold text-foreground">Мой прогресс</h1>
-            <p className="text-sm text-muted-foreground">5 навыков</p>
+            <p className="text-sm text-muted-foreground">8 навыков</p>
           </div>
         </div>
         <button className="w-8 h-8 flex items-center justify-center">
@@ -97,7 +119,7 @@ const MyProgress = () => {
       </div>
 
       {/* Skills Diagram - Radar Chart */}
-      <div className="relative bg-card rounded-xl p-6 mb-6 h-80 overflow-hidden">
+      <div className="relative bg-card/60 backdrop-blur-lg rounded-2xl p-6 mb-6 h-80 overflow-hidden border border-white/10 shadow-lg">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative w-60 h-60">
             <svg className="absolute inset-0 w-full h-full" viewBox="0 0 240 240">
@@ -113,11 +135,11 @@ const MyProgress = () => {
                 </linearGradient>
               </defs>
               
-              {/* Pentagon grid lines (3 levels) */}
+              {/* Octagon grid lines (3 levels) */}
               {[1, 2, 3].map((level) => {
                 const scale = level / 3;
                 const points = skills.map((_, index) => {
-                  const angle = (index * 72 - 90) * Math.PI / 180;
+                  const angle = (index * 45 - 90) * Math.PI / 180;
                   const radius = 80 * scale;
                   const x = 120 + Math.cos(angle) * radius;
                   const y = 120 + Math.sin(angle) * radius;
@@ -138,7 +160,7 @@ const MyProgress = () => {
               
               {/* Axis lines */}
               {skills.map((_, index) => {
-                const angle = (index * 72 - 90) * Math.PI / 180;
+                const angle = (index * 45 - 90) * Math.PI / 180;
                 const x = 120 + Math.cos(angle) * 80;
                 const y = 120 + Math.sin(angle) * 80;
                 
@@ -159,7 +181,7 @@ const MyProgress = () => {
               {/* Target level polygon (dashed) */}
               <polygon
                 points={skills.map((skill, index) => {
-                  const angle = (index * 72 - 90) * Math.PI / 180;
+                  const angle = (index * 45 - 90) * Math.PI / 180;
                   const radius = (skill.targetLevel / 3) * 80;
                   const x = 120 + Math.cos(angle) * radius;
                   const y = 120 + Math.sin(angle) * radius;
@@ -175,7 +197,7 @@ const MyProgress = () => {
               {/* Current progress polygon */}
               <polygon
                 points={skills.map((skill, index) => {
-                  const angle = (index * 72 - 90) * Math.PI / 180;
+                  const angle = (index * 45 - 90) * Math.PI / 180;
                   const radius = (skill.progress / 3) * 80;
                   const x = 120 + Math.cos(angle) * radius;
                   const y = 120 + Math.sin(angle) * radius;
@@ -188,7 +210,7 @@ const MyProgress = () => {
               
               {/* Progress points */}
               {skills.map((skill, index) => {
-                const angle = (index * 72 - 90) * Math.PI / 180;
+                const angle = (index * 45 - 90) * Math.PI / 180;
                 const radius = (skill.progress / 3) * 80;
                 const x = 120 + Math.cos(angle) * radius;
                 const y = 120 + Math.sin(angle) * radius;
@@ -208,7 +230,7 @@ const MyProgress = () => {
               
               {/* Target points */}
               {skills.map((skill, index) => {
-                const angle = (index * 72 - 90) * Math.PI / 180;
+                const angle = (index * 45 - 90) * Math.PI / 180;
                 const radius = (skill.targetLevel / 3) * 80;
                 const x = 120 + Math.cos(angle) * radius;
                 const y = 120 + Math.sin(angle) * radius;
@@ -236,9 +258,9 @@ const MyProgress = () => {
               />
             </svg>
             
-            {/* Skills labels positioned around pentagon */}
+            {/* Skills labels positioned around octagon */}
             {skills.map((skill, index) => {
-              const angle = (index * 72 - 90) * Math.PI / 180;
+              const angle = (index * 45 - 90) * Math.PI / 180;
               const labelRadius = 105;
               const x = 120 + Math.cos(angle) * labelRadius;
               const y = 120 + Math.sin(angle) * labelRadius;
@@ -270,7 +292,7 @@ const MyProgress = () => {
       {/* Skills List */}
       <div className="space-y-3">
         {skills.map((skill, index) => (
-          <div key={index} className="bg-card rounded-xl p-4">
+          <div key={index} className="bg-card/60 backdrop-blur-lg rounded-2xl p-4 border border-white/10 shadow-lg">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 {skill.isNew && (
