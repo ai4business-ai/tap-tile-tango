@@ -1,13 +1,97 @@
 import React, { useState } from 'react';
-import { ArrowLeft, FileText, Target, CheckCircle } from 'lucide-react';
+import { ArrowLeft, FileText, Target, CheckCircle, Send, Bot } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 const TaskDocumentAnalysis = () => {
   const navigate = useNavigate();
   const [userAnswer, setUserAnswer] = useState('');
+  const [isAnswerFocused, setIsAnswerFocused] = useState(false);
+  const [isChatMode, setIsChatMode] = useState(false);
+  const [chatMessages, setChatMessages] = useState<{role: 'user' | 'tutor', content: string}[]>([]);
+  const [currentMessage, setCurrentMessage] = useState('');
+
+  const handleSubmitTask = () => {
+    if (userAnswer.trim()) {
+      setIsChatMode(true);
+      setChatMessages([
+        {
+          role: 'tutor',
+          content: 'Отлично! Я изучил ваш ответ. Давайте вместе доработаем его до высокого уровня выполнения. Что именно вы выбрали в качестве документа для анализа?'
+        }
+      ]);
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (currentMessage.trim()) {
+      const newMessages = [
+        ...chatMessages,
+        { role: 'user' as const, content: currentMessage },
+        { 
+          role: 'tutor' as const, 
+          content: 'Хорошо! Теперь расскажите подробнее о промпте, который вы использовали для анализа документа. Какие ключевые моменты вы включили в инструкцию для ИИ?' 
+        }
+      ];
+      setChatMessages(newMessages);
+      setCurrentMessage('');
+    }
+  };
+
+  if (isChatMode) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 max-w-sm mx-auto">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6">
+          <button 
+            onClick={() => setIsChatMode(false)}
+            className="w-8 h-8 flex items-center justify-center"
+          >
+            <ArrowLeft className="w-6 h-6 text-foreground" />
+          </button>
+          <div className="flex items-center gap-2">
+            <Bot className="w-5 h-5 text-primary" />
+            <div>
+              <h1 className="text-xl font-semibold text-foreground">Чат с тьютором</h1>
+              <p className="text-sm text-muted-foreground">Улучшаем ваш ответ</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Chat Messages */}
+        <div className="flex-1 space-y-4 mb-4 max-h-[60vh] overflow-y-auto">
+          {chatMessages.map((message, index) => (
+            <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[80%] p-3 rounded-lg ${
+                message.role === 'user' 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-muted text-muted-foreground'
+              }`}>
+                <p className="text-sm">{message.content}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Message Input */}
+        <div className="flex gap-2">
+          <Input
+            value={currentMessage}
+            onChange={(e) => setCurrentMessage(e.target.value)}
+            placeholder="Введите ваш ответ..."
+            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+            className="flex-1"
+          />
+          <Button onClick={handleSendMessage} size="icon">
+            <Send className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 max-w-sm mx-auto">
@@ -33,11 +117,13 @@ const TaskDocumentAnalysis = () => {
             Описание задания
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Представьте, что ваш руководитель переслал вам годовой отчет конкурента (или отраслевое исследование) со словами: "Посмотри, пожалуйста, что там важного. Мне нужны ключевые выводы к завтрашнему совещанию". У вас есть 30 минут и документ на 20+ страниц.
-          </p>
-        </CardContent>
+        {!isAnswerFocused && (
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Представьте, что ваш руководитель переслал вам годовой отчет конкурента (или отраслевое исследование) со словами: "Посмотри, пожалуйста, что там важного. Мне нужны ключевые выводы к завтрашнему совещанию". У вас есть 30 минут и документ на 20+ страниц.
+            </p>
+          </CardContent>
+        )}
       </Card>
 
       {/* Task Requirements */}
@@ -48,19 +134,21 @@ const TaskDocumentAnalysis = () => {
             Ваша задача
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium text-foreground">Шаги выполнения:</h4>
-            <ul className="space-y-1 text-sm text-muted-foreground">
-              <li>• Выберите любой публичный документ объемом 20+ страниц</li>
-              <li>• Создайте промпт для ИИ для анализа документа</li>
-              <li>• Результат должен содержать ключевые цифры и факты</li>
-              <li>• Основные выводы и тренды</li>
-              <li>• Практические рекомендации</li>
-              <li>• Все это на 1 странице A4</li>
-            </ul>
-          </div>
-        </CardContent>
+        {!isAnswerFocused && (
+          <CardContent className="space-y-3">
+            <div className="space-y-2">
+              <h4 className="text-sm font-medium text-foreground">Шаги выполнения:</h4>
+              <ul className="space-y-1 text-sm text-muted-foreground">
+                <li>• Выберите любой публичный документ объемом 20+ страниц</li>
+                <li>• Создайте промпт для ИИ для анализа документа</li>
+                <li>• Результат должен содержать ключевые цифры и факты</li>
+                <li>• Основные выводы и тренды</li>
+                <li>• Практические рекомендации</li>
+                <li>• Все это на 1 странице A4</li>
+              </ul>
+            </div>
+          </CardContent>
+        )}
       </Card>
 
       {/* Success Criteria */}
@@ -71,20 +159,22 @@ const TaskDocumentAnalysis = () => {
             Критерии успешного выполнения
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
-          <ul className="space-y-1 text-sm text-muted-foreground">
-            <li>• Executive summary читается за 2-3 минуты</li>
-            <li>• Содержит 5-7 ключевых инсайтов</li>
-            <li>• Структурирован по принципу "от важного к деталям"</li>
-            <li>• Понятен человеку, не читавшему оригинал</li>
-          </ul>
-          <div className="mt-3 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
-            <p className="text-sm text-foreground font-medium">💡 Подсказка:</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Подумайте, как научить ИИ отличать важное от второстепенного именно для вашей бизнес-задачи.
-            </p>
-          </div>
-        </CardContent>
+        {!isAnswerFocused && (
+          <CardContent className="space-y-2">
+            <ul className="space-y-1 text-sm text-muted-foreground">
+              <li>• Executive summary читается за 2-3 минуты</li>
+              <li>• Содержит 5-7 ключевых инсайтов</li>
+              <li>• Структурирован по принципу "от важного к деталям"</li>
+              <li>• Понятен человеку, не читавшему оригинал</li>
+            </ul>
+            <div className="mt-3 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+              <p className="text-sm text-foreground font-medium">💡 Подсказка:</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Подумайте, как научить ИИ отличать важное от второстепенного именно для вашей бизнес-задачи.
+              </p>
+            </div>
+          </CardContent>
+        )}
       </Card>
 
       {/* Answer Form */}
@@ -96,6 +186,8 @@ const TaskDocumentAnalysis = () => {
           <Textarea
             value={userAnswer}
             onChange={(e) => setUserAnswer(e.target.value)}
+            onFocus={() => setIsAnswerFocused(true)}
+            onBlur={() => setIsAnswerFocused(false)}
             placeholder="Опишите выбранный документ, ваш промпт для ИИ и приложите получившееся executive summary..."
             className="min-h-[150px]"
           />
@@ -104,7 +196,11 @@ const TaskDocumentAnalysis = () => {
 
       {/* Submit Button */}
       <div className="mb-4">
-        <Button className="w-full py-4 text-base font-medium">
+        <Button 
+          onClick={handleSubmitTask}
+          disabled={!userAnswer.trim()}
+          className="w-full py-4 text-base font-medium"
+        >
           <CheckCircle className="w-4 h-4 mr-2" />
           Сдать задание
         </Button>
