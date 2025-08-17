@@ -20,7 +20,7 @@ const Index = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="glass rounded-2xl p-3">
+          <div className="glass rounded-2xl p-3 bg-white/90 backdrop-blur-lg">
             <img 
               src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
               alt="Билайн логотип" 
