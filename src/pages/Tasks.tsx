@@ -5,8 +5,14 @@ import { useNavigate } from 'react-router-dom';
 const Tasks = () => {
   const navigate = useNavigate();
 
-  const handleTaskClick = (taskTitle: string) => {
-    if (taskTitle === "Анализ и визуализация данных") {
+  const handleTaskClick = (taskTitle: string, isLocked: boolean) => {
+    if (isLocked) {
+      return; // Do nothing if locked
+    }
+    
+    if (taskTitle === "Исследования и обработка информации") {
+      navigate('/skill-assignments/research');
+    } else if (taskTitle === "Анализ и визуализация данных") {
       navigate('/tasks/data-analysis');
     } else {
       console.log(`Clicked: ${taskTitle}`);
@@ -32,7 +38,7 @@ const Tasks = () => {
       title: "Анализ и визуализация данных",
       count: "11 заданий", 
       badge: "+3",
-      isLocked: false,
+      isLocked: true,
       levels: ["Basic", "Pro", "AI-Native"]
     },
     {
@@ -102,8 +108,10 @@ const Tasks = () => {
         {tasks.map((task, index) => (
           <div 
             key={index} 
-            className="bg-card/60 backdrop-blur-lg rounded-2xl p-4 pb-16 shadow-lg relative cursor-pointer hover:bg-card/80 transition-colors border border-white/10"
-            onClick={() => handleTaskClick(task.title)}
+            className={`bg-card/60 backdrop-blur-lg rounded-2xl p-4 pb-16 shadow-lg relative transition-colors border border-white/10 ${
+              task.isLocked ? 'opacity-60' : 'cursor-pointer hover:bg-card/80'
+            }`}
+            onClick={() => handleTaskClick(task.title, task.isLocked)}
           >
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-1">{task.title}</h3>
