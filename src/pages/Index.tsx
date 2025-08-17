@@ -13,7 +13,7 @@ const Index = () => {
     } else if (cardName === 'Мой прогресс') {
       navigate('/my-progress');
     } else if (cardName === 'Анализ данных') {
-      navigate('/tasks/data-analysis');
+      navigate('/task/document-analysis');
     } else {
       console.log(`Clicked: ${cardName}`);
     }
