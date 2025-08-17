@@ -12,18 +12,23 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Chat assistant function called');
     const { message, taskContext, threadId } = await req.json()
+    console.log('Request data:', { message: message?.substring(0, 100), taskContext: taskContext?.substring(0, 100), threadId });
     
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY')
     if (!openaiApiKey) {
+      console.error('OpenAI API key not found in environment');
       throw new Error('OpenAI API key not found')
     }
 
     const assistantId = 'asst_ZhTLp1H206L1PxLZU4VIflHZ'
+    console.log('Using assistant ID:', assistantId);
     
     // Create or use existing thread
     let currentThreadId = threadId
     if (!currentThreadId) {
+      console.log('Creating new thread');
       const threadResponse = await fetch('https://api.openai.com/v1/threads', {
         method: 'POST',
         headers: {
@@ -33,8 +38,18 @@ serve(async (req) => {
         },
         body: JSON.stringify({})
       })
+      
+      if (!threadResponse.ok) {
+        const errorText = await threadResponse.text();
+        console.error('Failed to create thread:', errorText);
+        throw new Error(`Failed to create thread: ${threadResponse.status}`);
+      }
+      
       const threadData = await threadResponse.json()
       currentThreadId = threadData.id
+      console.log('Created thread ID:', currentThreadId);
+    } else {
+      console.log('Using existing thread ID:', currentThreadId);
     }
 
     // Add message to thread
@@ -69,8 +84,14 @@ serve(async (req) => {
 
     // Poll for completion
     let run = runData
-    while (run.status === 'queued' || run.status === 'in_progress') {
+    let pollCount = 0
+    const maxPolls = 30 // 30 seconds timeout
+    
+    while ((run.status === 'queued' || run.status === 'in_progress') && pollCount < maxPolls) {
       await new Promise(resolve => setTimeout(resolve, 1000))
+      pollCount++
+      
+      console.log(`Polling run status (attempt ${pollCount}):`, run.status);
       
       const pollResponse = await fetch(`https://api.openai.com/v1/threads/${currentThreadId}/runs/${runId}`, {
         headers: {
@@ -78,10 +99,24 @@ serve(async (req) => {
           'OpenAI-Beta': 'assistants=v2'
         }
       })
+      
+      if (!pollResponse.ok) {
+        console.error('Failed to poll run status:', await pollResponse.text());
+        throw new Error(`Failed to poll run status: ${pollResponse.status}`);
+      }
+      
       run = await pollResponse.json()
+    }
+    
+    console.log('Final run status:', run.status);
+    
+    if (run.status !== 'completed') {
+      console.error('Run did not complete successfully. Status:', run.status);
+      throw new Error(`Assistant run failed with status: ${run.status}`);
     }
 
     // Get messages
+    console.log('Fetching messages from thread');
     const messagesResponse = await fetch(`https://api.openai.com/v1/threads/${currentThreadId}/messages`, {
       headers: {
         'Authorization': `Bearer ${openaiApiKey}`,
@@ -89,8 +124,22 @@ serve(async (req) => {
       }
     })
 
+    if (!messagesResponse.ok) {
+      console.error('Failed to fetch messages:', await messagesResponse.text());
+      throw new Error(`Failed to fetch messages: ${messagesResponse.status}`);
+    }
+
     const messagesData = await messagesResponse.json()
+    console.log('Retrieved messages count:', messagesData.data?.length || 0);
+    
     const assistantMessage = messagesData.data[0]?.content[0]?.text?.value
+    
+    if (!assistantMessage) {
+      console.error('No assistant message found in response');
+      throw new Error('No response received from assistant');
+    }
+    
+    console.log('Assistant response length:', assistantMessage.length);
 
     return new Response(
       JSON.stringify({ 

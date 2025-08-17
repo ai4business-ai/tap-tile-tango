@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Message {
   role: 'user' | 'tutor';
@@ -12,33 +13,36 @@ export const useChatAssistant = () => {
   const sendMessage = async (message: string, taskContext: string): Promise<string> => {
     setIsLoading(true);
     try {
-      const response = await fetch('/functions/v1/chat-assistant', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      console.log('Sending message to chat assistant:', { message, taskContext, threadId });
+      
+      const { data, error } = await supabase.functions.invoke('chat-assistant', {
+        body: {
           message,
           taskContext,
           threadId
-        }),
+        }
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to send message');
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(`Failed to send message: ${error.message}`);
       }
 
-      const data = await response.json();
+      if (!data) {
+        throw new Error('No response data received');
+      }
+
+      console.log('Received response from chat assistant:', data);
       
       // Store thread ID for conversation continuity
       if (data.threadId && !threadId) {
         setThreadId(data.threadId);
       }
       
-      return data.message;
+      return data.message || 'No response received';
     } catch (error) {
       console.error('Error sending message:', error);
-      throw error;
+      throw new Error(error instanceof Error ? error.message : 'Failed to send message');
     } finally {
       setIsLoading(false);
     }
