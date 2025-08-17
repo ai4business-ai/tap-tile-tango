@@ -97,18 +97,31 @@ const MyProgress = () => {
           {levels.map((level, index) => {
             let bgColor = 'bg-gray-200';
             
-            // Completed levels
-            if (index < skill.progress) {
-              bgColor = 'bg-green-500';
+            // Special logic for "Исследования и обработка информации"
+            if (skill.title === "Исследования и обработка информации") {
+              if (index === 0) {
+                bgColor = 'bg-green-500'; // Basic completed
+              } else if (index === 1 || index === 2) {
+                bgColor = 'bg-yellow-400'; // Pro and AI-Native selected but not completed
+              }
             }
-            // Selected but not completed levels  
-            else if (
-              (index === 1 && skill.proSelected && !skill.basicCompleted) ||
-              (index === 2 && skill.aiNativeSelected && skill.progress < 3) ||
-              (index === 1 && skill.proSelected && skill.progress === 1) ||
-              (index === 2 && skill.aiNativeSelected && skill.progress <= 2)
-            ) {
-              bgColor = 'bg-yellow-400';
+            // Special logic for "Создание контента", "Анализ и визуализация данных", "Продуктивность"
+            else if (["Создание контента", "Анализ и визуализация данных", "Продуктивность"].includes(skill.title)) {
+              if (index === 0) {
+                bgColor = 'bg-green-500'; // Basic completed
+              } else if (index === 1) {
+                bgColor = 'bg-yellow-400'; // Pro selected but not completed
+              } else if (index === 2) {
+                bgColor = 'bg-gray-200'; // AI-Native not selected (white/gray)
+              }
+            }
+            // For other skills (goal achieved) - only Basic completed
+            else {
+              if (index === 0) {
+                bgColor = 'bg-green-500'; // Basic completed
+              } else {
+                bgColor = 'bg-gray-200'; // Other levels not selected
+              }
             }
             
             return (
@@ -324,19 +337,18 @@ const MyProgress = () => {
       <div className="space-y-3">
         {skills.map((skill, index) => (
           <div key={index} className="bg-card/60 backdrop-blur-lg rounded-2xl p-4 border border-white/10 shadow-lg">
+            {skill.isGoalAchieved && (
+              <div className="mb-2">
+                <span className="bg-gradient-to-r from-green-400 to-emerald-500 text-white text-xs px-2 py-1 rounded-full">
+                  Цель достигнута
+                </span>
+              </div>
+            )}
             <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                {skill.isGoalAchieved && (
-                  <span className="bg-gradient-to-r from-green-400 to-emerald-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                    🎯 Цель достигнута
-                  </span>
-                )}
+              <div>
                 <h3 className="text-base font-semibold text-foreground">{skill.title}</h3>
               </div>
               <div className="flex items-center gap-2">
-                {skill.isGoalAchieved && (
-                  <div className="text-green-500 text-lg">🏆</div>
-                )}
                 <div className={`w-10 h-10 ${skill.isGoalAchieved ? 'bg-gradient-to-r from-green-400 to-emerald-500' : 'bg-purple-accent'} rounded-full flex items-center justify-center text-white font-bold text-xs`}>
                   {skill.scorePercent}%
                 </div>
