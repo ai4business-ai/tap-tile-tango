@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { useChatAssistant } from '@/hooks/useChatAssistant';
 
 const TaskDocumentAnalysis = () => {
   const navigate = useNavigate();
+  const { sendMessage, isLoading } = useChatAssistant();
   const [userAnswer, setUserAnswer] = useState('');
   const [isAnswerFocused, setIsAnswerFocused] = useState(false);
   const [isChatMode, setIsChatMode] = useState(false);
@@ -26,18 +28,29 @@ const TaskDocumentAnalysis = () => {
     }
   };
 
-  const handleSendMessage = () => {
-    if (currentMessage.trim()) {
-      const newMessages = [
-        ...chatMessages,
-        { role: 'user' as const, content: currentMessage },
-        { 
-          role: 'tutor' as const, 
-          content: 'Хорошо! Теперь расскажите подробнее о промпте, который вы использовали для анализа документа. Какие ключевые моменты вы включили в инструкцию для ИИ?' 
-        }
-      ];
-      setChatMessages(newMessages);
+  const handleSendMessage = async () => {
+    if (currentMessage.trim() && !isLoading) {
+      const userMessage = currentMessage;
       setCurrentMessage('');
+      
+      // Add user message immediately
+      setChatMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+      
+      try {
+        const tutorResponse = await sendMessage(
+          userMessage, 
+          'Анализ объемного документа: создание executive summary для документа 20+ страниц'
+        );
+        
+        // Add tutor response
+        setChatMessages(prev => [...prev, { role: 'tutor', content: tutorResponse }]);
+      } catch (error) {
+        // Add error message
+        setChatMessages(prev => [...prev, { 
+          role: 'tutor', 
+          content: 'Извините, произошла ошибка. Попробуйте еще раз.' 
+        }]);
+      }
     }
   };
 
