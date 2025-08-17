@@ -7,6 +7,7 @@ interface Message {
 
 export const useChatAssistant = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [threadId, setThreadId] = useState<string | null>(null);
 
   const sendMessage = async (message: string, taskContext: string): Promise<string> => {
     setIsLoading(true);
@@ -18,7 +19,8 @@ export const useChatAssistant = () => {
         },
         body: JSON.stringify({
           message,
-          taskContext
+          taskContext,
+          threadId
         }),
       });
 
@@ -27,6 +29,12 @@ export const useChatAssistant = () => {
       }
 
       const data = await response.json();
+      
+      // Store thread ID for conversation continuity
+      if (data.threadId && !threadId) {
+        setThreadId(data.threadId);
+      }
+      
       return data.message;
     } catch (error) {
       console.error('Error sending message:', error);
