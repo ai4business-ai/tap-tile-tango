@@ -235,14 +235,6 @@ const TaskDocumentAnalysis = () => {
             {isChatMode && <Bot className="w-5 h-5 text-primary" />}
             {isChatMode ? 'Чат с тьютором' : 'Ваш ответ'}
           </CardTitle>
-          {isChatMode && (
-            <button 
-              onClick={() => setIsChatMode(false)}
-              className="text-sm text-muted-foreground hover:text-foreground"
-            >
-              ← Вернуться к ответу
-            </button>
-          )}
         </CardHeader>
         <CardContent>
           {!isChatMode ? (
