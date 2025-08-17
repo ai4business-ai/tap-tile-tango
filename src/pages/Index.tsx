@@ -42,23 +42,6 @@ const Index = () => {
         
       </div>
 
-      {/* Tasks Section */}
-      <TapCard className="mb-4" onClick={() => handleCardClick('Ваши задания')}>
-        <div className="glass-card rounded-2xl p-4 shadow-xl">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold text-foreground">Ваши задания</h2>
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
-          </div>
-          <div className="flex gap-1">
-            {[...Array(5)].map((_, index) => (
-              <div 
-                key={index}
-                className={`h-2 flex-1 rounded-full ${index === 0 ? 'bg-progress-blue' : 'bg-gray-light'}`}
-              />
-            ))}
-          </div>
-        </div>
-      </TapCard>
 
       {/* Module Card */}
       <TapCard className="mb-4" onClick={() => handleCardClick('Анализ данных')}>
@@ -92,7 +75,24 @@ const Index = () => {
       <TapCard className="mb-4" onClick={() => handleCardClick('Мои задания')}>
         <div className="bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl p-4 text-white relative overflow-hidden shadow-xl">
           <h3 className="text-lg font-semibold mb-1">Мои задания</h3>
-          <p className="text-sm opacity-90 mb-4">89 заданий</p>
+          <p className="text-sm opacity-90 mb-3">89 заданий</p>
+          
+          {/* Progress bar */}
+          <div className="mb-4">
+            <div className="flex justify-between text-xs opacity-80 mb-1">
+              <span>Общий прогресс</span>
+              <span>18/89</span>
+            </div>
+            <div className="flex gap-1">
+              {[...Array(5)].map((_, index) => (
+                <div 
+                  key={index}
+                  className={`h-2 flex-1 rounded-full ${index === 0 ? 'bg-white' : 'bg-white/30'}`}
+                />
+              ))}
+            </div>
+          </div>
+          
           <button className="bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-lg">
             +24 задания
           </button>
