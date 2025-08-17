@@ -10,24 +10,33 @@ const SkillAssignments = () => {
     "research": {
       title: "Исследования и обработка информации",
       levels: {
-        "Basic": [
-          "Эффективный поиск информации в Google",
-          "Работа с научными базами данных",
-          "Оценка достоверности источников",
-          "Структурирование найденной информации"
-        ],
-        "Pro": [
-          "Автоматизация сбора данных",
-          "Использование ИИ для анализа текстов",
-          "Создание систем мониторинга информации",
-          "Работа с большими массивами данных"
-        ],
-        "AI-Native": [
-          "Создание ИИ-агентов для исследований",
-          "Интеграция множественных источников данных",
-          "Предиктивная аналитика трендов",
-          "Автоматическое создание отчетов исследований"
-        ]
+        "Basic": {
+          status: "completed", // completed, planned, locked
+          assignments: [
+            "Эффективный поиск информации в Google",
+            "Работа с научными базами данных",
+            "Оценка достоверности источников",
+            "Структурирование найденной информации"
+          ]
+        },
+        "Pro": {
+          status: "planned",
+          assignments: [
+            "Автоматизация сбора данных",
+            "Использование ИИ для анализа текстов",
+            "Создание систем мониторинга информации",
+            "Работа с большими массивами данных"
+          ]
+        },
+        "AI-Native": {
+          status: "planned",
+          assignments: [
+            "Создание ИИ-агентов для исследований",
+            "Интеграция множественных источников данных",
+            "Предиктивная аналитика трендов",
+            "Автоматическое создание отчетов исследований"
+          ]
+        }
       }
     }
   };
@@ -56,30 +65,66 @@ const SkillAssignments = () => {
 
       {/* Levels */}
       <div className="space-y-6">
-        {Object.entries(currentSkill.levels).map(([level, assignments]) => (
-          <div key={level} className="bg-card/60 backdrop-blur-lg rounded-2xl p-4 border border-white/10 shadow-lg">
-            <div className="mb-4">
-              <h2 className="text-lg font-semibold text-foreground mb-2">{level}</h2>
-              <div className="h-px bg-gradient-to-r from-primary/50 to-transparent"></div>
-            </div>
-            
-            <div className="space-y-3">
-              {assignments.map((assignment, index) => (
-                <div 
-                  key={index}
-                  className="bg-background/30 rounded-xl p-3 border border-white/5 hover:bg-background/50 transition-colors cursor-pointer"
-                >
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-foreground">{assignment}</p>
-                    <div className="w-6 h-6 rounded-full border-2 border-primary/30 flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-primary/50"></div>
+        {Object.entries(currentSkill.levels).map(([level, levelData]) => {
+          const getStatusColor = (status: string) => {
+            switch (status) {
+              case 'completed': return 'bg-green-500/10 border-green-500/20';
+              case 'planned': return 'bg-yellow-400/10 border-yellow-400/20';
+              default: return 'bg-card/60 border-white/10';
+            }
+          };
+
+          const getStatusBadge = (status: string) => {
+            switch (status) {
+              case 'completed': return { text: 'Выполнено', color: 'bg-green-500' };
+              case 'planned': return { text: 'Запланировано', color: 'bg-yellow-400' };
+              default: return { text: 'Заблокировано', color: 'bg-gray-500' };
+            }
+          };
+
+          const statusBadge = getStatusBadge(levelData.status);
+
+          return (
+            <div key={level} className={`backdrop-blur-lg rounded-2xl p-4 shadow-lg ${getStatusColor(levelData.status)}`}>
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-lg font-semibold text-foreground">{level}</h2>
+                  <span className={`${statusBadge.color} text-white text-xs px-2 py-1 rounded-full`}>
+                    {statusBadge.text}
+                  </span>
+                </div>
+                <div className="h-px bg-gradient-to-r from-primary/50 to-transparent"></div>
+              </div>
+              
+              <div className="space-y-3">
+                {levelData.assignments.map((assignment, index) => (
+                  <div 
+                    key={index}
+                    className="bg-background/30 rounded-xl p-3 border border-white/5 hover:bg-background/50 transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-foreground">{assignment}</p>
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                        levelData.status === 'completed' 
+                          ? 'border-green-500 bg-green-500' 
+                          : levelData.status === 'planned'
+                          ? 'border-yellow-400/50'
+                          : 'border-gray-400/30'
+                      }`}>
+                        {levelData.status === 'completed' && (
+                          <div className="w-2 h-2 rounded-full bg-white"></div>
+                        )}
+                        {levelData.status === 'planned' && (
+                          <div className="w-2 h-2 rounded-full bg-yellow-400/50"></div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
