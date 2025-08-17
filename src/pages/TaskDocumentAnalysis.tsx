@@ -25,15 +25,29 @@ const TaskDocumentAnalysis = () => {
   const shouldShowTask = userAnswer.trim() ? showTask : true;
   const shouldShowCriteria = userAnswer.trim() ? showCriteria : true;
 
-  const handleSubmitTask = () => {
-    if (userAnswer.trim()) {
+  const handleSubmitTask = async () => {
+    if (userAnswer.trim() && !isLoading) {
+      // Add user's answer as first message
+      const initialMessage = userAnswer;
+      setChatMessages([{ role: 'user', content: initialMessage }]);
       setIsChatMode(true);
-      setChatMessages([
-        {
-          role: 'tutor',
-          content: 'Отлично! Я изучил ваш ответ. Давайте вместе доработаем его до высокого уровня выполнения. Что именно вы выбрали в качестве документа для анализа?'
-        }
-      ]);
+      
+      try {
+        // Send the user's answer to the AI tutor
+        const tutorResponse = await sendMessage(
+          initialMessage,
+          'Анализ объемного документа: создание executive summary для документа 20+ страниц'
+        );
+        
+        // Add tutor response
+        setChatMessages(prev => [...prev, { role: 'tutor', content: tutorResponse }]);
+      } catch (error) {
+        // Add error message
+        setChatMessages(prev => [...prev, { 
+          role: 'tutor', 
+          content: 'Извините, произошла ошибка при отправке вашего ответа. Попробуйте еще раз.' 
+        }]);
+      }
     }
   };
 
@@ -239,21 +253,33 @@ const TaskDocumentAnalysis = () => {
               className="min-h-[150px]"
             />
           ) : (
-            <div className="space-y-4">
-              {/* Chat Messages */}
-              <div className="max-h-[400px] overflow-y-auto space-y-3">
-                {chatMessages.map((message, index) => (
-                  <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] p-3 rounded-lg text-sm ${
-                      message.role === 'user' 
-                        ? 'bg-primary text-primary-foreground' 
-                        : 'bg-muted text-muted-foreground'
-                    }`}>
-                      {message.content}
-                    </div>
-                  </div>
-                ))}
-              </div>
+             <div className="space-y-4">
+               {/* Chat Messages */}
+               <div className="max-h-[400px] overflow-y-auto space-y-3">
+                 {chatMessages.map((message, index) => (
+                   <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                     <div className={`max-w-[80%] p-3 rounded-lg text-sm ${
+                       message.role === 'user' 
+                         ? 'bg-primary text-primary-foreground' 
+                         : 'bg-muted text-muted-foreground'
+                     }`}>
+                       {message.content}
+                     </div>
+                   </div>
+                 ))}
+                 {isLoading && (
+                   <div className="flex justify-start">
+                     <div className="bg-muted p-3 rounded-lg text-sm text-muted-foreground">
+                       <div className="flex items-center gap-2">
+                         <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                         <div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-75"></div>
+                         <div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-150"></div>
+                         <span className="ml-2">Тьютор печатает...</span>
+                       </div>
+                     </div>
+                   </div>
+                 )}
+               </div>
               
               {/* Message Input */}
               <div className="flex gap-2">
@@ -277,11 +303,11 @@ const TaskDocumentAnalysis = () => {
       <div className="mb-4">
         <Button 
           onClick={handleSubmitTask}
-          disabled={!userAnswer.trim()}
+          disabled={!userAnswer.trim() || isLoading}
           className="w-full py-4 text-base font-medium"
         >
           <CheckCircle className="w-4 h-4 mr-2" />
-          Сдать задание
+          {isLoading ? 'Отправляем...' : 'Сдать задание'}
         </Button>
       </div>
     </div>
