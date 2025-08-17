@@ -103,7 +103,7 @@ const SkillAssignments = () => {
                   >
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-medium text-foreground">{assignment}</p>
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                         levelData.status === 'completed' 
                           ? 'border-green-500 bg-green-500' 
                           : levelData.status === 'planned'
