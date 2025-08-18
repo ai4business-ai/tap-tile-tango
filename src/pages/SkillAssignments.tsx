@@ -131,6 +131,12 @@ const SkillAssignments = () => {
                 </div>
               </div>
               
+              {/* Tasks Header */}
+              <div className="mb-3">
+                <h3 className="text-sm font-medium text-foreground mb-2">Задания для выполнения</h3>
+                <div className="h-px bg-gradient-to-r from-muted-foreground/30 to-transparent"></div>
+              </div>
+              
                <div className="space-y-3">
                 {levelData.assignments.map((assignment, index) => {
                   const handleAssignmentClick = () => {
