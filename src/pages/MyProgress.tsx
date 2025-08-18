@@ -12,12 +12,12 @@ const MyProgress = () => {
   const [skills, setSkills] = useState([
     {
       title: "Исследования и обработка информации",
-      progress: 3,
-      targetLevel: 3,
+      progress: 1, // Current level: Basic
+      targetLevel: 3, // Target level: AI-Native
       basicCompleted: true,
       proSelected: true,
       aiNativeSelected: true,
-      scorePercent: 100,
+      scorePercent: 33, // 1/3 = 33%
       isGoalAchieved: false
     },
     {
