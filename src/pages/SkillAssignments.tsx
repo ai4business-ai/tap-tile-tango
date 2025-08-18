@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Play, BookOpen, FileText } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const SkillAssignments = () => {
@@ -93,6 +93,42 @@ const SkillAssignments = () => {
                   </span>
                 </div>
                 <div className="h-px bg-gradient-to-r from-primary/50 to-transparent"></div>
+              </div>
+              
+              {/* Educational Content */}
+              <div className="space-y-3 mb-4">
+                {/* Video Cover */}
+                <div className="relative bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl p-4 border border-primary/20 hover-scale cursor-pointer">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                      <Play className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-sm font-medium text-foreground">Обучающее видео</h3>
+                      <p className="text-xs text-muted-foreground">Основы работы на {level} уровне</p>
+                    </div>
+                    <div className="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">
+                      8 мин
+                    </div>
+                  </div>
+                </div>
+
+                {/* Additional Materials Card */}
+                <div className="bg-gradient-to-br from-muted/40 to-muted/20 rounded-xl p-4 border border-border/50 hover-scale cursor-pointer">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
+                      <BookOpen className="w-6 h-6 text-accent-foreground" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-sm font-medium text-foreground">Дополнительные материалы</h3>
+                      <p className="text-xs text-muted-foreground">Статьи, примеры и шаблоны</p>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground">5</span>
+                    </div>
+                  </div>
+                </div>
               </div>
               
                <div className="space-y-3">
