@@ -23,21 +23,21 @@ const MyProgress = () => {
     {
       title: "Создание контента",
       progress: 1,
-      targetLevel: 3,
+      targetLevel: 2, // Changed from 3 to 2 (Pro level)
       basicCompleted: true,
       proSelected: true,
-      aiNativeSelected: true,
-      scorePercent: 33,
+      aiNativeSelected: false, // Changed from true to false
+      scorePercent: 50, // Changed from 33 to 50 (1/2 = 50%)
       isGoalAchieved: false
     },
     {
       title: "Анализ и визуализация данных",
       progress: 1,
-      targetLevel: 3,
+      targetLevel: 2, // Changed from 3 to 2 (Pro level)
       basicCompleted: true,
       proSelected: true,
-      aiNativeSelected: true,
-      scorePercent: 33,
+      aiNativeSelected: false, // Changed from true to false
+      scorePercent: 50, // Changed from 33 to 50 (1/2 = 50%)
       isGoalAchieved: false
     },
     {
@@ -73,11 +73,11 @@ const MyProgress = () => {
     {
       title: "Продуктивность",
       progress: 1,
-      targetLevel: 3,
+      targetLevel: 2, // Changed from 3 to 2 (Pro level)
       basicCompleted: true,
       proSelected: true,
-      aiNativeSelected: true,
-      scorePercent: 33,
+      aiNativeSelected: false, // Changed from true to false
+      scorePercent: 50, // Changed from 33 to 50 (1/2 = 50%)
       isGoalAchieved: false
     },
     {
