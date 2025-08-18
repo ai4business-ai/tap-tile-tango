@@ -113,18 +113,32 @@ const TaskDocumentAnalysis = () => {
 
   const handleDocumentDownload = (fileName: string, displayName: string) => {
     try {
-      const link = document.createElement('a');
-      link.href = `/documents/${fileName}`;
-      link.download = fileName;
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // Map file names to Google Drive direct download links
+      const driveLinks: { [key: string]: string } = {
+        'marketing-research-competitors.pdf': 'https://drive.google.com/uc?export=download&id=1PyvyJwRVBNlv2T1d5hgqXyHDAx2MNbdZ',
+        'quarterly-report.pdf': 'https://drive.google.com/uc?export=download&id=1MO4gJRt5gi_lafWSx6o1fEn4lmdjyxCG',
+        'ai-business-impact.pdf': 'https://drive.google.com/uc?export=download&id=15YDeG8-3o0iy-8UhP4RdBWWPl0Yk27go'
+      };
+
+      const downloadUrl = driveLinks[fileName];
       
-      toast({
-        title: "Файл скачан",
-        description: `"${displayName}" готов к использованию`,
-      });
+      if (downloadUrl) {
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = fileName;
+        link.target = '_blank';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        toast({
+          title: "Файл скачивается",
+          description: `"${displayName}" начинает загрузку`,
+        });
+      } else {
+        throw new Error('File not found');
+      }
     } catch (error) {
       toast({
         title: "Ошибка скачивания",
