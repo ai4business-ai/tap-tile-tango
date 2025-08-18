@@ -13,8 +13,8 @@ serve(async (req) => {
 
   try {
     console.log('Chat assistant function called');
-    const { message, taskContext, threadId } = await req.json()
-    console.log('Request data:', { message: message?.substring(0, 100), taskContext: taskContext?.substring(0, 100), threadId });
+    const { message, taskContext, threadId, assistantId } = await req.json()
+    console.log('Request data:', { message: message?.substring(0, 100), taskContext: taskContext?.substring(0, 100), threadId, assistantId });
     
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY')
     if (!openaiApiKey) {
@@ -22,8 +22,9 @@ serve(async (req) => {
       throw new Error('OpenAI API key not found')
     }
 
-    const assistantId = 'asst_ZhTLp1H206L1PxLZU4VIflHZ'
-    console.log('Using assistant ID:', assistantId);
+    // Use provided assistant ID or fallback to default
+    const currentAssistantId = assistantId || 'asst_ZhTLp1H206L1PxLZU4VIflHZ'
+    console.log('Using assistant ID:', currentAssistantId);
     
     // Create or use existing thread
     let currentThreadId = threadId
@@ -75,7 +76,7 @@ serve(async (req) => {
         'OpenAI-Beta': 'assistants=v2'
       },
       body: JSON.stringify({
-        assistant_id: assistantId
+        assistant_id: currentAssistantId
       })
     })
 

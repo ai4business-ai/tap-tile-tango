@@ -67,10 +67,11 @@ const TaskDeepResearch = () => {
       setIsChatMode(true);
       
       try {
-        // Send the user's answer to the AI tutor
+        // Send the user's answer to the AI tutor with specific assistant ID
         const tutorResponse = await sendMessage(
           initialMessage,
-          'Освоение Deep Research: формулирование исследовательских вопросов и использование режима глубокого поиска'
+          'Освоение Deep Research: формулирование исследовательских вопросов и использование режима глубокого поиска',
+          'asst_7vzfk2VjBlBiww4QWz6PrC5C'
         );
         
         // Add tutor response
@@ -96,7 +97,8 @@ const TaskDeepResearch = () => {
       try {
         const tutorResponse = await sendMessage(
           userMessage, 
-          'Освоение Deep Research: формулирование исследовательских вопросов и использование режима глубокого поиска'
+          'Освоение Deep Research: формулирование исследовательских вопросов и использование режима глубокого поиска',
+          'asst_7vzfk2VjBlBiww4QWz6PrC5C'
         );
         
         // Add tutor response

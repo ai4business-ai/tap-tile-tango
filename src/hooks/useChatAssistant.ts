@@ -10,16 +10,17 @@ export const useChatAssistant = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [threadId, setThreadId] = useState<string | null>(null);
 
-  const sendMessage = async (message: string, taskContext: string): Promise<string> => {
+  const sendMessage = async (message: string, taskContext: string, assistantId?: string): Promise<string> => {
     setIsLoading(true);
     try {
-      console.log('Sending message to chat assistant:', { message, taskContext, threadId });
+      console.log('Sending message to chat assistant:', { message, taskContext, threadId, assistantId });
       
       const { data, error } = await supabase.functions.invoke('chat-assistant', {
         body: {
           message,
           taskContext,
-          threadId
+          threadId,
+          assistantId
         }
       });
 
