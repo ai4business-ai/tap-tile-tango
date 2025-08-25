@@ -20,7 +20,7 @@ const WebinarRecords = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 max-w-sm mx-auto">
+    <div className="min-h-screen p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">

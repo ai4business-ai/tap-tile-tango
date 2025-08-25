@@ -13,7 +13,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen p-4 max-w-sm mx-auto flex flex-col items-center justify-center">
+    <div className="min-h-screen p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto flex flex-col items-center justify-center">
       <div className="glass-card rounded-2xl p-8 text-center shadow-xl">
         <h1 className="text-4xl font-bold text-foreground mb-4">404</h1>
         <h2 className="text-xl font-semibold text-foreground mb-2">Страница не найдена</h2>
