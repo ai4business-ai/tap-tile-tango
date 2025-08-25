@@ -281,12 +281,18 @@ const TaskDeepResearch = () => {
         </CardHeader>
         <CardContent>
           {!isChatMode ? (
-            <Textarea
-              value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
-              placeholder="Опишите выбранную тему, приложите все три версии промптов и результаты исследования..."
-              className="min-h-[150px]"
-            />
+            <div>
+              <Textarea
+                value={userAnswer}
+                onChange={(e) => setUserAnswer(e.target.value)}
+                placeholder="Опишите выбранную тему, приложите все три версии промптов и результаты исследования..."
+                className="min-h-[150px]"
+                maxLength={4000}
+              />
+              <div className="text-sm text-muted-foreground mt-1">
+                {userAnswer.length}/4000 символов
+              </div>
+            </div>
           ) : (
              <div className="space-y-4">
                {/* Chat Messages */}

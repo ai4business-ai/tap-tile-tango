@@ -114,7 +114,11 @@ const TaskSpecializedGPT = () => {
             onChange={(e) => setUserAnswer(e.target.value)}
             placeholder="Опишите тип документов вашего отдела, приложите полную инструкцию для GPT и примеры результатов его работы..."
             className="min-h-[150px]"
+            maxLength={4000}
           />
+          <div className="text-sm text-muted-foreground mt-1">
+            {userAnswer.length}/4000 символов
+          </div>
         </CardContent>
       </Card>
 

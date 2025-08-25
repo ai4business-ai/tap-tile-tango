@@ -24,7 +24,11 @@ export const AnswerForm = ({ value, onChange, disabled }: AnswerFormProps) => {
           placeholder="Вставьте ваш SQL-запрос и описание анализа..."
           className="min-h-[120px]"
           disabled={disabled}
+          maxLength={4000}
         />
+        <div className="text-sm text-muted-foreground mt-1">
+          {value.length}/4000 символов
+        </div>
       </div>
     </div>
   );
