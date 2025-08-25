@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, TestTube, Copy, AlertTriangle } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Loader2, TestTube, Copy, Info, Send } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -14,37 +15,63 @@ interface PromptTesterProps {
   placeholder?: string;
 }
 
+interface ChatMessage {
+  type: 'user' | 'ai';
+  content: string;
+  timestamp: number;
+}
+
 export const PromptTester = ({ taskContext, taskId, documentContent, placeholder }: PromptTesterProps) => {
   const [prompt, setPrompt] = useState('');
-  const [response, setResponse] = useState('');
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [attemptsRemaining, setAttemptsRemaining] = useState(5);
   const [error, setError] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Load attempts from localStorage on component mount
+  // Load attempts and chat history from localStorage on component mount
   useEffect(() => {
     const storageKey = `prompt_attempts_${taskId}`;
-    const stored = localStorage.getItem(storageKey);
+    const chatKey = `prompt_chat_${taskId}`;
     
+    // Load attempts
+    const stored = localStorage.getItem(storageKey);
     if (stored) {
       try {
         const data = JSON.parse(stored);
         const now = Date.now();
         
-        // Check if 24 hours have passed
         if (now - data.timestamp > 24 * 60 * 60 * 1000) {
-          // Reset attempts
           localStorage.removeItem(storageKey);
+          localStorage.removeItem(chatKey);
           setAttemptsRemaining(5);
+          setMessages([]);
         } else {
           setAttemptsRemaining(Math.max(0, 5 - data.count));
         }
       } catch {
         localStorage.removeItem(storageKey);
+        localStorage.removeItem(chatKey);
         setAttemptsRemaining(5);
       }
     }
+
+    // Load chat history
+    const chatHistory = localStorage.getItem(chatKey);
+    if (chatHistory) {
+      try {
+        const history = JSON.parse(chatHistory);
+        setMessages(history);
+      } catch {
+        localStorage.removeItem(chatKey);
+      }
+    }
   }, [taskId]);
+
+  // Auto scroll to bottom when new messages are added
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const updateAttempts = (remaining: number) => {
     const storageKey = `prompt_attempts_${taskId}`;
@@ -56,7 +83,12 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
     setAttemptsRemaining(remaining);
   };
 
-  const handleTestPrompt = async () => {
+  const saveChatHistory = (newMessages: ChatMessage[]) => {
+    const chatKey = `prompt_chat_${taskId}`;
+    localStorage.setItem(chatKey, JSON.stringify(newMessages));
+  };
+
+  const handleSendPrompt = async () => {
     if (!prompt.trim()) {
       setError('Введите промпт для тестирования');
       return;
@@ -67,14 +99,24 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
       return;
     }
 
+    const userMessage: ChatMessage = {
+      type: 'user',
+      content: prompt.trim(),
+      timestamp: Date.now()
+    };
+
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+    saveChatHistory(newMessages);
+
     setIsLoading(true);
     setError('');
-    setResponse('');
+    setPrompt('');
 
     try {
       const { data, error: supabaseError } = await supabase.functions.invoke('prompt-tester', {
         body: {
-          prompt,
+          prompt: userMessage.content,
           taskContext,
           taskId,
           documentContent: documentContent || undefined
@@ -91,7 +133,15 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
           updateAttempts(data.remaining);
         }
       } else {
-        setResponse(data.response);
+        const aiMessage: ChatMessage = {
+          type: 'ai',
+          content: data.response,
+          timestamp: Date.now()
+        };
+        
+        const updatedMessages = [...newMessages, aiMessage];
+        setMessages(updatedMessages);
+        saveChatHistory(updatedMessages);
         updateAttempts(data.remaining);
         toast.success('Промпт протестирован успешно');
       }
@@ -103,9 +153,21 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
     }
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success('Скопировано в буфер обмена');
+  const copyLastPrompt = () => {
+    const lastUserMessage = messages.filter(m => m.type === 'user').pop();
+    if (lastUserMessage) {
+      navigator.clipboard.writeText(lastUserMessage.content);
+      toast.success('Промпт скопирован в буфер обмена');
+    } else {
+      toast.error('Нет промптов для копирования');
+    }
+  };
+
+  const clearChat = () => {
+    setMessages([]);
+    const chatKey = `prompt_chat_${taskId}`;
+    localStorage.removeItem(chatKey);
+    toast.success('История чата очищена');
   };
 
   const getPlaceholderText = () => {
@@ -126,55 +188,76 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">
             <TestTube className="h-5 w-5 text-primary" />
-            🧪 Тестирование промпта
+            Тестирование промпта
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="sm" className="p-1 h-6 w-6">
+                  <Info className="h-4 w-4 text-muted-foreground" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <div className="space-y-2">
+                  <h4 className="font-medium">О тестировании промптов</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Это окно предназначено только для тестирования промптов в рамках данного задания. 
+                    У вас есть 5 попыток в день.
+                    {documentContent && ' Выбранный документ автоматически передается в контексте.'}
+                  </p>
+                </div>
+              </PopoverContent>
+            </Popover>
           </CardTitle>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
               Попыток: {attemptsRemaining}/5
             </span>
+            {messages.length > 0 && (
+              <Button variant="ghost" size="sm" onClick={clearChat}>
+                Очистить
+              </Button>
+            )}
           </div>
         </div>
       </CardHeader>
       
       <CardContent className="space-y-4">
-        <Alert>
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            Это окно предназначено только для тестирования промптов в рамках данного задания. 
-            У вас есть 5 попыток в день.
-            {documentContent && ' Выбранный документ автоматически передается в контексте.'}
-          </AlertDescription>
-        </Alert>
-
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Ваш промпт:</label>
-          <Textarea
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder={getPlaceholderText()}
-            className="min-h-[100px]"
-            maxLength={4000}
-            disabled={isLoading || attemptsRemaining <= 0}
-          />
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>{prompt.length}/4000 символов</span>
+        {/* Chat Messages */}
+        {messages.length > 0 && (
+          <div className="max-h-96 overflow-y-auto space-y-4 p-4 border rounded-lg bg-muted/30">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`max-w-[80%] p-3 rounded-lg text-sm ${
+                    message.type === 'user'
+                      ? 'bg-primary text-primary-foreground ml-auto'
+                      : 'bg-background border shadow-sm'
+                  }`}
+                >
+                  <div className="whitespace-pre-wrap">{message.content}</div>
+                  <div className={`text-xs mt-1 opacity-70 ${
+                    message.type === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                  }`}>
+                    {new Date(message.timestamp).toLocaleTimeString()}
+                  </div>
+                </div>
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-background border shadow-sm p-3 rounded-lg">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    ИИ печатает...
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
-        </div>
-
-        <Button
-          onClick={handleTestPrompt}
-          disabled={isLoading || !prompt.trim() || attemptsRemaining <= 0}
-          className="w-full"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Тестирование...
-            </>
-          ) : (
-            'Протестировать промпт'
-          )}
-        </Button>
+        )}
 
         {error && (
           <Alert variant="destructive">
@@ -182,25 +265,62 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
           </Alert>
         )}
 
-        {response && (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium">Ответ ИИ:</label>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => copyToClipboard(response)}
-              >
-                <Copy className="h-4 w-4 mr-1" />
-                Копировать
-              </Button>
-            </div>
-            <div className="bg-muted p-4 rounded-lg border">
-              <div className="text-sm whitespace-pre-wrap">{response}</div>
-            </div>
+        {/* Input Area */}
+        <div className="space-y-3">
+          <Textarea
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder={getPlaceholderText()}
+            className="min-h-[100px]"
+            maxLength={4000}
+            disabled={isLoading || attemptsRemaining <= 0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && e.ctrlKey) {
+                e.preventDefault();
+                handleSendPrompt();
+              }
+            }}
+          />
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-muted-foreground">
+              {prompt.length}/4000 символов • Ctrl+Enter для отправки
+            </span>
           </div>
-        )}
+        </div>
 
+        {/* Action Buttons */}
+        <div className="flex gap-2">
+          <Button
+            onClick={handleSendPrompt}
+            disabled={isLoading || !prompt.trim() || attemptsRemaining <= 0}
+            className="flex-1"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Отправка...
+              </>
+            ) : (
+              <>
+                <Send className="mr-2 h-4 w-4" />
+                Отправить
+              </>
+            )}
+          </Button>
+          
+          {messages.some(m => m.type === 'user') && (
+            <Button
+              variant="outline"
+              onClick={copyLastPrompt}
+              disabled={isLoading}
+            >
+              <Copy className="mr-2 h-4 w-4" />
+              Копировать промпт
+            </Button>
+          )}
+        </div>
+
+        {/* Attempt Warnings */}
         {attemptsRemaining <= 1 && attemptsRemaining > 0 && (
           <Alert variant="destructive">
             <AlertDescription>
