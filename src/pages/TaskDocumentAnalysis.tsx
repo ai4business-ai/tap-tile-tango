@@ -178,13 +178,41 @@ const TaskDocumentAnalysis = () => {
 
   const handleDocumentDownload = async (documentId: string, displayName: string) => {
     try {
-      // Find the document to get its file_path
       const selectedDoc = documents.find(doc => doc.id === documentId);
       if (!selectedDoc) {
         throw new Error('Document not found');
       }
 
-      // Get public URL from Supabase Storage
+      console.log('Starting download', { documentId, file_path: selectedDoc.file_path });
+
+      // 1) Надёжный путь: скачать файл через Supabase Storage (аутентифицированный запрос)
+      const { data, error } = await supabase.storage
+        .from('documents')
+        .download(selectedDoc.file_path);
+
+      if (!error && data) {
+        const blobUrl = URL.createObjectURL(data);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        // используем читаемое имя файла
+        link.download = `${displayName}.pdf`;
+        link.target = '_blank';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+
+        toast({
+          title: 'Файл скачивается',
+          description: `"${displayName}" начинает загрузку`,
+        });
+        return;
+      }
+
+      console.warn('Supabase download failed, trying publicUrl fallback', error);
+
+      // 2) Публичная ссылка из бакета, если объект действительно загружен в Storage
       const { data: urlData } = supabase.storage
         .from('documents')
         .getPublicUrl(selectedDoc.file_path);
@@ -192,26 +220,53 @@ const TaskDocumentAnalysis = () => {
       if (urlData?.publicUrl) {
         const link = document.createElement('a');
         link.href = urlData.publicUrl;
-        link.download = selectedDoc.file_path;
+        link.download = `${displayName}.pdf`;
         link.target = '_blank';
         link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
+
         toast({
-          title: "Файл скачивается",
-          description: `"${displayName}" начинает загрузку`,
+          title: 'Файл скачивается',
+          description: `"${displayName}" начинает загрузку (public URL)`,
         });
-      } else {
-        throw new Error('Could not get download URL');
+        return;
       }
+
+      // 3) Локальный fallback на статические файлы из /public/documents
+      const deriveLocalFileName = (path: string) => {
+        let name = path.split('/').pop() || path;
+        const parts = name.split('.');
+        // отбрасываем числовые префиксы вида 1.1.2.
+        let idx = 0;
+        while (idx < parts.length - 1 && /^\d+$/.test(parts[idx])) idx++;
+        return parts.slice(idx).join('.');
+      };
+
+      const fallbackName = deriveLocalFileName(selectedDoc.file_path);
+      const localUrl = `/documents/${fallbackName}`;
+      console.warn('Falling back to local public file', { localUrl, fallbackName });
+
+      const link = document.createElement('a');
+      link.href = localUrl;
+      link.download = fallbackName;
+      link.target = '_blank';
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast({
+        title: 'Файл скачивается',
+        description: `"${displayName}" открыт по локальной ссылке`,
+      });
     } catch (error) {
       console.error('Download error:', error);
       toast({
-        title: "Ошибка скачивания",
-        description: "Не удалось скачать файл. Попробуйте еще раз.",
-        variant: "destructive",
+        title: 'Ошибка скачивания',
+        description: 'Не удалось скачать файл. Попробуйте еще раз.',
+        variant: 'destructive',
       });
     }
   };
