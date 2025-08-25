@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, FileText, Target, CheckCircle, Send, Bot, ChevronDown, ChevronUp, Download } from 'lucide-react';
+import { ArrowLeft, FileText, Target, CheckCircle, Send, Bot, ChevronDown, ChevronUp, Download, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -48,6 +48,32 @@ const TaskDocumentAnalysis = () => {
   const [isChatMode, setIsChatMode] = useState(false);
   const [chatMessages, setChatMessages] = useState<{role: 'user' | 'tutor', content: string}[]>([]);
   const [currentMessage, setCurrentMessage] = useState('');
+  const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
+
+  // Document options
+  const documents = [
+    {
+      id: 'marketing-research-competitors.pdf',
+      title: 'Маркетинговое исследование о конкурентах',
+      color: 'text-progress-blue',
+      bgColor: 'bg-secondary/50 border-border',
+      selectedBg: 'bg-secondary border-progress-blue'
+    },
+    {
+      id: 'quarterly-report.pdf', 
+      title: 'Отчет за квартал',
+      color: 'text-green-accent',
+      bgColor: 'bg-secondary/50 border-border',
+      selectedBg: 'bg-secondary border-green-accent'
+    },
+    {
+      id: 'ai-business-impact.pdf',
+      title: 'Влияние нейросетей на бизнес-процессы',
+      color: 'text-purple-accent', 
+      bgColor: 'bg-secondary/50 border-border',
+      selectedBg: 'bg-secondary border-purple-accent'
+    }
+  ];
   
   // States for controlling block visibility
   const [showDescription, setShowDescription] = useState(true);
@@ -60,23 +86,30 @@ const TaskDocumentAnalysis = () => {
   const shouldShowCriteria = userAnswer.trim() ? showCriteria : true;
 
   const handleSubmitTask = async () => {
+    if (!selectedDocument) {
+      toast({
+        title: "Выберите документ",
+        description: "Сначала выберите один из предложенных документов для анализа",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (userAnswer.trim() && !isLoading) {
-      // Add user's answer as first message
-      const initialMessage = userAnswer;
-      setChatMessages([{ role: 'user', content: initialMessage }]);
+      const selectedDoc = documents.find(doc => doc.id === selectedDocument);
+      const contextualMessage = `Выбранный документ: "${selectedDoc?.title}"\n\n${userAnswer}`;
+      
+      setChatMessages([{ role: 'user', content: contextualMessage }]);
       setIsChatMode(true);
       
       try {
-        // Send the user's answer to the AI tutor
         const tutorResponse = await sendMessage(
-          initialMessage,
+          contextualMessage,
           'Анализ объемного документа: создание executive summary для документа 20+ страниц'
         );
         
-        // Add tutor response
         setChatMessages(prev => [...prev, { role: 'tutor', content: tutorResponse }]);
       } catch (error) {
-        // Add error message
         setChatMessages(prev => [...prev, { 
           role: 'tutor', 
           content: 'Извините, произошла ошибка при отправке вашего ответа. Попробуйте еще раз.' 
@@ -108,6 +141,14 @@ const TaskDocumentAnalysis = () => {
           content: 'Извините, произошла ошибка. Попробуйте еще раз.' 
         }]);
       }
+    }
+  };
+
+  const handleDocumentSelect = (documentId: string) => {
+    setSelectedDocument(documentId);
+    const selectedDoc = documents.find(doc => doc.id === documentId);
+    if (selectedDoc) {
+      handleDocumentDownload(documentId, selectedDoc.title);
     }
   };
 
@@ -249,33 +290,42 @@ const TaskDocumentAnalysis = () => {
             </div>
             
             <div className="space-y-3">
-              <h4 className="text-sm font-medium text-foreground">Примеры документов:</h4>
+              <h4 className="text-sm font-medium text-foreground">Выберите документ для анализа:</h4>
               <div className="grid grid-cols-1 gap-2">
-                <div 
-                  className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/50 cursor-pointer hover:bg-muted/60 transition-colors"
-                  onClick={() => handleDocumentDownload('marketing-research-competitors.pdf', 'Маркетинговое исследование о конкурентах')}
-                >
-                  <FileText className="w-5 h-5 text-blue-600" />
-                  <span className="text-sm text-foreground flex-1">Маркетинговое исследование о конкурентах</span>
-                  <Download className="w-4 h-4 text-muted-foreground" />
-                </div>
-                <div 
-                  className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/50 cursor-pointer hover:bg-muted/60 transition-colors"
-                  onClick={() => handleDocumentDownload('quarterly-report.pdf', 'Отчет за квартал')}
-                >
-                  <FileText className="w-5 h-5 text-green-600" />
-                  <span className="text-sm text-foreground flex-1">Отчет за квартал</span>
-                  <Download className="w-4 h-4 text-muted-foreground" />
-                </div>
-                <div 
-                  className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/50 cursor-pointer hover:bg-muted/60 transition-colors"
-                  onClick={() => handleDocumentDownload('ai-business-impact.pdf', 'Влияние нейросетей на бизнес-процессы')}
-                >
-                  <FileText className="w-5 h-5 text-purple-600" />
-                  <span className="text-sm text-foreground flex-1">Влияние нейросетей на бизнес-процессы</span>
-                  <Download className="w-4 h-4 text-muted-foreground" />
-                </div>
+                {documents.map((doc) => (
+                  <div 
+                    key={doc.id}
+                    className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
+                      selectedDocument === doc.id 
+                        ? `${doc.selectedBg} ring-2 ring-offset-2 ring-primary/50` 
+                        : `${doc.bgColor} hover:bg-opacity-80`
+                    }`}
+                    onClick={() => handleDocumentSelect(doc.id)}
+                  >
+                    <FileText className={`w-5 h-5 ${doc.color}`} />
+                    <span className="text-sm text-foreground flex-1">{doc.title}</span>
+                    <div className="flex items-center gap-2">
+                      {selectedDocument === doc.id && (
+                        <Check className="w-4 h-4 text-primary" />
+                      )}
+                      <Download 
+                        className="w-4 h-4 text-muted-foreground" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDocumentDownload(doc.id, doc.title);
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
+              {selectedDocument && (
+                <div className="mt-2 p-2 bg-accent/20 border border-green-accent rounded-lg">
+                  <p className="text-sm text-green-accent font-medium">
+                    ✓ Документ выбран и загружается
+                  </p>
+                </div>
+              )}
             </div>
           </CardContent>
         )}
@@ -319,7 +369,7 @@ const TaskDocumentAnalysis = () => {
               <li>• Структурирован по принципу "от важного к деталям"</li>
               <li>• Понятен человеку, не читавшему оригинал</li>
             </ul>
-            <div className="mt-3 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+            <div className="mt-3 p-3 bg-accent/20 rounded-lg border border-accent">
               <p className="text-sm text-foreground font-medium">💡 Подсказка:</p>
               <p className="text-sm text-muted-foreground mt-1">
                 Подумайте, как научить ИИ отличать важное от второстепенного именно для вашей бизнес-задачи.
@@ -339,16 +389,31 @@ const TaskDocumentAnalysis = () => {
         </CardHeader>
         <CardContent>
           {!isChatMode ? (
-            <div>
-              <Textarea
-                value={userAnswer}
-                onChange={(e) => setUserAnswer(e.target.value)}
-                placeholder="Опишите выбранный документ, ваш промпт для ИИ и приложите получившееся executive summary..."
-                className="min-h-[150px]"
-                maxLength={4000}
-              />
-              <div className="text-sm text-muted-foreground mt-1">
-                {userAnswer.length}/4000 символов
+            <div className="space-y-4">
+              {selectedDocument && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">Выбранный документ:</label>
+                  <div className="flex items-center gap-2 p-2 bg-muted/40 rounded-lg border">
+                    <FileText className="w-4 h-4 text-primary" />
+                    <span className="text-sm text-foreground">
+                      {documents.find(doc => doc.id === selectedDocument)?.title}
+                    </span>
+                  </div>
+                </div>
+              )}
+              
+              <div>
+                <label className="text-sm font-medium text-foreground block mb-2">Ваш промпт и executive summary:</label>
+                <Textarea
+                  value={userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  placeholder="Опишите ваш промпт для ИИ и приложите получившееся executive summary..."
+                  className="min-h-[150px]"
+                  maxLength={4000}
+                />
+                <div className="text-sm text-muted-foreground mt-1">
+                  {userAnswer.length}/4000 символов
+                </div>
               </div>
             </div>
           ) : (
@@ -409,16 +474,18 @@ const TaskDocumentAnalysis = () => {
       </Card>
 
       {/* Submit Button */}
-      <div className="mb-4">
-        <Button 
-          onClick={handleSubmitTask}
-          disabled={!userAnswer.trim() || isLoading}
-          className="w-full py-4 text-base font-medium"
-        >
-          <CheckCircle className="w-4 h-4 mr-2" />
-          {isLoading ? 'Отправляем...' : 'Сдать задание'}
-        </Button>
-      </div>
+      {!isChatMode && (
+        <div className="mb-4">
+          <Button 
+            onClick={handleSubmitTask}
+            disabled={!selectedDocument || !userAnswer.trim() || isLoading}
+            className="w-full py-4 text-base font-medium"
+          >
+            <CheckCircle className="w-4 h-4 mr-2" />
+            {isLoading ? 'Отправляем...' : 'Сдать задание'}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
