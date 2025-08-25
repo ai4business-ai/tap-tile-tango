@@ -8,33 +8,33 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 220 20% 14%;
-    --foreground: 200 15% 92%;
+    --background: 220 30% 95%;
+    --foreground: 220 20% 15%;
 
-    --card: 215 25% 18%;
-    --card-foreground: 200 15% 92%;
+    --card: 220 15% 98%;
+    --card-foreground: 220 20% 15%;
 
-    --popover: 220 20% 14%;
-    --popover-foreground: 200 15% 92%;
+    --popover: 220 15% 98%;
+    --popover-foreground: 220 20% 15%;
 
-    --primary: 200 15% 92%;
-    --primary-foreground: 220 20% 14%;
+    --primary: 220 20% 15%;
+    --primary-foreground: 220 30% 95%;
 
-    --secondary: 210 20% 25%;
-    --secondary-foreground: 200 15% 92%;
+    --secondary: 210 20% 85%;
+    --secondary-foreground: 220 20% 15%;
 
-    --muted: 210 20% 25%;
-    --muted-foreground: 200 10% 70%;
+    --muted: 210 20% 85%;
+    --muted-foreground: 220 15% 35%;
 
-    --accent: 210 20% 25%;
-    --accent-foreground: 200 15% 92%;
+    --accent: 210 20% 85%;
+    --accent-foreground: 220 20% 15%;
 
     --destructive: 0 50% 55%;
-    --destructive-foreground: 200 15% 92%;
+    --destructive-foreground: 220 30% 95%;
 
-    --border: 210 20% 25%;
-    --input: 210 20% 25%;
-    --ring: 180 25% 75%;
+    --border: 210 15% 75%;
+    --input: 210 15% 75%;
+    --ring: 180 25% 50%;
 
     /* Pastel gradient colors */
     --gradient-start: 200 40% 70%;
@@ -119,18 +119,18 @@ All colors MUST be HSL.
 
   /* Enhanced Glassmorphism utilities */
   .glass {
-    @apply bg-white/10 backdrop-blur-xl border border-white/20 shadow-lg;
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-lg;
   }
   
   .glass-card {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl;
+    @apply bg-white/60 backdrop-blur-xl border border-white/30 shadow-xl;
   }
   
   .glass-subtle {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
+    @apply bg-white/50 backdrop-blur-md border border-white/20;
   }
   
   .glass-strong {
-    @apply bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl;
+    @apply bg-white/80 backdrop-blur-2xl border border-white/50 shadow-2xl;
   }
 }
