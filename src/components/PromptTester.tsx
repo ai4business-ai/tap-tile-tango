@@ -289,11 +289,11 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button
             onClick={handleSendPrompt}
             disabled={isLoading || !prompt.trim() || attemptsRemaining <= 0}
-            className="flex-1"
+            className="w-full sm:flex-1"
           >
             {isLoading ? (
               <>
@@ -313,9 +313,10 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
               variant="outline"
               onClick={copyLastPrompt}
               disabled={isLoading}
+              className="w-full sm:w-auto whitespace-normal sm:whitespace-nowrap"
             >
-              <Copy className="mr-2 h-4 w-4" />
-              Копировать промпт
+              <Copy className="mr-2 h-4 w-4 flex-shrink-0" />
+              <span className="break-words">Копировать промпт</span>
             </Button>
           )}
         </div>
