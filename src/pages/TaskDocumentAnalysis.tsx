@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, FileText, Target, CheckCircle, Send, Bot, ChevronDown, ChevronUp, Download, Check } from 'lucide-react';
+import { ArrowLeft, FileText, Target, CheckCircle, Send, Bot, ChevronDown, ChevronUp, Download, Check, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { useChatAssistant } from '@/hooks/useChatAssistant';
 import { PromptTester } from '@/components/PromptTester';
 import { BlurredAnswerBlock } from '@/components/BlurredAnswerBlock';
@@ -49,7 +48,7 @@ const TaskDocumentAnalysis = () => {
   const { toast } = useToast();
   const [userAnswer, setUserAnswer] = useState('');
   const [isChatMode, setIsChatMode] = useState(false);
-  const [chatMessages, setChatMessages] = useState<{role: 'user' | 'tutor', content: string}[]>([]);
+  const [chatMessages, setChatMessages] = useState<{role: 'user' | 'tutor', content: string, timestamp: number}[]>([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
   const [documents, setDocuments] = useState<Array<{
@@ -119,7 +118,7 @@ const TaskDocumentAnalysis = () => {
       const selectedDoc = documents.find(doc => doc.id === selectedDocument);
       const contextualMessage = `Выбранный документ: "${selectedDoc?.title}"\n\n${userAnswer}`;
       
-      setChatMessages([{ role: 'user', content: contextualMessage }]);
+      setChatMessages([{ role: 'user', content: contextualMessage, timestamp: Date.now() }]);
       setIsChatMode(true);
       
       try {
@@ -130,11 +129,12 @@ const TaskDocumentAnalysis = () => {
           selectedDocument
         );
         
-        setChatMessages(prev => [...prev, { role: 'tutor', content: tutorResponse }]);
+        setChatMessages(prev => [...prev, { role: 'tutor', content: tutorResponse, timestamp: Date.now() }]);
       } catch (error) {
         setChatMessages(prev => [...prev, { 
           role: 'tutor', 
-          content: 'Извините, произошла ошибка при отправке вашего ответа. Попробуйте еще раз.' 
+          content: 'Извините, произошла ошибка при отправке вашего ответа. Попробуйте еще раз.',
+          timestamp: Date.now()
         }]);
       }
     }
@@ -146,7 +146,7 @@ const TaskDocumentAnalysis = () => {
       setCurrentMessage('');
       
       // Add user message immediately
-      setChatMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+      setChatMessages(prev => [...prev, { role: 'user', content: userMessage, timestamp: Date.now() }]);
       
       try {
         const tutorResponse = await sendMessage(
@@ -157,12 +157,13 @@ const TaskDocumentAnalysis = () => {
         );
         
         // Add tutor response
-        setChatMessages(prev => [...prev, { role: 'tutor', content: tutorResponse }]);
+        setChatMessages(prev => [...prev, { role: 'tutor', content: tutorResponse, timestamp: Date.now() }]);
       } catch (error) {
         // Add error message
         setChatMessages(prev => [...prev, { 
           role: 'tutor', 
-          content: 'Извините, произошла ошибка. Попробуйте еще раз.' 
+          content: 'Извините, произошла ошибка. Попробуйте еще раз.',
+          timestamp: Date.now()
         }]);
       }
     }
@@ -512,13 +513,13 @@ const TaskDocumentAnalysis = () => {
         <CardContent>
           <div className="space-y-4">
             {/* Chat Messages */}
-            <div className="max-h-[50vh] overflow-y-auto space-y-3">
+            <div className="max-h-[50vh] overflow-y-auto space-y-4 p-4 border rounded-lg bg-muted/30">
               {chatMessages.map((message, index) => (
                 <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[70%] sm:max-w-[75%] p-3 rounded-lg text-sm break-words overflow-wrap-break-word ${
+                  <div className={`max-w-[85%] sm:max-w-[90%] p-3 rounded-lg text-sm break-words overflow-wrap-break-word ${
                     message.role === 'user' 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-muted text-muted-foreground'
+                      ? 'bg-primary text-primary-foreground ml-auto' 
+                      : 'bg-secondary/50 text-secondary-foreground border'
                   }`}>
                     {message.role === 'tutor' ? (
                       <div className="space-y-2">
@@ -529,19 +530,22 @@ const TaskDocumentAnalysis = () => {
                         ))}
                       </div>
                     ) : (
-                      <div className="leading-relaxed">{message.content}</div>
+                      <div className="leading-relaxed whitespace-pre-wrap break-words">{message.content}</div>
                     )}
+                    <div className={`text-xs mt-1 opacity-70 ${
+                      message.role === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                    }`}>
+                      {new Date(message.timestamp).toLocaleTimeString()}
+                    </div>
                   </div>
                 </div>
               ))}
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-muted p-3 rounded-lg text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                      <div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-75"></div>
-                      <div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-150"></div>
-                      <span className="ml-2">Тьютор печатает...</span>
+                  <div className="bg-secondary/50 text-secondary-foreground border p-3 rounded-lg">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Тьютор печатает...
                     </div>
                   </div>
                 </div>
@@ -549,18 +553,46 @@ const TaskDocumentAnalysis = () => {
             </div>
            
             {/* Message Input */}
-            <div className="flex gap-2">
-              <Input
+            <div className="space-y-3">
+              <Textarea
                 value={currentMessage}
                 onChange={(e) => setCurrentMessage(e.target.value)}
                 placeholder="Введите ваш ответ..."
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                className="flex-1"
+                className="min-h-[100px]"
+                maxLength={4000}
+                disabled={isLoading}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && e.ctrlKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
               />
-              <Button onClick={handleSendMessage} size="icon">
-                <Send className="w-4 h-4" />
-              </Button>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-muted-foreground">
+                  {currentMessage.length}/4000 символов • Ctrl+Enter для отправки
+                </span>
+              </div>
             </div>
+
+            {/* Send Button */}
+            <Button
+              onClick={handleSendMessage}
+              disabled={isLoading || !currentMessage.trim()}
+              className="w-full sm:w-auto"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Отправка...
+                </>
+              ) : (
+                <>
+                  <Send className="mr-2 h-4 w-4" />
+                  Отправить
+                </>
+              )}
+            </Button>
           </div>
         </CardContent>
       </Card>
