@@ -38,7 +38,7 @@ export const BlurredAnswerBlock = ({
             onClick={handleUnlock}
             className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-3 text-lg font-medium shadow-lg"
           >
-            Начать выполнение задания
+            Сдать задание
           </Button>
         </div>
       )}
