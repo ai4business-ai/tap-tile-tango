@@ -12,7 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 interface PromptTesterProps {
   taskContext: string;
   taskId: string;
-  documentContent?: string;
+  documentId?: string | null;
   placeholder?: string;
 }
 
@@ -22,7 +22,7 @@ interface ChatMessage {
   timestamp: number;
 }
 
-export const PromptTester = ({ taskContext, taskId, documentContent, placeholder }: PromptTesterProps) => {
+export const PromptTester = ({ taskContext, taskId, documentId, placeholder }: PromptTesterProps) => {
   const [prompt, setPrompt] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -120,7 +120,7 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
           prompt: userMessage.content,
           taskContext,
           taskId,
-          documentContent: documentContent || undefined
+          documentId: documentId || undefined
         }
       });
 
@@ -202,7 +202,7 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
                   <p className="text-sm text-muted-foreground">
                     Это окно предназначено только для тестирования промптов в рамках данного задания. 
                     У вас есть 5 попыток в день.
-                    {documentContent && ' Выбранный документ автоматически передается в контексте.'}
+                    {documentId && ' Выбранный документ автоматически передается в контексте.'}
                   </p>
                 </div>
               </PopoverContent>

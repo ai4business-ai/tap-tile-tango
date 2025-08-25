@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, FileText, Target, CheckCircle, Send, Bot, ChevronDown, ChevronUp, Download, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { useChatAssistant } from '@/hooks/useChatAssistant';
 import { PromptTester } from '@/components/PromptTester';
 import { BlurredAnswerBlock } from '@/components/BlurredAnswerBlock';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 // Helper function to format assistant messages into paragraphs
 const formatAssistantMessage = (content: string): string[] => {
@@ -51,31 +52,48 @@ const TaskDocumentAnalysis = () => {
   const [chatMessages, setChatMessages] = useState<{role: 'user' | 'tutor', content: string}[]>([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
+  const [documents, setDocuments] = useState<Array<{
+    id: string;
+    title: string;
+    description: string;
+    file_path: string;
+  }>>([]);
+  const [isLoadingDocuments, setIsLoadingDocuments] = useState(true);
 
-  // Document options
-  const documents = [
-    {
-      id: 'marketing-research-competitors.pdf',
-      title: 'Маркетинговое исследование о конкурентах',
-      color: 'text-progress-blue',
-      bgColor: 'bg-secondary/50 border-border',
-      selectedBg: 'bg-secondary border-progress-blue'
-    },
-    {
-      id: 'quarterly-report.pdf', 
-      title: 'Отчет за квартал',
-      color: 'text-green-accent',
-      bgColor: 'bg-secondary/50 border-border',
-      selectedBg: 'bg-secondary border-green-accent'
-    },
-    {
-      id: 'ai-business-impact.pdf',
-      title: 'Влияние нейросетей на бизнес-процессы',
-      color: 'text-purple-accent', 
-      bgColor: 'bg-secondary/50 border-border',
-      selectedBg: 'bg-secondary border-purple-accent'
-    }
-  ];
+  // Load documents from database
+  useEffect(() => {
+    const loadDocuments = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('documents')
+          .select('id, title, description, file_path')
+          .eq('task_type', 'document-analysis')
+          .order('created_at', { ascending: true });
+
+        if (error) {
+          console.error('Error loading documents:', error);
+          toast({
+            title: "Ошибка",
+            description: "Не удалось загрузить документы",
+            variant: "destructive",
+          });
+        } else {
+          setDocuments(data || []);
+        }
+      } catch (error) {
+        console.error('Error loading documents:', error);
+        toast({
+          title: "Ошибка",
+          description: "Не удалось загрузить документы",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoadingDocuments(false);
+      }
+    };
+
+    loadDocuments();
+  }, [toast]);
   
   // States for controlling block visibility
   const [showDescription, setShowDescription] = useState(true);
@@ -107,7 +125,9 @@ const TaskDocumentAnalysis = () => {
       try {
         const tutorResponse = await sendMessage(
           contextualMessage,
-          'Анализ объемного документа: создание executive summary для документа 20+ страниц'
+          'Анализ объемного документа: создание executive summary для документа 20+ страниц',
+          undefined,
+          selectedDocument
         );
         
         setChatMessages(prev => [...prev, { role: 'tutor', content: tutorResponse }]);
@@ -130,8 +150,10 @@ const TaskDocumentAnalysis = () => {
       
       try {
         const tutorResponse = await sendMessage(
-          userMessage, 
-          'Анализ объемного документа: создание executive summary для документа 20+ страниц'
+          userMessage,
+          'Анализ объемного документа: создание executive summary для документа 20+ страниц',
+          undefined,
+          selectedDocument
         );
         
         // Add tutor response
@@ -291,44 +313,64 @@ const TaskDocumentAnalysis = () => {
               </ul>
             </div>
             
-            <div className="space-y-3">
-              <h4 className="text-sm font-medium text-foreground">Выберите документ для анализа:</h4>
-              <div className="grid grid-cols-1 gap-2">
-                {documents.map((doc) => (
-                  <div 
-                    key={doc.id}
-                    className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
-                      selectedDocument === doc.id 
-                        ? `${doc.selectedBg} ring-2 ring-offset-2 ring-primary/50` 
-                        : `${doc.bgColor} hover:bg-opacity-80`
-                    }`}
-                    onClick={() => handleDocumentSelect(doc.id)}
-                  >
-                    <FileText className={`w-5 h-5 ${doc.color}`} />
-                    <span className="text-sm text-foreground flex-1">{doc.title}</span>
-                    <div className="flex items-center gap-2">
-                      {selectedDocument === doc.id && (
-                        <Check className="w-4 h-4 text-primary" />
-                      )}
-                      <Download 
-                        className="w-4 h-4 text-muted-foreground" 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDocumentDownload(doc.id, doc.title);
-                        }}
-                      />
-                    </div>
+              <div className="space-y-3">
+                <h4 className="text-sm font-medium text-foreground">Выберите документ для анализа:</h4>
+                {isLoadingDocuments ? (
+                  <div className="p-4 text-center text-muted-foreground">
+                    Загрузка документов...
                   </div>
-                ))}
+                ) : (
+                  <div className="grid grid-cols-1 gap-2">
+                    {documents.map((doc, index) => {
+                      const colors = [
+                        { color: 'text-progress-blue', bgColor: 'bg-secondary/50 border-border', selectedBg: 'bg-secondary border-progress-blue' },
+                        { color: 'text-green-accent', bgColor: 'bg-secondary/50 border-border', selectedBg: 'bg-secondary border-green-accent' },
+                        { color: 'text-purple-accent', bgColor: 'bg-secondary/50 border-border', selectedBg: 'bg-secondary border-purple-accent' }
+                      ];
+                      const colorTheme = colors[index % colors.length];
+                      
+                      return (
+                        <div 
+                          key={doc.id}
+                          className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
+                            selectedDocument === doc.id 
+                              ? `${colorTheme.selectedBg} ring-2 ring-offset-2 ring-primary/50` 
+                              : `${colorTheme.bgColor} hover:bg-opacity-80`
+                          }`}
+                          onClick={() => handleDocumentSelect(doc.id)}
+                        >
+                          <FileText className={`w-5 h-5 ${colorTheme.color}`} />
+                          <div className="flex-1">
+                            <span className="text-sm text-foreground block">{doc.title}</span>
+                            {doc.description && (
+                              <span className="text-xs text-muted-foreground">{doc.description}</span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {selectedDocument === doc.id && (
+                              <Check className="w-4 h-4 text-primary" />
+                            )}
+                            <Download 
+                              className="w-4 h-4 text-muted-foreground" 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDocumentDownload(doc.file_path, doc.title);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {selectedDocument && (
+                  <div className="mt-2 p-2 bg-accent/20 border border-green-accent rounded-lg">
+                    <p className="text-sm text-green-accent font-medium">
+                      ✓ Документ выбран и загружается
+                    </p>
+                  </div>
+                )}
               </div>
-              {selectedDocument && (
-                <div className="mt-2 p-2 bg-accent/20 border border-green-accent rounded-lg">
-                  <p className="text-sm text-green-accent font-medium">
-                    ✓ Документ выбран и загружается
-                  </p>
-                </div>
-              )}
-            </div>
           </CardContent>
         )}
       </Card>
@@ -385,6 +427,7 @@ const TaskDocumentAnalysis = () => {
       <PromptTester 
         taskContext="document-analysis"
         taskId="document-analysis-task"
+        documentId={selectedDocument}
         placeholder="Проанализируй этот документ и создай executive summary..."
       />
 

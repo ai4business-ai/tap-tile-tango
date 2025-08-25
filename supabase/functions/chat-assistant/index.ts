@@ -1,6 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -126,7 +131,7 @@ serve(async (req) => {
   try {
     console.log('Chat assistant function called');
     const requestBody = await req.json();
-    const { message, taskContext, threadId, assistantId } = requestBody;
+    const { message, taskContext, threadId, assistantId, documentId } = requestBody;
     
     console.log('Request data:', { 
       messageLength: message?.length || 0, 
@@ -237,7 +242,25 @@ serve(async (req) => {
     }
 
     // Add sanitized message to thread with enhanced security context
-    const enhancedMessage = `[SECURITY_CONTEXT: Task="${sanitizedTaskContext}"] ${sanitizedMessage}`;
+    let enhancedMessage = `[SECURITY_CONTEXT: Task="${sanitizedTaskContext}"] ${sanitizedMessage}`;
+    
+    // Load document content if documentId is provided
+    if (documentId) {
+      try {
+        const { data: document, error: docError } = await supabase
+          .from('documents')
+          .select('extracted_text, title')
+          .eq('id', documentId)
+          .single();
+
+        if (document && document.extracted_text) {
+          enhancedMessage = `[SECURITY_CONTEXT: Task="${sanitizedTaskContext}"] Документ для анализа "${document.title}":\n\n${document.extracted_text}\n\nВопрос пользователя: ${sanitizedMessage}`;
+        }
+      } catch (error) {
+        console.error('Error fetching document for chat assistant:', error);
+        // Continue without document content if error occurs
+      }
+    }
     
     await fetch(`https://api.openai.com/v1/threads/${currentThreadId}/messages`, {
       method: 'POST',

@@ -36,7 +36,12 @@ export const useChatAssistant = () => {
     return { isValid: true };
   };
 
-  const sendMessage = async (message: string, taskContext: string, assistantId?: string): Promise<string> => {
+  const sendMessage = async (
+    message: string, 
+    taskContext: string, 
+    assistantId?: string,
+    documentId?: string
+  ): Promise<string> => {
     setIsLoading(true);
     
     // Client-side validation
@@ -59,7 +64,8 @@ export const useChatAssistant = () => {
           message,
           taskContext,
           threadId,
-          assistantId
+          assistantId,
+          documentId
         }
       });
 
