@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell, ChevronRight, Target } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { TapCard } from '@/components/ui/tap-card';
 import { useNavigate } from 'react-router-dom';
 const Index = () => {
@@ -20,26 +20,10 @@ const Index = () => {
   };
   return <div className="min-h-screen p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="glass rounded-2xl p-3 bg-white/90 backdrop-blur-lg">
-            <img 
-              src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
-              alt="Билайн логотип" 
-              className="w-20 h-auto"
-            />
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full glass flex items-center justify-center">
-              <Target className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-lg font-semibold text-foreground">Моя цель</h1>
-              <p className="text-sm text-muted-foreground">Достичь уровень 3 "AI-Native"</p>
-            </div>
-          </div>
+      <div className="flex items-center justify-center mb-8">
+        <div className="glass-subtle rounded-xl px-4 py-2">
+          <p className="text-xs text-muted-foreground font-medium">Здесь лого вашей компании</p>
         </div>
-        
       </div>
 
 
@@ -47,8 +31,8 @@ const Index = () => {
       <TapCard className="mb-4" onClick={() => handleCardClick('Анализ данных')}>
         <div className="glass-card rounded-2xl p-4 shadow-xl flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-purple-accent rounded-lg flex items-center justify-center">
-              <div className="w-4 h-4 bg-task-red rounded-sm transform rotate-45"></div>
+            <div className="w-8 h-8 bg-pastel-lavender rounded-lg flex items-center justify-center">
+              <div className="w-4 h-4 bg-pastel-peach rounded-sm transform rotate-45"></div>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Модуль 3.2</p>
@@ -61,17 +45,17 @@ const Index = () => {
 
       {/* Progress Card */}
       <TapCard className="mb-4" onClick={() => handleCardClick('Мой прогресс')}>
-        <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-4 text-white relative overflow-hidden shadow-xl">
-          <h3 className="text-lg font-semibold mb-1">Мой прогресс</h3>
-          <p className="text-sm opacity-90 mb-4">8 навыков</p>
+        <div className="glass-strong rounded-2xl p-4 relative overflow-hidden shadow-xl">
+          <h3 className="text-lg font-semibold mb-1 text-foreground">Мой прогресс</h3>
+          <p className="text-sm text-muted-foreground mb-4">8 навыков</p>
           <div className="flex flex-wrap gap-2">
-            <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+            <div className="glass-subtle text-foreground px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
               🔍 <span>Искатель</span>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+            <div className="glass-subtle text-foreground px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
               📊 <span>Аналитик</span>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+            <div className="glass-subtle text-foreground px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
               ⚙️ <span>Инженер</span>
             </div>
           </div>
@@ -81,25 +65,25 @@ const Index = () => {
 
       {/* My Tasks Card */}
       <TapCard className="mb-4" onClick={() => handleCardClick('Мои задания')}>
-        <div className="bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl p-4 text-white relative overflow-hidden shadow-xl">
-          <h3 className="text-lg font-semibold mb-1">Мои задания</h3>
-          <p className="text-sm opacity-90 mb-3">89 заданий</p>
+        <div className="glass-strong rounded-2xl p-4 relative overflow-hidden shadow-xl">
+          <h3 className="text-lg font-semibold mb-1 text-foreground">Мои задания</h3>
+          <p className="text-sm text-muted-foreground mb-3">89 заданий</p>
           
           {/* Progress bar */}
           <div className="mb-4">
-            <div className="flex justify-between text-xs opacity-80 mb-1">
+            <div className="flex justify-between text-xs text-muted-foreground mb-1">
               <span>Общий прогресс</span>
               <span>18/89</span>
             </div>
-            <div className="w-full bg-white/30 rounded-full h-2">
+            <div className="w-full bg-white/20 rounded-full h-2">
               <div 
-                className="bg-white h-2 rounded-full transition-all duration-500" 
+                className="bg-pastel-mint h-2 rounded-full transition-all duration-500" 
                 style={{ width: '20%' }}
               />
             </div>
           </div>
           
-          <button className="bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-lg">
+          <button className="bg-pastel-mint/80 text-foreground px-4 py-2 rounded-lg text-sm font-medium shadow-lg backdrop-blur-sm">
             +24 задания
           </button>
         </div>
@@ -107,10 +91,10 @@ const Index = () => {
 
       {/* Webinar Records Card */}
       <TapCard onClick={() => handleCardClick('Записи вебинаров')}>
-        <div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-4 text-white relative overflow-hidden shadow-xl">
-          <h3 className="text-lg font-semibold mb-1">Записи вебинаров</h3>
-          <p className="text-sm opacity-90 mb-4">6 вебинаров</p>
-          <button className="bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium">
+        <div className="glass-strong rounded-2xl p-4 relative overflow-hidden shadow-xl">
+          <h3 className="text-lg font-semibold mb-1 text-foreground">Записи вебинаров</h3>
+          <p className="text-sm text-muted-foreground mb-4">6 вебинаров</p>
+          <button className="bg-pastel-sky/80 text-foreground px-4 py-2 rounded-lg text-sm font-medium backdrop-blur-sm">
             Смотреть
           </button>
         </div>

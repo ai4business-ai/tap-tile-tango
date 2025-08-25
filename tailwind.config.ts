@@ -62,14 +62,19 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Education app colors
+				// Education app colors (pastel)
 				'progress-blue': 'hsl(var(--progress-blue))',
 				'purple-gradient': 'hsl(var(--purple-gradient))',
 				'purple-accent': 'hsl(var(--purple-accent))',
 				'green-gradient': 'hsl(var(--green-gradient))',
 				'green-accent': 'hsl(var(--green-accent))',
 				'task-red': 'hsl(var(--task-red))',
-				'gray-light': 'hsl(var(--gray-light))'
+				'gray-light': 'hsl(var(--gray-light))',
+				// Additional pastel colors
+				'pastel-lavender': 'hsl(var(--pastel-lavender))',
+				'pastel-mint': 'hsl(var(--pastel-mint))',
+				'pastel-peach': 'hsl(var(--pastel-peach))',
+				'pastel-sky': 'hsl(var(--pastel-sky))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
