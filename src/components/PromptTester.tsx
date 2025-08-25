@@ -240,10 +240,10 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
                 className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[70%] sm:max-w-[75%] p-3 rounded-lg text-sm break-words overflow-wrap-break-word ${
+                  className={`max-w-[85%] sm:max-w-[90%] p-3 rounded-lg text-sm break-words overflow-wrap-break-word ${
                     message.type === 'user'
                       ? 'bg-primary text-primary-foreground ml-auto'
-                      : 'bg-background border shadow-sm'
+                      : 'bg-secondary/50 text-secondary-foreground border'
                   }`}
                 >
                   <div className="whitespace-pre-wrap break-words">{message.content}</div>
@@ -257,8 +257,8 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-background border shadow-sm p-3 rounded-lg">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="bg-secondary/50 text-secondary-foreground border p-3 rounded-lg">
+                  <div className="flex items-center gap-2 text-sm">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     ИИ печатает...
                   </div>
