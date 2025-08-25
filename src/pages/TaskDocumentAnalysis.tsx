@@ -176,21 +176,23 @@ const TaskDocumentAnalysis = () => {
     }
   };
 
-  const handleDocumentDownload = (fileName: string, displayName: string) => {
+  const handleDocumentDownload = async (documentId: string, displayName: string) => {
     try {
-      // Map file names to Google Drive direct download links
-      const driveLinks: { [key: string]: string } = {
-        'marketing-research-competitors.pdf': 'https://drive.google.com/uc?export=download&id=1PyvyJwRVBNlv2T1d5hgqXyHDAx2MNbdZ',
-        'quarterly-report.pdf': 'https://drive.google.com/uc?export=download&id=1MO4gJRt5gi_lafWSx6o1fEn4lmdjyxCG',
-        'ai-business-impact.pdf': 'https://drive.google.com/uc?export=download&id=15YDeG8-3o0iy-8UhP4RdBWWPl0Yk27go'
-      };
+      // Find the document to get its file_path
+      const selectedDoc = documents.find(doc => doc.id === documentId);
+      if (!selectedDoc) {
+        throw new Error('Document not found');
+      }
 
-      const downloadUrl = driveLinks[fileName];
-      
-      if (downloadUrl) {
+      // Get public URL from Supabase Storage
+      const { data: urlData } = supabase.storage
+        .from('documents')
+        .getPublicUrl(selectedDoc.file_path);
+
+      if (urlData?.publicUrl) {
         const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = fileName;
+        link.href = urlData.publicUrl;
+        link.download = selectedDoc.file_path;
         link.target = '_blank';
         link.style.display = 'none';
         document.body.appendChild(link);
@@ -202,9 +204,10 @@ const TaskDocumentAnalysis = () => {
           description: `"${displayName}" начинает загрузку`,
         });
       } else {
-        throw new Error('File not found');
+        throw new Error('Could not get download URL');
       }
     } catch (error) {
+      console.error('Download error:', error);
       toast({
         title: "Ошибка скачивания",
         description: "Не удалось скачать файл. Попробуйте еще раз.",
@@ -354,7 +357,7 @@ const TaskDocumentAnalysis = () => {
                               className="w-4 h-4 text-muted-foreground" 
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleDocumentDownload(doc.file_path, doc.title);
+                                handleDocumentDownload(doc.id, doc.title);
                               }}
                             />
                           </div>
