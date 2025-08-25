@@ -21,7 +21,7 @@ const TaskSpecializedGPT = () => {
         </button>
         <div>
           <h1 className="text-xl font-semibold text-foreground">Создание специализированного GPT</h1>
-          <p className="text-sm text-muted-foreground">AI-NATIVE уровень</p>
+          <p className="text-sm text-muted-foreground">AI-NATIVE уровень | Исследования и обработка информации</p>
         </div>
       </div>
 

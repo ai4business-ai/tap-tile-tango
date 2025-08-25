@@ -125,7 +125,7 @@ const TaskDeepResearch = () => {
         </button>
         <div>
           <h1 className="text-xl font-semibold text-foreground">Освоение Deep Research</h1>
-          <p className="text-sm text-muted-foreground">PRO уровень</p>
+          <p className="text-sm text-muted-foreground">PRO уровень | Исследования и обработка информации</p>
         </div>
       </div>
 

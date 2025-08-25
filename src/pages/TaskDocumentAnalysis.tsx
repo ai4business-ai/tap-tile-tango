@@ -202,7 +202,7 @@ const TaskDocumentAnalysis = () => {
         </button>
         <div>
           <h1 className="text-xl font-semibold text-foreground">Анализ объемного документа</h1>
-          <p className="text-sm text-muted-foreground">BASIC уровень</p>
+          <p className="text-sm text-muted-foreground">BASIC уровень | Исследования и обработка информации</p>
         </div>
       </div>
 
