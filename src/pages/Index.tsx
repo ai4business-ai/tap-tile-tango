@@ -35,7 +35,7 @@ const Index = () => {
               <div className="w-5 h-5 bg-white/40 rounded-lg transform rotate-45"></div>
             </div>
             <div>
-              <p className="text-sm text-glass-muted">Модуль 3.2</p>
+              <p className="text-sm text-glass-muted">Следующее задание</p>
               <p className="text-sm font-medium text-glass">Анализ Word/PDF документа</p>
             </div>
           </div>
