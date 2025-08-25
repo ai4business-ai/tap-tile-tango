@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Bot, Target, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Bot, CheckCircle, Target, Lightbulb, Trophy } from 'lucide-react';
+import { PromptTester } from '@/components/PromptTester';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -102,6 +103,13 @@ const TaskSpecializedGPT = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Prompt Tester */}
+      <PromptTester 
+        taskContext="specialized-gpt"
+        taskId="specialized-gpt-task"
+        placeholder="Создай инструкцию для GPT-ассистента, который анализирует документы..."
+      />
 
       {/* Answer Form */}
       <Card className="mb-6">

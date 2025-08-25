@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useChatAssistant } from '@/hooks/useChatAssistant';
+import { PromptTester } from '@/components/PromptTester';
 import { useToast } from '@/hooks/use-toast';
 
 // Helper function to format assistant messages into paragraphs
@@ -378,6 +379,13 @@ const TaskDocumentAnalysis = () => {
           </CardContent>
         )}
       </Card>
+
+      {/* Prompt Tester */}
+      <PromptTester 
+        taskContext="document-analysis"
+        taskId="document-analysis-task"
+        placeholder="Проанализируй этот документ и создай executive summary..."
+      />
 
       {/* Answer Form */}
       <Card className="mb-6">

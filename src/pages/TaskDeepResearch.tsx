@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useChatAssistant } from '@/hooks/useChatAssistant';
+import { PromptTester } from '@/components/PromptTester';
 import { useToast } from '@/hooks/use-toast';
 
 // Helper function to format assistant messages into paragraphs
@@ -270,6 +271,13 @@ const TaskDeepResearch = () => {
           </CardContent>
         )}
       </Card>
+
+      {/* Prompt Tester */}
+      <PromptTester 
+        taskContext="deep-research"
+        taskId="deep-research-task"
+        placeholder="Помоги сформулировать исследовательские вопросы по теме..."
+      />
 
       {/* Answer Form */}
       <Card className="mb-6">
