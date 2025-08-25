@@ -162,43 +162,43 @@ const MyProgress = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
+    <div className="min-h-screen p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => navigate('/')}
-            className="w-8 h-8 flex items-center justify-center"
+            className="w-10 h-10 glass-subtle rounded-2xl flex items-center justify-center"
           >
-            <ArrowLeft className="w-6 h-6 text-foreground" />
+            <ArrowLeft className="w-6 h-6 text-glass" />
           </button>
           <div>
-            <h1 className="text-xl font-semibold text-foreground">Мой прогресс</h1>
-            <p className="text-sm text-muted-foreground">8 навыков</p>
+            <h1 className="text-xl font-semibold text-glass">Мой прогресс</h1>
+            <p className="text-sm text-glass-muted">8 навыков</p>
           </div>
         </div>
         <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
           <DialogTrigger asChild>
-            <button className="w-8 h-8 flex items-center justify-center">
-              <Settings className="w-6 h-6 text-muted-foreground" />
+            <button className="w-10 h-10 glass-subtle rounded-2xl flex items-center justify-center">
+              <Settings className="w-6 h-6 text-glass-muted" />
             </button>
           </DialogTrigger>
-          <DialogContent className="bg-card/95 backdrop-blur-lg border-white/10 max-w-md max-h-[80vh] overflow-y-auto">
+          <DialogContent className="glass-strong border-white/30 max-w-md max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-foreground">Настройка целевых уровней</DialogTitle>
+              <DialogTitle className="text-glass">Настройка целевых уровней</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-4">
               {skills.map((skill, index) => (
                 <div key={index} className="space-y-2">
-                  <h4 className="text-sm font-medium text-foreground">{skill.title}</h4>
+                  <h4 className="text-sm font-medium text-glass">{skill.title}</h4>
                   <Select 
                     value={skill.targetLevel.toString()} 
                     onValueChange={(value) => updateSkillTargetLevel(index, parseInt(value))}
                   >
-                    <SelectTrigger className="bg-background/50 border-white/20">
+                    <SelectTrigger className="glass-subtle border-white/30">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-card border-white/10 backdrop-blur-lg">
+                    <SelectContent className="glass-strong border-white/30">
                       <SelectItem value="1">Basic</SelectItem>
                       <SelectItem value="2">Pro</SelectItem>
                       <SelectItem value="3">AI-Native</SelectItem>
@@ -208,7 +208,7 @@ const MyProgress = () => {
               ))}
               <Button 
                 onClick={() => setIsSettingsOpen(false)}
-                className="w-full mt-6 bg-primary hover:bg-primary/90"
+                className="w-full mt-6 bg-white/20 hover:bg-white/30 text-glass border border-white/30"
               >
                 Сохранить
               </Button>
@@ -218,7 +218,7 @@ const MyProgress = () => {
       </div>
 
       {/* Skills Diagram - Radar Chart */}
-      <div className="relative bg-card/60 backdrop-blur-lg rounded-2xl p-6 mb-6 h-80 overflow-hidden border border-white/10 shadow-lg">
+      <div className="relative glass-card rounded-3xl p-6 mb-6 h-80 overflow-hidden shadow-inner">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative w-60 h-60">
             <svg className="absolute inset-0 w-full h-full" viewBox="0 0 240 240">
@@ -373,11 +373,11 @@ const MyProgress = () => {
                     top: `${(y / 240) * 100}%`
                   }}
                 >
-                  <p className="text-xs text-muted-foreground whitespace-nowrap font-medium leading-tight">
+                  <p className="text-xs text-glass-muted whitespace-nowrap font-medium leading-tight">
                     {skill.title.split(' ')[0]}
                   </p>
                   {skill.title.split(' ').length > 1 && (
-                    <p className="text-xs text-muted-foreground whitespace-nowrap font-medium leading-tight">
+                    <p className="text-xs text-glass-muted whitespace-nowrap font-medium leading-tight">
                       {skill.title.split(' ').slice(1).join(' ')}
                     </p>
                   )}
@@ -391,20 +391,20 @@ const MyProgress = () => {
       {/* Skills List */}
       <div className="space-y-3">
         {skills.map((skill, index) => (
-          <div key={index} className="bg-card/60 backdrop-blur-lg rounded-2xl p-4 border border-white/10 shadow-lg">
+          <div key={index} className="glass-card rounded-3xl p-6 shadow-inner">
             {skill.isGoalAchieved && (
               <div className="mb-2">
-                <span className="bg-gradient-to-r from-green-400 to-emerald-500 text-white text-xs px-2 py-1 rounded-full">
+                <span className="bg-white/20 text-glass text-xs px-3 py-1 rounded-full border border-white/30">
                   Цель достигнута
                 </span>
               </div>
             )}
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h3 className="text-base font-semibold text-foreground">{skill.title}</h3>
+                <h3 className="text-base font-semibold text-glass">{skill.title}</h3>
               </div>
               <div className="flex items-center gap-2">
-                <div className={`w-10 h-10 ${skill.isGoalAchieved ? 'bg-gradient-to-r from-green-400 to-emerald-500' : 'bg-purple-accent'} rounded-full flex items-center justify-center text-white font-bold text-xs`}>
+                <div className={`w-12 h-12 ${skill.isGoalAchieved ? 'bg-white/30' : 'bg-white/20'} rounded-2xl flex items-center justify-center text-glass font-bold text-sm border border-white/30`}>
                   {skill.scorePercent}%
                 </div>
               </div>

@@ -30,27 +30,27 @@ const TaskDetail = () => {
       />
 
       <div className="space-y-6">
-        <Badge className="bg-purple-accent text-white">
+        <Badge className="bg-white/20 text-glass border border-white/30">
           Новое
         </Badge>
 
         <div>
-          <h2 className="text-xl font-semibold text-foreground mb-3">Когортный анализ и SQL</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <h2 className="text-xl font-semibold text-glass mb-3">Когортный анализ и SQL</h2>
+          <p className="text-sm text-glass-muted leading-relaxed">
             Проведение когортного анализа на основе данных в различных таблицах, а также формирование SQL запросов при помощи GPT
           </p>
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold text-foreground mb-3">Чему научишься</h3>
+          <h3 className="text-lg font-semibold text-glass mb-3">Чему научишься</h3>
           <ul className="space-y-2">
             <li className="flex items-start gap-2">
-              <div className="w-1.5 h-1.5 bg-foreground rounded-full mt-2 flex-shrink-0"></div>
-              <span className="text-sm text-muted-foreground">Анализировать большие таблицы</span>
+              <div className="w-1.5 h-1.5 bg-glass rounded-full mt-2 flex-shrink-0"></div>
+              <span className="text-sm text-glass-muted">Анализировать большие таблицы</span>
             </li>
             <li className="flex items-start gap-2">
-              <div className="w-1.5 h-1.5 bg-foreground rounded-full mt-2 flex-shrink-0"></div>
-              <span className="text-sm text-muted-foreground">Составлять SQL-запросы</span>
+              <div className="w-1.5 h-1.5 bg-glass rounded-full mt-2 flex-shrink-0"></div>
+              <span className="text-sm text-glass-muted">Составлять SQL-запросы</span>
             </li>
           </ul>
         </div>

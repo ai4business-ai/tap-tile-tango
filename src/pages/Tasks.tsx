@@ -79,27 +79,20 @@ const Tasks = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
+    <div className="min-h-screen p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => navigate('/')}
-            className="w-8 h-8 flex items-center justify-center"
+            className="w-10 h-10 glass-subtle rounded-2xl flex items-center justify-center"
           >
-            <ArrowLeft className="w-6 h-6 text-foreground" />
+            <ArrowLeft className="w-6 h-6 text-glass" />
           </button>
           <div>
-            <h1 className="text-xl font-semibold text-foreground">Мои задания</h1>
-            <p className="text-sm text-muted-foreground">89 заданий</p>
+            <h1 className="text-xl font-semibold text-glass">Мои задания</h1>
+            <p className="text-sm text-glass-muted">89 заданий</p>
           </div>
-        </div>
-        <div className="bg-white rounded-lg p-2">
-          <img 
-            src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
-            alt="Билайн логотип" 
-            className="w-16 h-auto"
-          />
         </div>
       </div>
 
@@ -108,25 +101,25 @@ const Tasks = () => {
         {tasks.map((task, index) => (
           <div 
             key={index} 
-            className={`bg-card/60 backdrop-blur-lg rounded-2xl p-4 pb-16 shadow-lg relative transition-colors border border-white/10 ${
-              task.isLocked ? 'opacity-60' : 'cursor-pointer hover:bg-card/80'
+            className={`glass-card rounded-3xl p-6 pb-20 shadow-inner relative transition-all ${
+              task.isLocked ? 'opacity-60' : 'cursor-pointer hover:bg-white/25'
             }`}
             onClick={() => handleTaskClick(task.title, task.isLocked)}
           >
             <div>
-              <h3 className="text-lg font-semibold text-foreground mb-1">{task.title}</h3>
-              <p className="text-sm text-muted-foreground mb-3">{task.count}</p>
+              <h3 className="text-lg font-semibold text-glass mb-1">{task.title}</h3>
+              <p className="text-sm text-glass-muted mb-3">{task.count}</p>
               
               {/* Badge positioned below text */}
-              <span className="bg-purple-accent text-white text-sm font-medium px-2 py-1 rounded-lg">
+              <span className="bg-white/20 text-glass text-sm font-medium px-3 py-1 rounded-2xl border border-white/30">
                 {task.badge}
               </span>
             </div>
             
             {/* Lock icon */}
             {task.isLocked && (
-              <div className="absolute bottom-4 right-4">
-                <Lock className="w-6 h-6 text-muted-foreground" />
+              <div className="absolute bottom-6 right-6">
+                <Lock className="w-6 h-6 text-glass-muted" />
               </div>
             )}
           </div>

@@ -15,28 +15,21 @@ export const TaskHeader = ({ onBack, onClose, title, subtitle }: TaskHeaderProps
       <div className="flex items-center gap-4">
         <button 
           onClick={onBack}
-          className="w-8 h-8 flex items-center justify-center"
+          className="w-10 h-10 glass-subtle rounded-2xl flex items-center justify-center"
         >
-          <ArrowLeft className="w-6 h-6 text-foreground" />
+          <ArrowLeft className="w-6 h-6 text-glass" />
         </button>
         <div>
-          <h1 className="text-xl font-semibold text-foreground">{title}</h1>
-          <p className="text-sm text-muted-foreground">{subtitle}</p>
+          <h1 className="text-xl font-semibold text-glass">{title}</h1>
+          <p className="text-sm text-glass-muted">{subtitle}</p>
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <div className="bg-white rounded-lg p-2">
-          <img 
-            src="/lovable-uploads/2b30c222-0182-4f9f-90f1-5056bee4557e.png" 
-            alt="Билайн логотип" 
-            className="w-12 h-auto"
-          />
-        </div>
         <button 
           onClick={onClose}
-          className="w-10 h-10 bg-muted rounded-2xl flex items-center justify-center"
+          className="w-10 h-10 glass-subtle rounded-2xl flex items-center justify-center"
         >
-          <X className="w-5 h-5 text-foreground" />
+          <X className="w-5 h-5 text-glass" />
         </button>
       </div>
     </div>
