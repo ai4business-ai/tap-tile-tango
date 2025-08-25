@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useChatAssistant } from '@/hooks/useChatAssistant';
 import { PromptTester } from '@/components/PromptTester';
+import { BlurredAnswerBlock } from '@/components/BlurredAnswerBlock';
 import { useToast } from '@/hooks/use-toast';
 
 // Helper function to format assistant messages into paragraphs
@@ -387,112 +388,81 @@ const TaskDocumentAnalysis = () => {
         placeholder="Проанализируй этот документ и создай executive summary..."
       />
 
-      {/* Answer Form */}
-      <Card className="mb-6">
+      {/* Блок ответа */}
+      {!isChatMode ? (
+        <BlurredAnswerBlock
+          value={userAnswer}
+          onChange={setUserAnswer}
+          onSubmit={handleSubmitTask}
+          disabled={isLoading}
+          isSubmitting={isLoading}
+          canSubmit={selectedDocument && userAnswer.trim().length >= 10}
+          taskDescription="Выберите документ для анализа и опишите ваши выводы на основе изучения материала."
+          placeholder="Опишите ваши выводы после анализа документа..."
+        />
+      ) : (
+        <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            {isChatMode && <Bot className="w-5 h-5 text-primary" />}
-            {isChatMode ? 'Чат с тьютором' : 'Ваш ответ'}
+            <Bot className="w-5 h-5 text-primary" />
+            Чат с тьютором
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {!isChatMode ? (
-            <div className="space-y-4">
-              {selectedDocument && (
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Выбранный документ:</label>
-                  <div className="flex items-center gap-2 p-2 bg-muted/40 rounded-lg border">
-                    <FileText className="w-4 h-4 text-primary" />
-                    <span className="text-sm text-foreground">
-                      {documents.find(doc => doc.id === selectedDocument)?.title}
-                    </span>
+          <div className="space-y-4">
+            {/* Chat Messages */}
+            <div className="max-h-[400px] overflow-y-auto space-y-3">
+              {chatMessages.map((message, index) => (
+                <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] md:max-w-[75%] p-3 rounded-lg text-sm ${
+                    message.role === 'user' 
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'bg-muted text-muted-foreground'
+                  }`}>
+                    {message.role === 'tutor' ? (
+                      <div className="space-y-2">
+                        {formatAssistantMessage(message.content).map((paragraph, pIndex) => (
+                          <p key={pIndex} className="leading-relaxed">
+                            {paragraph.endsWith('.') ? paragraph : paragraph + '.'}
+                          </p>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="leading-relaxed">{message.content}</div>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-muted p-3 rounded-lg text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-75"></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-150"></div>
+                      <span className="ml-2">Тьютор печатает...</span>
+                    </div>
                   </div>
                 </div>
               )}
-              
-              <div>
-                <label className="text-sm font-medium text-foreground block mb-2">Ваш промпт и executive summary:</label>
-                <Textarea
-                  value={userAnswer}
-                  onChange={(e) => setUserAnswer(e.target.value)}
-                  placeholder="Опишите ваш промпт для ИИ и приложите получившееся executive summary..."
-                  className="min-h-[150px]"
-                  maxLength={4000}
-                />
-                <div className="text-sm text-muted-foreground mt-1">
-                  {userAnswer.length}/4000 символов
-                </div>
-              </div>
             </div>
-          ) : (
-             <div className="space-y-4">
-               {/* Chat Messages */}
-               <div className="max-h-[400px] overflow-y-auto space-y-3">
-                 {chatMessages.map((message, index) => (
-                   <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                     <div className={`max-w-[85%] md:max-w-[75%] p-3 rounded-lg text-sm ${
-                       message.role === 'user' 
-                         ? 'bg-primary text-primary-foreground' 
-                         : 'bg-muted text-muted-foreground'
-                     }`}>
-                       {message.role === 'tutor' ? (
-                         <div className="space-y-2">
-                           {formatAssistantMessage(message.content).map((paragraph, pIndex) => (
-                             <p key={pIndex} className="leading-relaxed">
-                               {paragraph.endsWith('.') ? paragraph : paragraph + '.'}
-                             </p>
-                           ))}
-                         </div>
-                       ) : (
-                         <div className="leading-relaxed">{message.content}</div>
-                       )}
-                     </div>
-                   </div>
-                 ))}
-                 {isLoading && (
-                   <div className="flex justify-start">
-                     <div className="bg-muted p-3 rounded-lg text-sm text-muted-foreground">
-                       <div className="flex items-center gap-2">
-                         <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                         <div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-75"></div>
-                         <div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-150"></div>
-                         <span className="ml-2">Тьютор печатает...</span>
-                       </div>
-                     </div>
-                   </div>
-                 )}
-               </div>
-              
-              {/* Message Input */}
-              <div className="flex gap-2">
-                <Input
-                  value={currentMessage}
-                  onChange={(e) => setCurrentMessage(e.target.value)}
-                  placeholder="Введите ваш ответ..."
-                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  className="flex-1"
-                />
-                <Button onClick={handleSendMessage} size="icon">
-                  <Send className="w-4 h-4" />
-                </Button>
-              </div>
+           
+            {/* Message Input */}
+            <div className="flex gap-2">
+              <Input
+                value={currentMessage}
+                onChange={(e) => setCurrentMessage(e.target.value)}
+                placeholder="Введите ваш ответ..."
+                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                className="flex-1"
+              />
+              <Button onClick={handleSendMessage} size="icon">
+                <Send className="w-4 h-4" />
+              </Button>
             </div>
-          )}
+          </div>
         </CardContent>
       </Card>
-
-      {/* Submit Button */}
-      {!isChatMode && (
-        <div className="mb-4">
-          <Button 
-            onClick={handleSubmitTask}
-            disabled={!selectedDocument || !userAnswer.trim() || isLoading}
-            className="w-full py-4 text-base font-medium"
-          >
-            <CheckCircle className="w-4 h-4 mr-2" />
-            {isLoading ? 'Отправляем...' : 'Сдать задание'}
-          </Button>
-        </div>
       )}
     </div>
   );

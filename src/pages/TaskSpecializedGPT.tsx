@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Bot, CheckCircle, Target, Lightbulb, Trophy } from 'lucide-react';
 import { PromptTester } from '@/components/PromptTester';
+import { BlurredAnswerBlock } from '@/components/BlurredAnswerBlock';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -111,32 +112,15 @@ const TaskSpecializedGPT = () => {
         placeholder="Создай инструкцию для GPT-ассистента, который анализирует документы..."
       />
 
-      {/* Answer Form */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="text-base">Ваш ответ</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Textarea
-            value={userAnswer}
-            onChange={(e) => setUserAnswer(e.target.value)}
-            placeholder="Опишите тип документов вашего отдела, приложите полную инструкцию для GPT и примеры результатов его работы..."
-            className="min-h-[150px]"
-            maxLength={4000}
-          />
-          <div className="text-sm text-muted-foreground mt-1">
-            {userAnswer.length}/4000 символов
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Submit Button */}
-      <div className="mb-4">
-        <Button className="w-full py-4 text-base font-medium">
-          <CheckCircle className="w-4 h-4 mr-2" />
-          Сдать задание
-        </Button>
-      </div>
+      {/* Блок ответа */}
+      <BlurredAnswerBlock
+        value={userAnswer}
+        onChange={setUserAnswer}
+        onSubmit={() => console.log('Задание отправлено:', userAnswer)}
+        canSubmit={userAnswer.trim().length >= 10}
+        taskDescription="Создайте специализированный GPT для анализа документов и опишите ваш подход."
+        placeholder="Опишите создание вашего специализированного GPT..."
+      />
     </div>
   );
 };

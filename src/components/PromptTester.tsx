@@ -153,11 +153,11 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
             onChange={(e) => setPrompt(e.target.value)}
             placeholder={getPlaceholderText()}
             className="min-h-[100px]"
-            maxLength={2000}
+            maxLength={4000}
             disabled={isLoading || attemptsRemaining <= 0}
           />
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>{prompt.length}/2000 символов</span>
+            <span>{prompt.length}/4000 символов</span>
           </div>
         </div>
 
