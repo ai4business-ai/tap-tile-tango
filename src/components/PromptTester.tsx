@@ -223,20 +223,20 @@ export const PromptTester = ({ taskContext, taskId, documentContent, placeholder
       <CardContent className="space-y-4">
         {/* Chat Messages */}
         {messages.length > 0 && (
-          <div className="max-h-96 overflow-y-auto space-y-4 p-4 border rounded-lg bg-muted/30">
+          <div className="max-h-[50vh] overflow-y-auto space-y-4 p-4 border rounded-lg bg-muted/30">
             {messages.map((message, index) => (
               <div
                 key={index}
                 className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-lg text-sm ${
+                  className={`max-w-[70%] sm:max-w-[75%] p-3 rounded-lg text-sm break-words overflow-wrap-break-word ${
                     message.type === 'user'
                       ? 'bg-primary text-primary-foreground ml-auto'
                       : 'bg-background border shadow-sm'
                   }`}
                 >
-                  <div className="whitespace-pre-wrap">{message.content}</div>
+                  <div className="whitespace-pre-wrap break-words">{message.content}</div>
                   <div className={`text-xs mt-1 opacity-70 ${
                     message.type === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
                   }`}>

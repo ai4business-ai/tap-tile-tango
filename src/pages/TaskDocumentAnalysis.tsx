@@ -193,7 +193,7 @@ const TaskDocumentAnalysis = () => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 md:p-6 lg:p-8 w-full max-w-4xl mx-auto overflow-x-hidden">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
         <button 
@@ -411,10 +411,10 @@ const TaskDocumentAnalysis = () => {
         <CardContent>
           <div className="space-y-4">
             {/* Chat Messages */}
-            <div className="max-h-[400px] overflow-y-auto space-y-3">
+            <div className="max-h-[50vh] overflow-y-auto space-y-3">
               {chatMessages.map((message, index) => (
                 <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] md:max-w-[75%] p-3 rounded-lg text-sm ${
+                  <div className={`max-w-[70%] sm:max-w-[75%] p-3 rounded-lg text-sm break-words overflow-wrap-break-word ${
                     message.role === 'user' 
                       ? 'bg-primary text-primary-foreground' 
                       : 'bg-muted text-muted-foreground'
