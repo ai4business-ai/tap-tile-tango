@@ -125,7 +125,7 @@ const TaskDocumentAnalysis = () => {
       try {
         const tutorResponse = await sendMessage(
           contextualMessage,
-          'Анализ объемного документа: создание executive summary для документа 20+ страниц',
+          'Анализ документов и создание executive summary',
           undefined,
           selectedDocument
         );
@@ -151,7 +151,7 @@ const TaskDocumentAnalysis = () => {
       try {
         const tutorResponse = await sendMessage(
           userMessage,
-          'Анализ объемного документа: создание executive summary для документа 20+ страниц',
+          'Анализ документов и создание executive summary',
           undefined,
           selectedDocument
         );
