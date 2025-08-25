@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { SecurityProvider } from "@/components/SecurityProvider";
 import TelegramAPI from "@/lib/telegram";
 import Index from "./pages/Index";
 import Tasks from "./pages/Tasks";
@@ -25,6 +26,12 @@ const App = () => {
     const tg = TelegramAPI.getInstance();
     const webApp = tg.getWebApp();
 
+    // Security: Validate Telegram WebApp initialization
+    if (!webApp || typeof webApp.ready !== 'function') {
+      console.warn('[SECURITY] Invalid Telegram WebApp instance detected');
+      return;
+    }
+
     // Настройка темы приложения
     if (webApp.colorScheme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -34,9 +41,15 @@ const App = () => {
     webApp.ready();
     webApp.expand();
 
-    // Настройка цветов приложения
-    webApp.headerColor = webApp.themeParams.bg_color || '#ffffff';
-    webApp.backgroundColor = webApp.themeParams.bg_color || '#ffffff';
+    // Настройка цветов приложения с валидацией
+    const bgColor = webApp.themeParams?.bg_color;
+    if (bgColor && /^#[0-9A-Fa-f]{6}$/.test(bgColor)) {
+      webApp.headerColor = bgColor;
+      webApp.backgroundColor = bgColor;
+    } else {
+      webApp.headerColor = '#ffffff';
+      webApp.backgroundColor = '#ffffff';
+    }
 
     // Отслеживание изменений темы
     const handleThemeChanged = () => {
@@ -57,28 +70,30 @@ const App = () => {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/tasks" element={<Tasks />} />
-            <Route path="/tasks/:category" element={<TaskCategory />} />
-            <Route path="/task-detail" element={<TaskDetail />} />
-            <Route path="/webinar-records" element={<WebinarRecords />} />
-            <Route path="/my-progress" element={<MyProgress />} />
-            <Route path="/skill-assignments/:skillName" element={<SkillAssignments />} />
-            <Route path="/task/document-analysis" element={<TaskDocumentAnalysis />} />
-            <Route path="/task/deep-research" element={<TaskDeepResearch />} />
-            <Route path="/task/specialized-gpt" element={<TaskSpecializedGPT />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <SecurityProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/tasks" element={<Tasks />} />
+              <Route path="/tasks/:category" element={<TaskCategory />} />
+              <Route path="/task-detail" element={<TaskDetail />} />
+              <Route path="/webinar-records" element={<WebinarRecords />} />
+              <Route path="/my-progress" element={<MyProgress />} />
+              <Route path="/skill-assignments/:skillName" element={<SkillAssignments />} />
+              <Route path="/task/document-analysis" element={<TaskDocumentAnalysis />} />
+              <Route path="/task/deep-research" element={<TaskDeepResearch />} />
+              <Route path="/task/specialized-gpt" element={<TaskSpecializedGPT />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </SecurityProvider>
   );
 };
 

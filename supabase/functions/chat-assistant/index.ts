@@ -6,9 +6,15 @@ const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+// Enhanced security headers including CSP
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.openai.com",
+  'X-Frame-Options': 'DENY',
+  'X-Content-Type-Options': 'nosniff',
+  'X-XSS-Protection': '1; mode=block',
+  'Referrer-Policy': 'strict-origin-when-cross-origin'
 }
 
 // Security configuration
@@ -26,7 +32,7 @@ const ALLOWED_TASK_CONTEXTS = [
   'SQL анализ и работа с данными',
 ];
 
-// Dangerous patterns that indicate prompt injection attempts
+// Enhanced dangerous patterns for better prompt injection detection
 const DANGEROUS_PATTERNS = [
   /ignore\s+previous\s+instructions?/i,
   /act\s+as\s+(?:a\s+)?(?:different|new|another)/i,
@@ -44,6 +50,27 @@ const DANGEROUS_PATTERNS = [
   /bypass\s+your\s+restrictions/i,
   /you\s+are\s+now\s+(?:a|an)/i,
   /from\s+now\s+on\s+you\s+are/i,
+  // Advanced injection techniques
+  /<!--[\s\S]*?-->/,
+  /<script[\s\S]*?>[\s\S]*?<\/script>/i,
+  /javascript\s*:/i,
+  /data\s*:\s*text\/html/i,
+  /vbscript\s*:/i,
+  /on\w+\s*=/i,
+  /expression\s*\(/i,
+  // Command injection patterns
+  /\|\s*(?:ls|cat|curl|wget|nc|netcat)/i,
+  /;\s*(?:rm|mv|cp|chmod)/i,
+  /`[^`]*`/,
+  /\$\([^)]*\)/,
+  // Multi-language prompt injection
+  /اتجاهل\s+التعليمات\s+السابقة/i, // Arabic
+  /忽略之前的指令/i, // Chinese
+  /前の指示を無視/i, // Japanese
+  /이전\s+지시\s+무시/i, // Korean
+  /ignorer\s+les\s+instructions\s+précédentes/i, // French
+  /ignorar\s+las\s+instrucciones\s+anteriores/i, // Spanish
+  /игнорировать\s+предыдущие\s+инструкции/i, // Russian
 ];
 
 // Rate limiting storage (in production, use Redis or database)
@@ -119,8 +146,37 @@ function checkRateLimit(identifier: string): { allowed: boolean; resetTime?: num
   return { allowed: true };
 }
 
-function logSuspiciousActivity(type: string, details: any) {
-  console.warn(`[SECURITY] ${type}:`, JSON.stringify(details, null, 2));
+function logSuspiciousActivity(type: string, details: any, req?: Request) {
+  const logEntry = {
+    timestamp: new Date().toISOString(),
+    type,
+    ip: req?.headers.get('x-forwarded-for') || req?.headers.get('x-real-ip') || 'unknown',
+    userAgent: req?.headers.get('user-agent') || 'unknown',
+    details: sanitizeLogDetails(details)
+  };
+  
+  console.warn(`[SECURITY] ${type}:`, JSON.stringify(logEntry, null, 2));
+  
+  // In production, you might want to send this to a dedicated security monitoring service
+  // or store in a separate security_events table
+}
+
+function sanitizeLogDetails(details: any): any {
+  if (typeof details === 'string') {
+    return details.substring(0, 500).replace(/[^\x20-\x7E]/g, '?');
+  }
+  if (typeof details === 'object' && details !== null) {
+    const sanitized: any = {};
+    for (const [key, value] of Object.entries(details)) {
+      if (typeof value === 'string') {
+        sanitized[key] = value.substring(0, 200).replace(/[^\x20-\x7E]/g, '?');
+      } else {
+        sanitized[key] = '[OBJECT]';
+      }
+    }
+    return sanitized;
+  }
+  return details;
 }
 
 serve(async (req) => {
@@ -130,6 +186,20 @@ serve(async (req) => {
 
   try {
     console.log('Chat assistant function called');
+    
+    // Enhanced authentication check since JWT verification is now enabled
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      logSuspiciousActivity('MISSING_AUTH', { url: req.url }, req);
+      return new Response(
+        JSON.stringify({ error: 'Missing or invalid authorization header' }),
+        { 
+          status: 401, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+    
     const requestBody = await req.json();
     const { message, taskContext, threadId, assistantId, documentId } = requestBody;
     
@@ -147,7 +217,7 @@ serve(async (req) => {
       logSuspiciousActivity('RATE_LIMIT_EXCEEDED', { 
         ip: clientIP, 
         resetTime: rateLimitCheck.resetTime 
-      });
+      }, req);
       return new Response(
         JSON.stringify({ error: 'Rate limit exceeded. Try again later.' }),
         { 
@@ -169,7 +239,7 @@ serve(async (req) => {
         reason: validation.reason,
         messageSnippet: sanitizedMessage.substring(0, 200),
         taskContext: sanitizedTaskContext
-      });
+      }, req);
       return new Response(
         JSON.stringify({ error: validation.reason }),
         { 
@@ -230,7 +300,7 @@ serve(async (req) => {
           ip: clientIP,
           threadId: currentThreadId,
           messageCount: messagesData.data.length
-        });
+        }, req);
         return new Response(
           JSON.stringify({ error: 'Maximum messages per thread exceeded.' }),
           { 

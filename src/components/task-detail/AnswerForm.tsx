@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Textarea } from '@/components/ui/textarea';
+import { useSecurityContext } from '@/components/SecurityProvider';
 
 interface AnswerFormProps {
   value: string;
@@ -9,6 +10,24 @@ interface AnswerFormProps {
 }
 
 export const AnswerForm = ({ value, onChange, disabled }: AnswerFormProps) => {
+  const { validateInput, sanitizeInput } = useSecurityContext();
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const rawValue = e.target.value;
+    
+    // Validate input for security issues
+    const validation = validateInput(rawValue);
+    if (!validation.isValid) {
+      console.warn(`[SECURITY] Input validation failed: ${validation.reason}`);
+      // Optionally show a toast warning
+      return;
+    }
+
+    // Sanitize input before updating state
+    const sanitizedValue = sanitizeInput(rawValue);
+    onChange(sanitizedValue);
+  };
+
   return (
     <div>
       <h3 className="text-lg font-semibold text-foreground mb-3">Задание</h3>
@@ -20,7 +39,7 @@ export const AnswerForm = ({ value, onChange, disabled }: AnswerFormProps) => {
         <label className="text-sm font-medium text-foreground block">Ваш ответ:</label>
         <Textarea
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={handleChange}
           placeholder="Вставьте ваш SQL-запрос и описание анализа..."
           className="min-h-[120px]"
           disabled={disabled}

@@ -1,7 +1,7 @@
 project_id = "nhxrajtfxavkkzqyfrok"
 
 [functions.chat-assistant]
-verify_jwt = false
+verify_jwt = true
 
 [functions.prompt-tester]
-verify_jwt = false
+verify_jwt = true
