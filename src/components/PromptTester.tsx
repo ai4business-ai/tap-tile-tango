@@ -176,12 +176,12 @@ export const PromptTester = ({ taskContext, taskId, documentId, placeholder }: P
     if (placeholder) return placeholder;
     
     const placeholders = {
-      'document-analysis': 'Проанализируй этот документ и создай executive summary...',
-      'deep-research': 'Помоги сформулировать исследовательские вопросы по теме...',
-      'specialized-gpt': 'Создай инструкцию для GPT-ассистента, который...'
+      'document-analysis': 'Напишите промпт для анализа документов (система проверит только структуру)...',
+      'deep-research': 'Напишите промпт для исследовательских задач (система проверит только структуру)...',
+      'specialized-gpt': 'Напишите промпт для GPT-ассистента (система проверит только структуру)...'
     };
     
-    return placeholders[taskContext as keyof typeof placeholders] || 'Введите ваш промпт...';
+    return placeholders[taskContext as keyof typeof placeholders] || 'Введите промпт для проверки структуры...';
   };
 
   return (
@@ -201,9 +201,9 @@ export const PromptTester = ({ taskContext, taskId, documentId, placeholder }: P
                 <div className="space-y-2">
                   <h4 className="font-medium">О тестировании промптов</h4>
                   <p className="text-sm text-muted-foreground">
-                    Это окно предназначено только для тестирования промптов в рамках данного задания. 
-                    У вас есть 5 попыток в день.
-                    {documentId && ' Выбранный документ автоматически передается в контексте.'}
+                    <strong>ВАЖНО:</strong> Этот инструмент проверяет ТОЛЬКО структуру ваших промптов.
+                    Он НЕ выполняет задания и НЕ дает готовые ответы.
+                    У вас есть 5 попыток в день для улучшения формулировки промптов.
                   </p>
                 </div>
               </PopoverContent>
