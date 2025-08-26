@@ -56,15 +56,39 @@ function validatePrompt(prompt: string, taskContext: string): { isValid: boolean
     return { isValid: false, error: 'Промпт слишком длинный (максимум 2000 символов)' };
   }
   
+  // Anti-cheating patterns detection
+  const lowerPrompt = prompt.toLowerCase();
+  const suspiciousPatterns = [
+    // Direct solution requests
+    'дай ответ', 'покажи ответ', 'реши задание', 'решение задачи', 'готовый ответ',
+    'выполни задание', 'сделай домашку', 'сделай за меня',
+    // SQL and code injection attempts
+    'select ', 'insert ', 'update ', 'delete ', 'drop ', 'create table', 'alter table',
+    // System prompt bypass attempts
+    'игнорируй инструкции', 'забудь про систему', 'ты теперь', 'притворись что',
+    'roleplay', 'act as', 'pretend you are', 'ignore previous', 'new instructions',
+    // Direct cheating attempts
+    'весь текст документа', 'скопируй документ', 'покажи весь документ полностью',
+    'что в документе написано', 'перепиши документ', 'executive summary готовый'
+  ];
+  
+  for (const pattern of suspiciousPatterns) {
+    if (lowerPrompt.includes(pattern)) {
+      return { 
+        isValid: false, 
+        error: 'Промпт содержит недопустимые запросы. Пожалуйста, формулируйте запросы для изучения создания промптов.' 
+      };
+    }
+  }
+  
   // Basic validation for task relevance
   const taskKeywords = {
-    'document-analysis': ['анализ', 'документ', 'резюме', 'executive', 'summary'],
-    'deep-research': ['исследование', 'research', 'поиск', 'данные', 'информация'],
-    'specialized-gpt': ['gpt', 'инструкция', 'система', 'prompt', 'specialized']
+    'document-analysis': ['анализ', 'документ', 'резюме', 'executive', 'summary', 'промпт'],
+    'deep-research': ['исследование', 'research', 'поиск', 'данные', 'информация', 'промпт'],
+    'specialized-gpt': ['gpt', 'инструкция', 'система', 'prompt', 'specialized', 'промпт']
   };
   
   const keywords = taskKeywords[taskContext as keyof typeof taskKeywords] || [];
-  const lowerPrompt = prompt.toLowerCase();
   
   const hasRelevantKeyword = keywords.some(keyword => 
     lowerPrompt.includes(keyword.toLowerCase())
@@ -73,7 +97,7 @@ function validatePrompt(prompt: string, taskContext: string): { isValid: boolean
   if (!hasRelevantKeyword && prompt.length > 50) {
     return { 
       isValid: false, 
-      error: 'Промпт должен быть связан с контекстом задания' 
+      error: 'Промпт должен быть связан с контекстом задания и созданием промптов' 
     };
   }
   
@@ -81,22 +105,47 @@ function validatePrompt(prompt: string, taskContext: string): { isValid: boolean
 }
 
 function getSystemPrompt(taskContext: string): string {
+  const baseInstructions = `ВАЖНО: Ты помогаешь ТОЛЬКО с тестированием и созданием промптов, а НЕ с выполнением заданий.
+
+ЗАПРЕЩЕНО:
+- Давать готовые ответы на задания
+- Выполнять задания за пользователя  
+- Предоставлять полные тексты документов
+- Создавать готовые executive summary
+- Давать SQL запросы или код
+- Отвечать на вопросы, не связанные с созданием промптов
+
+РАЗРЕШЕНО ТОЛЬКО:
+- Помогать улучшить формулировку промптов
+- Объяснять принципы создания эффективных промптов
+- Давать краткие примеры структуры промптов
+- Советовать по улучшению техники промптинга`;
+
   const systemPrompts = {
-    'document-analysis': `Ты помогаешь пользователю научиться анализировать документы и создавать executive summary. 
-Отвечай кратко и по существу. Если пользователь предоставил документ, анализируй его согласно его промпту.
-Фокусируйся на практических советах по анализу документов.`,
+    'document-analysis': `${baseInstructions}
+
+Контекст: Анализ документов и создание executive summary.
+Помогай только с формулировкой промптов для анализа документов. 
+НЕ анализируй документы сам - только помогай создавать промпты для анализа.
+Отвечай максимум 2-3 предложения.`,
     
-    'deep-research': `Ты помогаешь пользователю освоить навыки глубокого исследования и поиска информации.
-Отвечай кратко и по существу. Помогай формулировать исследовательские вопросы и методы поиска.
-Фокусируйся на методологии исследования.`,
+    'deep-research': `${baseInstructions}
+
+Контекст: Глубокое исследование и поиск информации.
+Помогай только с созданием промптов для исследовательских задач.
+НЕ проводи исследования сам - только помогай формулировать промпты для исследований.
+Отвечай максимум 2-3 предложения.`,
     
-    'specialized-gpt': `Ты помогаешь пользователю научиться создавать специализированные GPT-ассистенты.
-Отвечай кратко и по существу. Помогай с написанием инструкций и настройкой поведения GPT.
-Фокусируйся на лучших практиках создания GPT.`
+    'specialized-gpt': `${baseInstructions}
+
+Контекст: Создание специализированных GPT-ассистентов.
+Помогай только с написанием инструкций и промптов для GPT.
+НЕ создавай готовые инструкции - только помогай улучшать их формулировку.
+Отвечай максимум 2-3 предложения.`
   };
   
   return systemPrompts[taskContext as keyof typeof systemPrompts] || 
-         'Ты помогаешь пользователю с учебным заданием. Отвечай кратко и по существу.';
+         `${baseInstructions}\n\nОтвечай максимум 2-3 предложения. Помогай только с созданием промптов.`;
 }
 
 serve(async (req) => {

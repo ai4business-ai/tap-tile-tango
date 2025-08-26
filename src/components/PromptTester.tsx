@@ -128,11 +128,13 @@ export const PromptTester = ({ taskContext, taskId, documentId, placeholder }: P
         throw new Error(supabaseError.message);
       }
 
+      // Always update attempts counter when we get a response from backend
+      if (data.remaining !== undefined) {
+        updateAttempts(data.remaining);
+      }
+
       if (data.error) {
         setError(data.error);
-        if (data.remaining !== undefined) {
-          updateAttempts(data.remaining);
-        }
       } else {
         const aiMessage: ChatMessage = {
           type: 'ai',
@@ -143,7 +145,6 @@ export const PromptTester = ({ taskContext, taskId, documentId, placeholder }: P
         const updatedMessages = [...newMessages, aiMessage];
         setMessages(updatedMessages);
         saveChatHistory(updatedMessages);
-        updateAttempts(data.remaining);
         toast.success('Промпт протестирован успешно');
       }
     } catch (err) {
