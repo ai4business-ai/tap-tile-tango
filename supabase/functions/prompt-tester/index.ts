@@ -2,7 +2,6 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
@@ -13,39 +12,66 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Rate limiting store (in production, use Redis or database)
-const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
-
 const DAILY_LIMIT = 5;
-const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
 
-function getRateLimitKey(taskId: string, userAgent: string): string {
-  return `${taskId}_${userAgent?.slice(0, 50)}`;
+function getToday(): string {
+  return new Date().toISOString().slice(0, 10);
 }
 
-function checkRateLimit(key: string): { allowed: boolean; remaining: number } {
-  const now = Date.now();
-  const record = rateLimitStore.get(key);
-  
-  if (!record || now > record.resetTime) {
-    // Reset or create new record
-    rateLimitStore.set(key, { count: 0, resetTime: now + RESET_INTERVAL });
-    return { allowed: true, remaining: DAILY_LIMIT };
+async function getCurrentCount(deviceId: string, taskId: string): Promise<number> {
+  const today = getToday();
+  const { data, error } = await supabase
+    .from('prompt_attempts')
+    .select('count')
+    .eq('device_id', deviceId)
+    .eq('task_id', taskId)
+    .eq('date', today)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Error reading attempts:', error);
+    return 0;
   }
-  
-  if (record.count >= DAILY_LIMIT) {
-    return { allowed: false, remaining: 0 };
-  }
-  
-  return { allowed: true, remaining: DAILY_LIMIT - record.count };
+  return data?.count ?? 0;
 }
 
-function incrementRateLimit(key: string): void {
-  const record = rateLimitStore.get(key);
-  if (record) {
-    record.count += 1;
+async function incrementAndGet(deviceId: string, taskId: string): Promise<{ allowed: boolean; remaining: number; count: number }>{
+  const today = getToday();
+  const current = await getCurrentCount(deviceId, taskId);
+
+  if (current >= DAILY_LIMIT) {
+    return { allowed: false, remaining: 0, count: current };
+  }
+
+  if (current === 0) {
+    const { error: insertError } = await supabase.from('prompt_attempts').insert({
+      device_id: deviceId,
+      task_id: taskId,
+      date: today,
+      count: 1,
+    });
+    if (insertError) {
+      console.error('Error inserting attempts:', insertError);
+      // Fallback: do not block, but return remaining conservatively
+      return { allowed: true, remaining: Math.max(0, DAILY_LIMIT - 1), count: 1 };
+    }
+    return { allowed: true, remaining: DAILY_LIMIT - 1, count: 1 };
+  } else {
+    const next = current + 1;
+    const { error: updateError } = await supabase
+      .from('prompt_attempts')
+      .update({ count: next })
+      .eq('device_id', deviceId)
+      .eq('task_id', taskId)
+      .eq('date', today);
+    if (updateError) {
+      console.error('Error updating attempts:', updateError);
+      return { allowed: true, remaining: Math.max(0, DAILY_LIMIT - next), count: next };
+    }
+    return { allowed: true, remaining: Math.max(0, DAILY_LIMIT - next), count: next };
   }
 }
+
 
 function validatePrompt(prompt: string, taskContext: string): { isValid: boolean; error?: string } {
   if (!prompt || prompt.trim().length === 0) {
@@ -104,24 +130,21 @@ function validatePrompt(prompt: string, taskContext: string): { isValid: boolean
   return { isValid: true };
 }
 
-function getSystemPrompt(taskContext: string): string {
-  return `Ты - валидатор промптов. Твоя ЕДИНСТВЕННАЯ задача - оценить структуру и качество предложенного промпта.
+function evaluatePromptStructure(prompt: string): string {
+  const p = prompt.trim();
+  const hasSections = /(^|\n)\s*(цель|роль|шаги|инструкция|формат|критерии|ограничения)\s*[:\-]/i.test(p);
+  const hasBullets = /(^|\n)[\-\*•]/.test(p);
+  const hasNumbered = /(^|\n)\s*\d+\./.test(p);
+  const lengthOK = p.length >= 40;
 
-СТРОГО ЗАПРЕЩЕНО:
-- Выполнять задания или отвечать на вопросы из промпта
-- Давать любую информацию по содержанию задания
-- Анализировать документы, проводить исследования, создавать инструкции
-- Упоминать слова: анализ, исследование, документ, summary, executive, GPT
+  const wellStructured = (hasSections || hasBullets || hasNumbered) && lengthOK;
 
-ОТВЕЧАЙ ТОЛЬКО:
-- "Промпт имеет четкую структуру" или "Промпт нуждается в улучшении структуры"
-- "Рекомендую сделать запрос более конкретным" 
-- "Я проверяю только структуру промптов, не выполняю задания"
-
-МАКСИМУМ: 1-2 предложения. НЕ БОЛЕЕ.
-
-Ты НЕ помощник по заданиям. Ты только валидатор промптов.`;
+  if (wellStructured) {
+    return 'Промпт имеет четкую структуру. Я проверяю только структуру промптов, не выполняю задания.';
+  }
+  return 'Я проверяю только структуру промптов, не выполняю задания. Рекомендую сделать формулировки более конкретными и структурировать разделами.';
 }
+
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -130,132 +153,39 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, taskContext, taskId, documentId } = await req.json();
-    
-    if (!openAIApiKey) {
-      console.error('OpenAI API key not found');
-      return new Response(JSON.stringify({ error: 'OpenAI API key not configured' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    const { prompt, taskContext, taskId, deviceId } = await req.json();
 
-    // Rate limiting
-    const userAgent = req.headers.get('user-agent') || 'unknown';
-    const rateLimitKey = getRateLimitKey(taskId, userAgent);
-    const rateLimit = checkRateLimit(rateLimitKey);
-    
-    if (!rateLimit.allowed) {
-      return new Response(JSON.stringify({ 
+    const device = (deviceId && String(deviceId))
+      || (req.headers.get('x-device-id') || (req.headers.get('user-agent') || 'unknown')).slice(0, 64);
+
+    // Increment attempts first (counts any request with a non-empty prompt)
+    const attempts = await incrementAndGet(device, taskId);
+    if (!attempts.allowed) {
+      console.log(`Prompt test request - Task: ${taskContext}, Remaining attempts: 0`);
+      return new Response(JSON.stringify({
         error: 'Превышен лимит попыток на сегодня (5 попыток в день)',
         remaining: 0
       }), {
-        status: 429,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Validate prompt
+    // Validate prompt after counting the attempt
     const validation = validatePrompt(prompt, taskContext);
     if (!validation.isValid) {
-      return new Response(JSON.stringify({ error: validation.error }), {
-        status: 400,
+      return new Response(JSON.stringify({ error: validation.error, remaining: attempts.remaining }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Increment rate limit counter
-    incrementRateLimit(rateLimitKey);
+    // Generate a strictly limited structural feedback (no task answers)
+    const aiResponse = evaluatePromptStructure(prompt);
 
-    // Prepare messages
-    const messages = [
-      { role: 'system', content: getSystemPrompt(taskContext) }
-    ];
+    console.log(`Prompt test request - Task: ${taskContext}, Remaining attempts: ${attempts.remaining}`);
 
-    // Load document content if documentId is provided
-    if (documentId && taskContext === 'document-analysis') {
-      try {
-        const { data: document, error: docError } = await supabase
-          .from('documents')
-          .select('extracted_text, title')
-          .eq('id', documentId)
-          .single();
-
-        if (docError || !document) {
-          console.error('Error loading document:', docError);
-          return new Response(JSON.stringify({ error: 'Документ не найден' }), {
-            status: 404,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          });
-        }
-
-        const documentContent = document.extracted_text || '';
-        
-        messages.push({
-          role: 'user',
-          content: `Документ для анализа "${document.title}":\n\n${documentContent}\n\nЗапрос пользователя: ${prompt}`
-        });
-      } catch (error) {
-        console.error('Error fetching document:', error);
-        return new Response(JSON.stringify({ error: 'Ошибка загрузки документа' }), {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-    } else {
-      messages.push({ role: 'user', content: prompt });
-    }
-
-    console.log(`Prompt test request - Task: ${taskContext}, Remaining attempts: ${rateLimit.remaining - 1}`);
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
-        messages: messages,
-        max_tokens: 1000,
-        temperature: 0.7,
-      }),
-    });
-
-    const data = await response.json();
-    
-    if (!response.ok) {
-      console.error('OpenAI API error:', data);
-      return new Response(JSON.stringify({ 
-        error: 'Ошибка при обращении к OpenAI API',
-        remaining: rateLimit.remaining - 1
-      }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    let aiResponse = data.choices[0]?.message?.content;
-    
-    // Additional safety filter - block any responses that might contain task solutions
-    if (aiResponse) {
-      const lowerResponse = aiResponse.toLowerCase();
-      const blockedTerms = [
-        'executive summary', 'анализ документа', 'исследование показывает', 
-        'на основе документа', 'результаты исследования', 'в документе говорится',
-        'документ содержит', 'согласно исследованию', 'анализ показал'
-      ];
-      
-      const containsBlockedTerms = blockedTerms.some(term => lowerResponse.includes(term));
-      
-      if (containsBlockedTerms || aiResponse.length > 200) {
-        aiResponse = "Я проверяю только структуру промптов, не выполняю задания. Ваш промпт можно улучшить для большей конкретности.";
-      }
-    }
-    
-    return new Response(JSON.stringify({ 
+    return new Response(JSON.stringify({
       response: aiResponse,
-      remaining: rateLimit.remaining - 1
+      remaining: attempts.remaining
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -263,7 +193,6 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in prompt-tester function:', error);
     return new Response(JSON.stringify({ error: 'Внутренняя ошибка сервера' }), {
-      status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }

@@ -53,6 +53,36 @@ export type Database = {
         }
         Relationships: []
       }
+      prompt_attempts: {
+        Row: {
+          count: number
+          created_at: string
+          date: string
+          device_id: string
+          id: string
+          task_id: string
+          updated_at: string
+        }
+        Insert: {
+          count?: number
+          created_at?: string
+          date?: string
+          device_id: string
+          id?: string
+          task_id: string
+          updated_at?: string
+        }
+        Update: {
+          count?: number
+          created_at?: string
+          date?: string
+          device_id?: string
+          id?: string
+          task_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

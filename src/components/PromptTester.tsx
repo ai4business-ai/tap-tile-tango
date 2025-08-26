@@ -28,10 +28,20 @@ export const PromptTester = ({ taskContext, taskId, documentId, placeholder }: P
   const [isLoading, setIsLoading] = useState(false);
   const [attemptsRemaining, setAttemptsRemaining] = useState(5);
   const [error, setError] = useState('');
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+const messagesEndRef = useRef<HTMLDivElement>(null);
+const deviceIdRef = useRef<string>('');
 
   // Load attempts and chat history from localStorage on component mount
   useEffect(() => {
+    // Ensure stable device id stored on this device
+    const deviceKey = 'device_id';
+    let id = localStorage.getItem(deviceKey);
+    if (!id) {
+      id = (crypto?.randomUUID?.() || Math.random().toString(36).slice(2));
+      localStorage.setItem(deviceKey, id);
+    }
+    deviceIdRef.current = id;
+
     const storageKey = `prompt_attempts_${taskId}`;
     const chatKey = `prompt_chat_${taskId}`;
     
@@ -120,7 +130,8 @@ export const PromptTester = ({ taskContext, taskId, documentId, placeholder }: P
           prompt: userMessage.content,
           taskContext,
           taskId,
-          documentId: documentId || undefined
+          documentId: documentId || undefined,
+          deviceId: deviceIdRef.current,
         }
       });
 
