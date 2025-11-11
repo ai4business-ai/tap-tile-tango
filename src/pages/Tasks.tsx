@@ -10,7 +10,9 @@ const Tasks = () => {
       return; // Do nothing if locked
     }
     
-    if (taskTitle === "Исследования и обработка информации") {
+    if (taskTitle === "Коммуникация и работа в команде") {
+      navigate('/skill-assignments/communication');
+    } else if (taskTitle === "Исследования и обработка информации") {
       navigate('/skill-assignments/research');
     } else if (taskTitle === "Анализ и визуализация данных") {
       navigate('/tasks/data-analysis');
@@ -24,7 +26,7 @@ const Tasks = () => {
       title: "Коммуникация и работа в команде",
       count: "11 заданий",
       badge: "+3",
-      isLocked: true,
+      isLocked: false,
       levels: ["Basic", "Pro", "AI-Native"]
     },
     {

@@ -7,11 +7,40 @@ const SkillAssignments = () => {
   const { skillName } = useParams();
 
   const skillAssignments = {
+    "communication": {
+      title: "Коммуникация и работа в команде",
+      levels: {
+        "Basic": {
+          status: "planned",
+          assignments: [
+            { text: "Подготовить ответ клиенту в нужном тоне", status: "planned", taskId: "client-response" },
+            { text: "Создать agenda и follow-up встречи", status: "planned", taskId: "meeting-agenda" },
+            { text: "Сформулировать конструктивный feedback", status: "planned", taskId: "feedback-colleagues" }
+          ]
+        },
+        "Pro": {
+          status: "locked",
+          assignments: [
+            { text: "Разработать коммуникационную стратегию проекта", status: "locked" },
+            { text: "Создать скрипты для сложных переговоров", status: "locked" },
+            { text: "Построить систему онбординга для новичков в подразделении", status: "locked" }
+          ]
+        },
+        "AI-Native": {
+          status: "locked",
+          assignments: [
+            { text: "Создать AI-медиатора для команды", status: "locked" },
+            { text: "Разработать систему автоматического саммари встреч", status: "locked" },
+            { text: "Построить knowledge graph команды", status: "locked" }
+          ]
+        }
+      }
+    },
     "research": {
       title: "Исследования и обработка информации",
       levels: {
         "Basic": {
-          status: "completed", // completed, planned, locked
+          status: "completed",
           assignments: [
             { text: "Найти и обобщить информацию по рабочему вопросу за 5 минут", status: "completed" },
             { text: "Проанализировать Word/PDF документ объемом 20+ страниц и создать executive summary на 1 страницу", status: "planned", taskId: "document-analysis" },
@@ -40,7 +69,7 @@ const SkillAssignments = () => {
     }
   };
 
-  const currentSkill = skillAssignments["research"];
+  const currentSkill = skillAssignments[skillName as keyof typeof skillAssignments];
   
   if (!currentSkill) {
     return <div>Навык не найден</div>;

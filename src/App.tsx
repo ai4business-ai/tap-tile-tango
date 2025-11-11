@@ -16,6 +16,9 @@ import SkillAssignments from "./pages/SkillAssignments";
 import TaskDocumentAnalysis from "./pages/TaskDocumentAnalysis";
 import TaskDeepResearch from "./pages/TaskDeepResearch";
 import TaskSpecializedGPT from "./pages/TaskSpecializedGPT";
+import TaskClientResponse from "./pages/TaskClientResponse";
+import TaskMeetingAgenda from "./pages/TaskMeetingAgenda";
+import TaskFeedback from "./pages/TaskFeedback";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -87,6 +90,9 @@ const App = () => {
               <Route path="/task/document-analysis" element={<TaskDocumentAnalysis />} />
               <Route path="/task/deep-research" element={<TaskDeepResearch />} />
               <Route path="/task/specialized-gpt" element={<TaskSpecializedGPT />} />
+              <Route path="/task/client-response" element={<TaskClientResponse />} />
+              <Route path="/task/meeting-agenda" element={<TaskMeetingAgenda />} />
+              <Route path="/task/feedback-colleagues" element={<TaskFeedback />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
