@@ -11,33 +11,53 @@ const MyProgress = () => {
 
   const [skills, setSkills] = useState([
     {
-      title: "Исследования и обработка информации",
-      progress: 1, // Current level: Basic
-      targetLevel: 3, // Target level: AI-Native
+      title: "Коммуникация и работа в команде",
+      progress: 1,
+      targetLevel: 1,
       basicCompleted: true,
-      proSelected: true,
-      aiNativeSelected: true,
-      scorePercent: 33, // 1/3 = 33%
-      isGoalAchieved: false
+      proSelected: false,
+      aiNativeSelected: false,
+      scorePercent: 33,
+      isGoalAchieved: true
+    },
+    {
+      title: "Управление знаниями",
+      progress: 1,
+      targetLevel: 1,
+      basicCompleted: true,
+      proSelected: false,
+      aiNativeSelected: false,
+      scorePercent: 33,
+      isGoalAchieved: true
     },
     {
       title: "Создание контента",
       progress: 1,
-      targetLevel: 2, // Changed from 3 to 2 (Pro level)
+      targetLevel: 2,
       basicCompleted: true,
       proSelected: true,
-      aiNativeSelected: false, // Changed from true to false
-      scorePercent: 50, // Changed from 33 to 50 (1/2 = 50%)
+      aiNativeSelected: false,
+      scorePercent: 50,
       isGoalAchieved: false
     },
     {
-      title: "Анализ и визуализация данных",
+      title: "Решение задач и принятие решений",
       progress: 1,
-      targetLevel: 2, // Changed from 3 to 2 (Pro level)
+      targetLevel: 1,
+      basicCompleted: true,
+      proSelected: false,
+      aiNativeSelected: false,
+      scorePercent: 33,
+      isGoalAchieved: true
+    },
+    {
+      title: "Исследования и обработка информации",
+      progress: 1,
+      targetLevel: 3,
       basicCompleted: true,
       proSelected: true,
-      aiNativeSelected: false, // Changed from true to false
-      scorePercent: 50, // Changed from 33 to 50 (1/2 = 50%)
+      aiNativeSelected: true,
+      scorePercent: 33,
       isGoalAchieved: false
     },
     {
@@ -51,44 +71,24 @@ const MyProgress = () => {
       isGoalAchieved: true
     },
     {
-      title: "Решение задач и принятие решений",
+      title: "Анализ и визуализация данных",
       progress: 1,
-      targetLevel: 1,
+      targetLevel: 2,
       basicCompleted: true,
-      proSelected: false,
+      proSelected: true,
       aiNativeSelected: false,
-      scorePercent: 33,
-      isGoalAchieved: true
-    },
-    {
-      title: "Коммуникация и работа в команде",
-      progress: 1,
-      targetLevel: 1,
-      basicCompleted: true,
-      proSelected: false,
-      aiNativeSelected: false,
-      scorePercent: 33,
-      isGoalAchieved: true
+      scorePercent: 50,
+      isGoalAchieved: false
     },
     {
       title: "Продуктивность",
       progress: 1,
-      targetLevel: 2, // Changed from 3 to 2 (Pro level)
+      targetLevel: 2,
       basicCompleted: true,
       proSelected: true,
-      aiNativeSelected: false, // Changed from true to false
-      scorePercent: 50, // Changed from 33 to 50 (1/2 = 50%)
-      isGoalAchieved: false
-    },
-    {
-      title: "Управление знаниями",
-      progress: 1,
-      targetLevel: 1,
-      basicCompleted: true,
-      proSelected: false,
       aiNativeSelected: false,
-      scorePercent: 33,
-      isGoalAchieved: true
+      scorePercent: 50,
+      isGoalAchieved: false
     }
   ]);
 

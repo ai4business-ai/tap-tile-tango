@@ -21,30 +21,23 @@ const Tasks = () => {
 
   const tasks = [
     {
-      title: "Исследования и обработка информации",
-      count: "12 заданий",
+      title: "Коммуникация и работа в команде",
+      count: "11 заданий",
       badge: "+3",
-      isLocked: false,
+      isLocked: true,
+      levels: ["Basic", "Pro", "AI-Native"]
+    },
+    {
+      title: "Управление знаниями",
+      count: "11 заданий",
+      badge: "+3",
+      isLocked: true,
       levels: ["Basic", "Pro", "AI-Native"]
     },
     {
       title: "Создание контента", 
       count: "11 заданий",
       badge: "+3",
-      isLocked: true,
-      levels: ["Basic", "Pro", "AI-Native"]
-    },
-    {
-      title: "Анализ и визуализация данных",
-      count: "11 заданий", 
-      badge: "+3",
-      isLocked: true,
-      levels: ["Basic", "Pro", "AI-Native"]
-    },
-    {
-      title: "Автоматизация процессов",
-      count: "11 заданий",
-      badge: "+3", 
       isLocked: true,
       levels: ["Basic", "Pro", "AI-Native"]
     },
@@ -56,21 +49,28 @@ const Tasks = () => {
       levels: ["Basic", "Pro", "AI-Native"]
     },
     {
-      title: "Коммуникация и работа в команде",
+      title: "Исследования и обработка информации",
+      count: "12 заданий",
+      badge: "+3",
+      isLocked: false,
+      levels: ["Basic", "Pro", "AI-Native"]
+    },
+    {
+      title: "Автоматизация процессов",
       count: "11 заданий",
+      badge: "+3", 
+      isLocked: true,
+      levels: ["Basic", "Pro", "AI-Native"]
+    },
+    {
+      title: "Анализ и визуализация данных",
+      count: "11 заданий", 
       badge: "+3",
       isLocked: true,
       levels: ["Basic", "Pro", "AI-Native"]
     },
     {
       title: "Продуктивность",
-      count: "11 заданий",
-      badge: "+3",
-      isLocked: true,
-      levels: ["Basic", "Pro", "AI-Native"]
-    },
-    {
-      title: "Управление знаниями",
       count: "11 заданий",
       badge: "+3",
       isLocked: true,
