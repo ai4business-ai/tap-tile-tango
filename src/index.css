@@ -8,53 +8,58 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 220 30% 95%;
-    --foreground: 220 20% 15%;
+    /* Dark theme base */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
 
-    --card: 220 15% 98%;
-    --card-foreground: 220 20% 15%;
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 220 15% 98%;
-    --popover-foreground: 220 20% 15%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 220 20% 15%;
-    --primary-foreground: 220 30% 95%;
+    /* Primary - Cyan accent */
+    --primary: 188 100% 42%;
+    --primary-foreground: 222 47% 11%;
 
-    --secondary: 210 20% 85%;
-    --secondary-foreground: 220 20% 15%;
+    /* Secondary - Dark slate */
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 20% 85%;
-    --muted-foreground: 220 15% 35%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 210 20% 85%;
-    --accent-foreground: 220 20% 15%;
+    /* Accent - Teal */
+    --accent: 174 72% 56%;
+    --accent-foreground: 222 47% 11%;
 
-    --destructive: 0 50% 55%;
-    --destructive-foreground: 220 30% 95%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 210 15% 75%;
-    --input: 210 15% 75%;
-    --ring: 180 25% 50%;
+    --border: 217 33% 25%;
+    --input: 217 33% 25%;
+    --ring: 188 100% 42%;
 
-    /* Pastel gradient colors */
-    --gradient-start: 200 40% 70%;
-    --gradient-middle: 240 35% 75%;
-    --gradient-end: 280 30% 80%;
+    /* Dark gradient colors */
+    --gradient-start: 222 47% 11%;
+    --gradient-middle: 220 20% 15%;
+    --gradient-end: 217 33% 25%;
     
-    /* Pastel education app colors */
-    --progress-blue: 200 50% 75%;
-    --purple-gradient: 260 35% 80%;
-    --purple-accent: 260 40% 85%;
-    --green-gradient: 140 35% 75%;
-    --green-accent: 140 40% 80%;
-    --task-red: 350 40% 80%;
-    --gray-light: 220 15% 35%;
+    /* Dark theme education app colors */
+    --progress-blue: 188 85% 65%;
+    --cyan-gradient: 188 100% 42%;
+    --cyan-accent: 180 95% 50%;
+    --teal-gradient: 174 72% 56%;
+    --green-gradient: 160 60% 50%;
+    --green-accent: 160 60% 60%;
+    --task-red: 0 65% 60%;
+    --gray-light: 215 20% 65%;
     
-    /* Additional pastel colors */
-    --pastel-lavender: 270 30% 85%;
-    --pastel-mint: 160 35% 80%;
-    --pastel-peach: 20 40% 85%;
-    --pastel-sky: 200 40% 85%;
+    /* Additional dark theme colors */
+    --dark-cyan: 188 85% 40%;
+    --dark-teal: 174 60% 45%;
+    --dark-slate: 215 25% 20%;
+    --light-cyan: 188 85% 75%;
 
     --radius: 1rem;
 
@@ -114,32 +119,58 @@ All colors MUST be HSL.
 
   body {
     @apply text-foreground min-h-screen;
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    background: linear-gradient(135deg, #0a0e27 0%, #0f1419 35%, #1a2332 70%, #243447 100%);
+    background-attachment: fixed;
   }
 
-  /* iOS 16+ Glassmorphism utilities */
+  /* Glass Morphism utilities - Dark theme optimized */
   .glass {
-    @apply bg-white/15 backdrop-blur-3xl border border-white/30 shadow-inner;
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
   }
   
   .glass-card {
-    @apply bg-white/15 backdrop-blur-3xl border border-white/30 shadow-inner;
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45), 
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
   }
   
   .glass-subtle {
-    @apply bg-white/10 backdrop-blur-3xl border border-white/20 shadow-inner;
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.3);
   }
   
   .glass-strong {
-    @apply bg-white/20 backdrop-blur-3xl border border-white/40 shadow-inner;
+    background: rgba(51, 65, 85, 0.6);
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
   }
 
-  /* iOS 16+ Text on Glass */
+  /* Text on Glass - Dark theme */
   .text-glass {
-    @apply text-white;
+    @apply text-white drop-shadow-sm;
   }
   
   .text-glass-muted {
-    @apply text-white/70;
+    @apply text-slate-300;
+  }
+  
+  /* Hover effects for glass elements */
+  .glass:hover, .glass-card:hover {
+    border-color: rgba(0, 188, 212, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4),
+                0 0 20px 0 rgba(0, 188, 212, 0.1);
   }
 }
