@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      assignments: {
+        Row: {
+          created_at: string
+          id: string
+          level: string
+          order_index: number
+          skill_id: string
+          task_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          level: string
+          order_index: number
+          skill_id: string
+          task_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          level?: string
+          order_index?: number
+          skill_id?: string
+          task_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignments_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           created_at: string
@@ -83,18 +124,154 @@ export type Database = {
         }
         Relationships: []
       }
+      skills: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          order_index: number
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          order_index: number
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          order_index?: number
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_assignment_submissions: {
+        Row: {
+          ai_feedback: Json | null
+          assignment_id: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          score: number | null
+          status: Database["public"]["Enums"]["assignment_status"]
+          submitted_at: string | null
+          updated_at: string
+          user_answer: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_feedback?: Json | null
+          assignment_id: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          score?: number | null
+          status?: Database["public"]["Enums"]["assignment_status"]
+          submitted_at?: string | null
+          updated_at?: string
+          user_answer?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_feedback?: Json | null
+          assignment_id?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          score?: number | null
+          status?: Database["public"]["Enums"]["assignment_status"]
+          submitted_at?: string | null
+          updated_at?: string
+          user_answer?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_assignment_submissions_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_skills: {
+        Row: {
+          created_at: string
+          current_level: number
+          id: string
+          is_goal_achieved: boolean
+          progress_percent: number
+          skill_id: string
+          target_level: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_level?: number
+          id?: string
+          is_goal_achieved?: boolean
+          progress_percent?: number
+          skill_id: string
+          target_level?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_level?: number
+          id?: string
+          is_goal_achieved?: boolean
+          progress_percent?: number
+          skill_id?: string
+          target_level?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      initialize_user_skills: {
+        Args: { p_user_id: string }
+        Returns: undefined
+      }
       log_security_event: {
         Args: { details?: Json; event_type: string; user_id?: string }
         Returns: undefined
       }
+      recalculate_skill_progress: {
+        Args: { p_skill_id: string; p_user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      assignment_status:
+        | "not_started"
+        | "in_progress"
+        | "submitted"
+        | "completed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -221,6 +398,13 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      assignment_status: [
+        "not_started",
+        "in_progress",
+        "submitted",
+        "completed",
+      ],
+    },
   },
 } as const

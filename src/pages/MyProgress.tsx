@@ -1,112 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useUserSkills } from '@/hooks/useUserSkills';
+import { supabase } from '@/integrations/supabase/client';
 
 const MyProgress = () => {
   const navigate = useNavigate();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
 
-  const [skills, setSkills] = useState([
-    {
-      title: "Коммуникация и работа в команде",
-      progress: 1,
-      targetLevel: 1,
-      basicCompleted: true,
-      proSelected: false,
-      aiNativeSelected: false,
-      scorePercent: 33,
-      isGoalAchieved: true
-    },
-    {
-      title: "Управление знаниями",
-      progress: 1,
-      targetLevel: 1,
-      basicCompleted: true,
-      proSelected: false,
-      aiNativeSelected: false,
-      scorePercent: 33,
-      isGoalAchieved: true
-    },
-    {
-      title: "Создание контента",
-      progress: 1,
-      targetLevel: 2,
-      basicCompleted: true,
-      proSelected: true,
-      aiNativeSelected: false,
-      scorePercent: 50,
-      isGoalAchieved: false
-    },
-    {
-      title: "Решение задач и принятие решений",
-      progress: 1,
-      targetLevel: 1,
-      basicCompleted: true,
-      proSelected: false,
-      aiNativeSelected: false,
-      scorePercent: 33,
-      isGoalAchieved: true
-    },
-    {
-      title: "Исследования и обработка информации",
-      progress: 1,
-      targetLevel: 3,
-      basicCompleted: true,
-      proSelected: true,
-      aiNativeSelected: true,
-      scorePercent: 33,
-      isGoalAchieved: false
-    },
-    {
-      title: "Автоматизация процессов",
-      progress: 1,
-      targetLevel: 1,
-      basicCompleted: true,
-      proSelected: false,
-      aiNativeSelected: false,
-      scorePercent: 33,
-      isGoalAchieved: true
-    },
-    {
-      title: "Анализ и визуализация данных",
-      progress: 1,
-      targetLevel: 2,
-      basicCompleted: true,
-      proSelected: true,
-      aiNativeSelected: false,
-      scorePercent: 50,
-      isGoalAchieved: false
-    },
-    {
-      title: "Продуктивность",
-      progress: 1,
-      targetLevel: 2,
-      basicCompleted: true,
-      proSelected: true,
-      aiNativeSelected: false,
-      scorePercent: 50,
-      isGoalAchieved: false
-    }
-  ]);
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUserId(data.user?.id);
+    });
+  }, []);
+
+  const { skills: userSkills, loading, updateTargetLevel } = useUserSkills(userId);
+
+  // Transform data to match existing component structure
+  const skills = userSkills.map(userSkill => ({
+    title: userSkill.skill.name,
+    slug: userSkill.skill.slug,
+    progress: userSkill.current_level,
+    targetLevel: userSkill.target_level,
+    basicCompleted: userSkill.current_level >= 1,
+    proSelected: userSkill.target_level >= 2,
+    aiNativeSelected: userSkill.target_level >= 3,
+    scorePercent: userSkill.progress_percent,
+    isGoalAchieved: userSkill.is_goal_achieved
+  }));
 
   const updateSkillTargetLevel = (skillIndex: number, newTargetLevel: number) => {
-    setSkills(prevSkills => 
-      prevSkills.map((skill, index) => 
-        index === skillIndex 
-          ? { 
-              ...skill, 
-              targetLevel: newTargetLevel,
-              proSelected: newTargetLevel >= 2,
-              aiNativeSelected: newTargetLevel >= 3,
-              isGoalAchieved: skill.progress >= newTargetLevel
-            }
-          : skill
-      )
-    );
+    const userSkill = userSkills[skillIndex];
+    if (userSkill) {
+      updateTargetLevel(userSkill.skill_id, newTargetLevel);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen p-4 flex items-center justify-center">
+        <p className="text-muted-foreground">Загрузка...</p>
+      </div>
+    );
+  }
 
   const renderProgressBars = (skill: any) => {
     const levels = ['Basic', 'Pro', 'AI-Native'];

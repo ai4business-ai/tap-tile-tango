@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, FileText, Target, CheckCircle, Send, Bot, ChevronDown, ChevronUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useChatAssistant } from '@/hooks/useChatAssistant';
 import { useToast } from '@/hooks/use-toast';
 import { PromptTester } from '@/components/PromptTester';
+import { useUserAssignments } from '@/hooks/useUserAssignments';
+import { supabase } from '@/integrations/supabase/client';
 
 const formatAssistantMessage = (content: string): string[] => {
   if (!content) return [content];
@@ -41,6 +43,8 @@ const TaskClientResponse = () => {
   const navigate = useNavigate();
   const { sendMessage, isLoading } = useChatAssistant();
   const { toast } = useToast();
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const { submitAssignment, updateSubmissionStatus, getAssignmentByTaskId } = useUserAssignments(userId, 'communication');
   const [userAnswer, setUserAnswer] = useState('');
   const [isChatMode, setIsChatMode] = useState(false);
   const [chatMessages, setChatMessages] = useState<{role: 'user' | 'tutor', content: string, timestamp: number}[]>([]);
@@ -49,6 +53,12 @@ const TaskClientResponse = () => {
   const [showDescription, setShowDescription] = useState(true);
   const [showTask, setShowTask] = useState(true);
   const [showCriteria, setShowCriteria] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUserId(data.user?.id);
+    });
+  }, []);
   
   const shouldShowDescription = userAnswer.trim() ? showDescription : true;
   const shouldShowTask = userAnswer.trim() ? showTask : true;
@@ -59,6 +69,12 @@ const TaskClientResponse = () => {
       setChatMessages([{ role: 'user', content: userAnswer, timestamp: Date.now() }]);
       setIsChatMode(true);
       
+      // Save to database
+      const assignment = getAssignmentByTaskId('client-response');
+      if (assignment && userId) {
+        await submitAssignment(assignment.id, userAnswer);
+      }
+      
       try {
         const tutorResponse = await sendMessage(
           userAnswer,
@@ -66,6 +82,11 @@ const TaskClientResponse = () => {
         );
         
         setChatMessages(prev => [...prev, { role: 'tutor', content: tutorResponse, timestamp: Date.now() }]);
+        
+        // Update status to completed after receiving feedback
+        if (assignment && userId) {
+          await updateSubmissionStatus(assignment.id, 'completed', { feedback: tutorResponse });
+        }
       } catch (error) {
         setChatMessages(prev => [...prev, { 
           role: 'tutor', 

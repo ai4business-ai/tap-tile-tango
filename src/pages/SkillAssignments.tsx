@@ -1,78 +1,77 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Play, BookOpen, FileText } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useUserAssignments } from '@/hooks/useUserAssignments';
+import { supabase } from '@/integrations/supabase/client';
 
 const SkillAssignments = () => {
   const navigate = useNavigate();
   const { skillName } = useParams();
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [skillTitle, setSkillTitle] = useState<string>('');
 
-  const skillAssignments = {
-    "communication": {
-      title: "Коммуникация и работа в команде",
-      levels: {
-        "Basic": {
-          status: "planned",
-          assignments: [
-            { text: "Подготовить ответ клиенту в нужном тоне", status: "planned", taskId: "client-response" },
-            { text: "Создать agenda и follow-up встречи", status: "planned", taskId: "meeting-agenda" },
-            { text: "Сформулировать конструктивный feedback", status: "planned", taskId: "feedback-colleagues" }
-          ]
-        },
-        "Pro": {
-          status: "locked",
-          assignments: [
-            { text: "Разработать коммуникационную стратегию проекта", status: "locked" },
-            { text: "Создать скрипты для сложных переговоров", status: "locked" },
-            { text: "Построить систему онбординга для новичков в подразделении", status: "locked" }
-          ]
-        },
-        "AI-Native": {
-          status: "locked",
-          assignments: [
-            { text: "Создать AI-медиатора для команды", status: "locked" },
-            { text: "Разработать систему автоматического саммари встреч", status: "locked" },
-            { text: "Построить knowledge graph команды", status: "locked" }
-          ]
-        }
-      }
-    },
-    "research": {
-      title: "Исследования и обработка информации",
-      levels: {
-        "Basic": {
-          status: "completed",
-          assignments: [
-            { text: "Найти и обобщить информацию по рабочему вопросу за 5 минут", status: "completed" },
-            { text: "Проанализировать Word/PDF документ объемом 20+ страниц и создать executive summary на 1 страницу", status: "planned", taskId: "document-analysis" },
-            { text: "Проверить факты и данные через множественные источники с оценкой достоверности", status: "completed" },
-            { text: "Создать саммари документа/статьи", status: "completed" }
-          ]
-        },
-        "Pro": {
-          status: "planned",
-          assignments: [
-            { text: "Освоить Deep Research: научиться формулировать исследовательские вопросы и использовать режим глубокого поиска для комплексного анализа", status: "planned", taskId: "deep-research" },
-            { text: "Объединить и проанализировать информацию из 5+ документов разных форматов (PDF, Excel, Word) по одному проекту", status: "completed" },
-            { text: "Создать сравнительный анализ 3+ решений/подходов с матрицей критериев", status: "completed" },
-            { text: "Построить базу знаний по проекту с системой тегов и быстрого поиска", status: "completed" }
-          ]
-        },
-        "AI-Native": {
-          status: "planned",
-          assignments: [
-            { text: "Создать специализированного GPT/агента для анализа документов вашей отрасли", status: "planned", taskId: "specialized-gpt" },
-            { text: "Разработать систему автоматической проверки фактов и валидации данных", status: "completed" },
-            { text: "Построить персональную систему knowledge mining из корпоративных документов", status: "completed" }
-          ]
-        }
-      }
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUserId(data.user?.id);
+    });
+
+    // Fetch skill title
+    if (skillName) {
+      supabase
+        .from('skills')
+        .select('name')
+        .eq('slug', skillName)
+        .single()
+        .then(({ data }) => {
+          if (data) setSkillTitle(data.name);
+        });
     }
+  }, [skillName]);
+
+  const { assignments, loading } = useUserAssignments(userId, skillName);
+
+  // Group assignments by level
+  const groupedAssignments = assignments.reduce((acc, assignment) => {
+    if (!acc[assignment.level]) {
+      acc[assignment.level] = [];
+    }
+    acc[assignment.level].push(assignment);
+    return acc;
+  }, {} as Record<string, typeof assignments>);
+
+  // Determine level status based on submissions
+  const getLevelStatus = (level: string) => {
+    const levelAssignments = groupedAssignments[level] || [];
+    const completedCount = levelAssignments.filter(a => a.submission?.status === 'completed').length;
+    const totalCount = levelAssignments.length;
+
+    if (completedCount === totalCount && totalCount > 0) return 'completed';
+    if (completedCount > 0 || levelAssignments.some(a => a.submission?.status === 'submitted')) return 'planned';
+    return 'locked';
   };
 
-  const currentSkill = skillAssignments[skillName as keyof typeof skillAssignments];
-  
-  if (!currentSkill) {
-    return <div>Навык не найден</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen p-4 flex items-center justify-center">
+        <p className="text-muted-foreground">Загрузка...</p>
+      </div>
+    );
+  }
+
+  if (assignments.length === 0) {
+    return (
+      <div className="min-h-screen p-4">
+        <div className="flex items-center gap-4 mb-6">
+          <button 
+            onClick={() => navigate('/tasks')}
+            className="w-8 h-8 flex items-center justify-center"
+          >
+            <ArrowLeft className="w-6 h-6 text-foreground" />
+          </button>
+          <h1 className="text-xl font-semibold text-foreground">Навык не найден</h1>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -86,14 +85,18 @@ const SkillAssignments = () => {
           <ArrowLeft className="w-6 h-6 text-foreground" />
         </button>
         <div>
-          <h1 className="text-xl font-semibold text-foreground">{currentSkill.title}</h1>
+          <h1 className="text-xl font-semibold text-foreground">{skillTitle}</h1>
           <p className="text-sm text-muted-foreground">Задания по уровням</p>
         </div>
       </div>
 
       {/* Levels */}
       <div className="space-y-6">
-        {Object.entries(currentSkill.levels).map(([level, levelData]) => {
+        {['Basic', 'Pro', 'AI-Native'].map((level) => {
+          const levelAssignments = groupedAssignments[level] || [];
+          const levelStatus = getLevelStatus(level);
+
+          if (levelAssignments.length === 0) return null;
           const getStatusColor = (status: string) => {
             switch (status) {
               case 'completed': return 'bg-green-500/10 border-green-500/20';
@@ -110,10 +113,10 @@ const SkillAssignments = () => {
             }
           };
 
-          const statusBadge = getStatusBadge(levelData.status);
+          const statusBadge = getStatusBadge(levelStatus);
 
           return (
-            <div key={level} className={`backdrop-blur-lg rounded-2xl p-4 shadow-lg ${getStatusColor(levelData.status)}`}>
+            <div key={level} className={`backdrop-blur-lg rounded-2xl p-4 shadow-lg ${getStatusColor(levelStatus)}`}>
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-lg font-semibold text-foreground">{level}</h2>
@@ -167,36 +170,47 @@ const SkillAssignments = () => {
               </div>
               
                <div className="space-y-3">
-                {levelData.assignments.map((assignment, index) => {
+                {levelAssignments.map((assignment, index) => {
+                  const assignmentStatus = assignment.submission?.status || 'not_started';
+                  const isClickable = assignment.task_id && assignmentStatus !== 'completed';
+                  
                   const handleAssignmentClick = () => {
-                    if (assignment.taskId && assignment.status === 'planned') {
-                      navigate(`/task/${assignment.taskId}`);
+                    if (isClickable) {
+                      navigate(`/task/${assignment.task_id}`);
                     }
                   };
 
+                  const getAssignmentDisplayStatus = () => {
+                    if (assignmentStatus === 'completed') return 'completed';
+                    if (assignmentStatus === 'submitted' || assignmentStatus === 'in_progress') return 'planned';
+                    return 'not_started';
+                  };
+
+                  const displayStatus = getAssignmentDisplayStatus();
+
                   return (
                     <div 
-                      key={index}
+                      key={assignment.id}
                       onClick={handleAssignmentClick}
                       className={`bg-background/30 rounded-xl p-3 border border-white/5 transition-colors ${
-                        assignment.taskId && assignment.status === 'planned' 
+                        isClickable
                           ? 'hover:bg-background/50 cursor-pointer' 
                           : 'cursor-default'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-foreground">{assignment.text}</p>
+                        <p className="text-sm font-medium text-foreground">{assignment.title}</p>
                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                          assignment.status === 'completed' 
+                          displayStatus === 'completed' 
                             ? 'border-green-500 bg-green-500' 
-                            : assignment.status === 'planned'
+                            : displayStatus === 'planned'
                             ? 'border-yellow-400/50'
                             : 'border-gray-400/30'
                         }`}>
-                          {assignment.status === 'completed' && (
+                          {displayStatus === 'completed' && (
                             <div className="w-2 h-2 rounded-full bg-white"></div>
                           )}
-                          {assignment.status === 'planned' && (
+                          {displayStatus === 'planned' && (
                             <div className="w-2 h-2 rounded-full bg-yellow-400/50"></div>
                           )}
                         </div>

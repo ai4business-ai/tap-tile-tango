@@ -9,6 +9,7 @@ import { PromptTester } from '@/components/PromptTester';
 import { BlurredAnswerBlock } from '@/components/BlurredAnswerBlock';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useUserAssignments } from '@/hooks/useUserAssignments';
 
 // Helper function to format assistant messages into paragraphs
 const formatAssistantMessage = (content: string): string[] => {
@@ -46,6 +47,8 @@ const TaskDocumentAnalysis = () => {
   const navigate = useNavigate();
   const { sendMessage, isLoading } = useChatAssistant();
   const { toast } = useToast();
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const { submitAssignment, updateSubmissionStatus, getAssignmentByTaskId } = useUserAssignments(userId, 'research');
   const [userAnswer, setUserAnswer] = useState('');
   const [isChatMode, setIsChatMode] = useState(false);
   const [chatMessages, setChatMessages] = useState<{role: 'user' | 'tutor', content: string, timestamp: number}[]>([]);
@@ -58,6 +61,13 @@ const TaskDocumentAnalysis = () => {
     file_path: string;
   }>>([]);
   const [isLoadingDocuments, setIsLoadingDocuments] = useState(true);
+
+  // Get user ID
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUserId(data.user?.id);
+    });
+  }, []);
 
   // Load documents from database
   useEffect(() => {
@@ -121,6 +131,12 @@ const TaskDocumentAnalysis = () => {
       setChatMessages([{ role: 'user', content: contextualMessage, timestamp: Date.now() }]);
       setIsChatMode(true);
       
+      // Save to database
+      const assignment = getAssignmentByTaskId('document-analysis');
+      if (assignment && userId) {
+        await submitAssignment(assignment.id, contextualMessage);
+      }
+      
       try {
         const tutorResponse = await sendMessage(
           contextualMessage,
@@ -130,6 +146,11 @@ const TaskDocumentAnalysis = () => {
         );
         
         setChatMessages(prev => [...prev, { role: 'tutor', content: tutorResponse, timestamp: Date.now() }]);
+        
+        // Update status to completed after receiving feedback
+        if (assignment && userId) {
+          await updateSubmissionStatus(assignment.id, 'completed', { feedback: tutorResponse });
+        }
       } catch (error) {
         setChatMessages(prev => [...prev, { 
           role: 'tutor', 
