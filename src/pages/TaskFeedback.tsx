@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useChatAssistant } from '@/hooks/useChatAssistant';
 import { useToast } from '@/hooks/use-toast';
+import { PromptTester } from '@/components/PromptTester';
 
 const formatAssistantMessage = (content: string): string[] => {
   if (!content) return [content];
@@ -279,6 +280,13 @@ const TaskFeedback = () => {
           </CardContent>
         )}
       </Card>
+
+      {/* Prompt Tester */}
+      <PromptTester 
+        taskContext="feedback-colleagues"
+        taskId="feedback-colleagues-task"
+        placeholder="Напишите промпт для составления конструктивной обратной связи юристам..."
+      />
 
       {!isChatMode ? (
         <>

@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useChatAssistant } from '@/hooks/useChatAssistant';
 import { useToast } from '@/hooks/use-toast';
+import { PromptTester } from '@/components/PromptTester';
 
 const formatAssistantMessage = (content: string): string[] => {
   if (!content) return [content];
@@ -261,6 +262,13 @@ const TaskClientResponse = () => {
           </CardContent>
         )}
       </Card>
+
+      {/* Prompt Tester */}
+      <PromptTester 
+        taskContext="client-response"
+        taskId="client-response-task"
+        placeholder="Напишите промпт для ИИ, чтобы он составил письмо клиенту..."
+      />
 
       {!isChatMode ? (
         <>

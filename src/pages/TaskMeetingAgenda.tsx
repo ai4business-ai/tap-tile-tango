@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useChatAssistant } from '@/hooks/useChatAssistant';
 import { useToast } from '@/hooks/use-toast';
+import { PromptTester } from '@/components/PromptTester';
 
 const formatAssistantMessage = (content: string): string[] => {
   if (!content) return [content];
@@ -298,6 +299,13 @@ const TaskMeetingAgenda = () => {
           </CardContent>
         )}
       </Card>
+
+      {/* Prompt Tester */}
+      <PromptTester 
+        taskContext="meeting-agenda"
+        taskId="meeting-agenda-task"
+        placeholder="Протестируйте ваши промпты для адженды и follow-up письма..."
+      />
 
       {!isChatMode ? (
         <>
