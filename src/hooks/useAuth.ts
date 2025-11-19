@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, setUserEnvironment } from '@/integrations/supabase/client';
+import { getCurrentEnvironment } from '@/lib/environment';
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -33,16 +34,23 @@ export const useAuth = () => {
 
   const initializeUserSkills = async (userId: string) => {
     try {
-      // Check if user_skills already exist
+      // Set environment for the user
+      await setUserEnvironment(userId);
+      
+      const currentEnvironment = getCurrentEnvironment();
+      
+      // Check if user_skills already exist for this environment
       const { data } = await supabase
         .from('user_skills')
         .select('id')
         .eq('user_id', userId)
+        .eq('environment', currentEnvironment)
         .limit(1);
       
       if (!data || data.length === 0) {
         await supabase.rpc('initialize_user_skills', {
-          p_user_id: userId
+          p_user_id: userId,
+          p_environment: currentEnvironment
         });
       }
     } catch (error) {

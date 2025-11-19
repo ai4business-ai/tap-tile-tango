@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { BottomNavigation } from './BottomNavigation';
+import { EnvironmentBadge } from './EnvironmentBadge';
 import { useLocation } from 'react-router-dom';
 
 interface LayoutProps {
@@ -14,6 +15,7 @@ export const Layout = ({ children }: LayoutProps) => {
 
   return (
     <>
+      <EnvironmentBadge />
       <main className={hideNavigation ? '' : 'pb-28'}>
         {children}
       </main>
