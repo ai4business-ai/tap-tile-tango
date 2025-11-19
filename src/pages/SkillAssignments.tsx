@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Play, BookOpen, FileText } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { GuestBanner } from '@/components/GuestBanner';
 import { useUserAssignments } from '@/hooks/useUserAssignments';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -72,7 +73,9 @@ const SkillAssignments = () => {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
+    <div className="min-h-screen">
+      {!user && <GuestBanner />}
+      <div className="p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
         <button 
@@ -87,8 +90,8 @@ const SkillAssignments = () => {
         </div>
       </div>
 
-      {/* Levels */}
-      <div className="space-y-6">
+        {/* Levels */}
+        <div className="space-y-6">
         {['Basic', 'Pro', 'AI-Native'].map((level) => {
           const levelAssignments = groupedAssignments[level] || [];
           const levelStatus = getLevelStatus(level);
