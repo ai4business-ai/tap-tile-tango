@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SecurityProvider } from "@/components/SecurityProvider";
-import { AuthGuard } from "@/components/AuthGuard";
+import { Layout } from "@/components/Layout";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import Tasks from "./pages/Tasks";
@@ -31,24 +31,26 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Routes>
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/" element={<Index />} />
-              <Route path="/tasks" element={<Tasks />} />
-              <Route path="/tasks/:category" element={<TaskCategory />} />
-              <Route path="/task-detail" element={<TaskDetail />} />
-              <Route path="/webinar-records" element={<WebinarRecords />} />
-              <Route path="/my-progress" element={<MyProgress />} />
-              <Route path="/skill-assignments/:skillName" element={<SkillAssignments />} />
-              <Route path="/task/document-analysis" element={<TaskDocumentAnalysis />} />
-              <Route path="/task/deep-research" element={<TaskDeepResearch />} />
-              <Route path="/task/specialized-gpt" element={<TaskSpecializedGPT />} />
-              <Route path="/task/client-response" element={<TaskClientResponse />} />
-              <Route path="/task/meeting-agenda" element={<TaskMeetingAgenda />} />
-              <Route path="/task/feedback-colleagues" element={<TaskFeedback />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <Layout>
+              <Routes>
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/" element={<Index />} />
+                <Route path="/tasks" element={<Tasks />} />
+                <Route path="/tasks/:category" element={<TaskCategory />} />
+                <Route path="/task-detail" element={<TaskDetail />} />
+                <Route path="/webinar-records" element={<WebinarRecords />} />
+                <Route path="/my-progress" element={<MyProgress />} />
+                <Route path="/skill-assignments/:skillName" element={<SkillAssignments />} />
+                <Route path="/task/document-analysis" element={<TaskDocumentAnalysis />} />
+                <Route path="/task/deep-research" element={<TaskDeepResearch />} />
+                <Route path="/task/specialized-gpt" element={<TaskSpecializedGPT />} />
+                <Route path="/task/client-response" element={<TaskClientResponse />} />
+                <Route path="/task/meeting-agenda" element={<TaskMeetingAgenda />} />
+                <Route path="/task/feedback-colleagues" element={<TaskFeedback />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Layout>
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>

@@ -8,7 +8,7 @@ export const GuestBanner = () => {
   return (
     <div className="sticky top-0 z-40 animate-in fade-in slide-in-from-top-2 duration-500">
       <div className="bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 backdrop-blur-md border-b border-orange-500/20">
-        <div className="container mx-auto px-4 py-3">
+        <div className="max-w-2xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-3">
               <Lock className="w-5 h-5 text-orange-500" />
