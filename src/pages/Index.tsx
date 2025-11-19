@@ -3,11 +3,15 @@ import { ChevronRight, BookOpen, Target, Video, FileText } from 'lucide-react';
 import { TapCard } from '@/components/ui/tap-card';
 import { useNavigate } from 'react-router-dom';
 import { UserMenu } from '@/components/UserMenu';
+import { GuestBanner } from '@/components/GuestBanner';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
+
 const Index = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   
   const handleCardClick = (cardName: string) => {
     if (cardName === 'Ваши задания' || cardName === 'Мои задания') {
@@ -23,7 +27,9 @@ const Index = () => {
     }
   };
   return (
-    <div className="min-h-screen p-4 md:p-6 lg:p-8 max-w-md mx-auto">
+    <div className="min-h-screen">
+      {!user && <GuestBanner />}
+      <div className="p-4 md:p-6 lg:p-8 max-w-md mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex-1"></div>
@@ -129,6 +135,7 @@ const Index = () => {
           </Button>
         </div>
       </TapCard>
+    </div>
     </div>
   );
 };

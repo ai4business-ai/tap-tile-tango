@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useGuestMode } from './useGuestMode';
 
 interface Assignment {
   id: string;
@@ -24,9 +25,18 @@ export const useUserAssignments = (userId: string | undefined, skillSlug: string
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const guestMode = useGuestMode();
 
   const fetchAssignments = async () => {
-    if (!userId || !skillSlug) {
+    if (!skillSlug) {
+      setLoading(false);
+      return;
+    }
+
+    if (!userId) {
+      // Гостевой режим - загрузить демо-задания
+      const guestAssignments = guestMode.getAssignments(skillSlug);
+      setAssignments(guestAssignments);
       setLoading(false);
       return;
     }
@@ -84,7 +94,17 @@ export const useUserAssignments = (userId: string | undefined, skillSlug: string
   }, [userId, skillSlug]);
 
   const submitAssignment = async (assignmentId: string, userAnswer: string) => {
-    if (!userId) return { data: null, error: new Error('User not authenticated') };
+    if (!userId) {
+      // Гостевой режим - сохранить локально
+      guestMode.submitAssignment(assignmentId, userAnswer);
+      await fetchAssignments();
+      toast({
+        title: 'Задание выполнено!',
+        description: '⚠️ Прогресс сохранен локально. Зарегистрируйтесь, чтобы не потерять данные!',
+        duration: 5000,
+      });
+      return { data: null, error: null };
+    }
 
     try {
       const { data, error } = await supabase
@@ -123,7 +143,12 @@ export const useUserAssignments = (userId: string | undefined, skillSlug: string
     aiFeedback?: any,
     score?: number
   ) => {
-    if (!userId) return;
+    if (!userId) {
+      // Гостевой режим - обновить локально
+      guestMode.updateAssignmentStatus(assignmentId, status, aiFeedback, score);
+      await fetchAssignments();
+      return;
+    }
 
     try {
       const updateData: any = { 

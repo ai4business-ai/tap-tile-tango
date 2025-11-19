@@ -4,12 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { GuestBanner } from '@/components/GuestBanner';
+import { GuestLimitDialog } from '@/components/GuestLimitDialog';
 import { useUserSkills } from '@/hooks/useUserSkills';
 import { useAuth } from '@/hooks/useAuth';
 
 const MyProgress = () => {
   const navigate = useNavigate();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isGuestLimitOpen, setIsGuestLimitOpen] = useState(false);
   const { user } = useAuth();
   const { skills: userSkills, loading, updateTargetLevel } = useUserSkills(user?.id);
 
@@ -30,6 +33,14 @@ const MyProgress = () => {
     const userSkill = userSkills[skillIndex];
     if (userSkill) {
       updateTargetLevel(userSkill.skill_id, newTargetLevel);
+    }
+  };
+
+  const handleSettingsClick = () => {
+    if (!user) {
+      setIsGuestLimitOpen(true);
+    } else {
+      setIsSettingsOpen(true);
     }
   };
 
@@ -95,9 +106,17 @@ const MyProgress = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="min-h-screen">
+      {!user && <GuestBanner />}
+      <div className="p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
+        <GuestLimitDialog 
+          open={isGuestLimitOpen} 
+          onOpenChange={setIsGuestLimitOpen}
+          feature="Изменение целевого уровня навыков"
+        />
+        
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => navigate('/')}
@@ -148,7 +167,6 @@ const MyProgress = () => {
             </div>
           </DialogContent>
         </Dialog>
-      </div>
 
       {/* Skills Diagram - Radar Chart */}
       <div className="relative glass-card rounded-3xl p-6 mb-6 h-80 overflow-hidden shadow-inner">
@@ -348,6 +366,7 @@ const MyProgress = () => {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </div>
   );

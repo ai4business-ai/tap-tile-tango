@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useGuestMode } from './useGuestMode';
 
 interface Skill {
   id: string;
@@ -27,9 +28,31 @@ export const useUserSkills = (userId: string | undefined) => {
   const [skills, setSkills] = useState<UserSkill[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const guestMode = useGuestMode();
 
   const fetchUserSkills = async () => {
     if (!userId) {
+      // Гостевой режим - загрузить демо-данные
+      const guestSkills = guestMode.getSkills();
+      const mappedSkills = guestSkills.map(skill => ({
+        id: skill.id,
+        user_id: 'guest',
+        skill_id: skill.id,
+        current_level: skill.current_level,
+        target_level: skill.target_level,
+        progress_percent: skill.progress_percent,
+        is_goal_achieved: skill.is_goal_achieved,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        skill: {
+          id: skill.id,
+          name: skill.name,
+          slug: skill.slug,
+          description: skill.description,
+          order_index: skill.order_index,
+        },
+      }));
+      setSkills(mappedSkills);
       setLoading(false);
       return;
     }
@@ -87,7 +110,15 @@ export const useUserSkills = (userId: string | undefined) => {
   }, [userId]);
 
   const updateTargetLevel = async (skillId: string, targetLevel: number) => {
-    if (!userId) return;
+    if (!userId) {
+      // Гости не могут изменять целевой уровень
+      toast({
+        title: 'Доступно только для зарегистрированных',
+        description: 'Зарегистрируйтесь, чтобы изменять целевой уровень навыков',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     try {
       const { error } = await supabase
