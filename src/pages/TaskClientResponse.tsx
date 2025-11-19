@@ -8,7 +8,7 @@ import { useChatAssistant } from '@/hooks/useChatAssistant';
 import { useToast } from '@/hooks/use-toast';
 import { PromptTester } from '@/components/PromptTester';
 import { useUserAssignments } from '@/hooks/useUserAssignments';
-import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 const formatAssistantMessage = (content: string): string[] => {
   if (!content) return [content];
@@ -43,8 +43,8 @@ const TaskClientResponse = () => {
   const navigate = useNavigate();
   const { sendMessage, isLoading } = useChatAssistant();
   const { toast } = useToast();
-  const [userId, setUserId] = useState<string | undefined>(undefined);
-  const { submitAssignment, updateSubmissionStatus, getAssignmentByTaskId } = useUserAssignments(userId, 'communication');
+  const { user } = useAuth();
+  const { submitAssignment, updateSubmissionStatus, getAssignmentByTaskId } = useUserAssignments(user?.id, 'communication');
   const [userAnswer, setUserAnswer] = useState('');
   const [isChatMode, setIsChatMode] = useState(false);
   const [chatMessages, setChatMessages] = useState<{role: 'user' | 'tutor', content: string, timestamp: number}[]>([]);
@@ -53,12 +53,6 @@ const TaskClientResponse = () => {
   const [showDescription, setShowDescription] = useState(true);
   const [showTask, setShowTask] = useState(true);
   const [showCriteria, setShowCriteria] = useState(true);
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUserId(data.user?.id);
-    });
-  }, []);
   
   const shouldShowDescription = userAnswer.trim() ? showDescription : true;
   const shouldShowTask = userAnswer.trim() ? showTask : true;
@@ -71,7 +65,7 @@ const TaskClientResponse = () => {
       
       // Save to database
       const assignment = getAssignmentByTaskId('client-response');
-      if (assignment && userId) {
+      if (assignment && user) {
         await submitAssignment(assignment.id, userAnswer);
       }
       
@@ -84,7 +78,7 @@ const TaskClientResponse = () => {
         setChatMessages(prev => [...prev, { role: 'tutor', content: tutorResponse, timestamp: Date.now() }]);
         
         // Update status to completed after receiving feedback
-        if (assignment && userId) {
+        if (assignment && user) {
           await updateSubmissionStatus(assignment.id, 'completed', { feedback: tutorResponse });
         }
       } catch (error) {

@@ -1,24 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ArrowLeft, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useUserSkills } from '@/hooks/useUserSkills';
-import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 const MyProgress = () => {
   const navigate = useNavigate();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [userId, setUserId] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUserId(data.user?.id);
-    });
-  }, []);
-
-  const { skills: userSkills, loading, updateTargetLevel } = useUserSkills(userId);
+  const { user } = useAuth();
+  const { skills: userSkills, loading, updateTargetLevel } = useUserSkills(user?.id);
 
   // Transform data to match existing component structure
   const skills = userSkills.map(userSkill => ({

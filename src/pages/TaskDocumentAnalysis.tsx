@@ -10,6 +10,7 @@ import { BlurredAnswerBlock } from '@/components/BlurredAnswerBlock';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useUserAssignments } from '@/hooks/useUserAssignments';
+import { useAuth } from '@/hooks/useAuth';
 
 // Helper function to format assistant messages into paragraphs
 const formatAssistantMessage = (content: string): string[] => {
@@ -47,8 +48,8 @@ const TaskDocumentAnalysis = () => {
   const navigate = useNavigate();
   const { sendMessage, isLoading } = useChatAssistant();
   const { toast } = useToast();
-  const [userId, setUserId] = useState<string | undefined>(undefined);
-  const { submitAssignment, updateSubmissionStatus, getAssignmentByTaskId } = useUserAssignments(userId, 'research');
+  const { user } = useAuth();
+  const { submitAssignment, updateSubmissionStatus, getAssignmentByTaskId } = useUserAssignments(user?.id, 'research');
   const [userAnswer, setUserAnswer] = useState('');
   const [isChatMode, setIsChatMode] = useState(false);
   const [chatMessages, setChatMessages] = useState<{role: 'user' | 'tutor', content: string, timestamp: number}[]>([]);
@@ -61,13 +62,6 @@ const TaskDocumentAnalysis = () => {
     file_path: string;
   }>>([]);
   const [isLoadingDocuments, setIsLoadingDocuments] = useState(true);
-
-  // Get user ID
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUserId(data.user?.id);
-    });
-  }, []);
 
   // Load documents from database
   useEffect(() => {
@@ -133,7 +127,7 @@ const TaskDocumentAnalysis = () => {
       
       // Save to database
       const assignment = getAssignmentByTaskId('document-analysis');
-      if (assignment && userId) {
+      if (assignment && user) {
         await submitAssignment(assignment.id, contextualMessage);
       }
       
@@ -148,7 +142,7 @@ const TaskDocumentAnalysis = () => {
         setChatMessages(prev => [...prev, { role: 'tutor', content: tutorResponse, timestamp: Date.now() }]);
         
         // Update status to completed after receiving feedback
-        if (assignment && userId) {
+        if (assignment && user) {
           await updateSubmissionStatus(assignment.id, 'completed', { feedback: tutorResponse });
         }
       } catch (error) {
