@@ -13,11 +13,10 @@ export const useSecurityHeaders = () => {
       cspMeta.content = [
         "default-src 'self'",
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://esm.sh https://cdn.jsdelivr.net",
-        "style-src 'self' 'unsafe-inline'",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         "img-src 'self' data: https:",
-        "font-src 'self' data:",
+        "font-src 'self' data: https://fonts.gstatic.com",
         "connect-src 'self' https://nhxrajtfxavkkzqyfrok.supabase.co https://api.openai.com wss://nhxrajtfxavkkzqyfrok.supabase.co",
-        "frame-ancestors 'none'",
         "base-uri 'self'",
         "form-action 'self'"
       ].join('; ');
@@ -28,7 +27,6 @@ export const useSecurityHeaders = () => {
     const securityTags = [
       { name: 'referrer', content: 'strict-origin-when-cross-origin' },
       { httpEquiv: 'X-Content-Type-Options', content: 'nosniff' },
-      { httpEquiv: 'X-Frame-Options', content: 'DENY' },
       { httpEquiv: 'X-XSS-Protection', content: '1; mode=block' },
       { httpEquiv: 'Permissions-Policy', content: 'geolocation=(), microphone=(), camera=()' }
     ];
