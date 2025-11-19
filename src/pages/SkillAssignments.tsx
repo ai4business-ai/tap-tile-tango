@@ -2,19 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Play, BookOpen, FileText } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useUserAssignments } from '@/hooks/useUserAssignments';
+import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 
 const SkillAssignments = () => {
   const navigate = useNavigate();
   const { skillName } = useParams();
-  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const { user } = useAuth();
   const [skillTitle, setSkillTitle] = useState<string>('');
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUserId(data.user?.id);
-    });
-
     // Fetch skill title
     if (skillName) {
       supabase
@@ -28,7 +25,7 @@ const SkillAssignments = () => {
     }
   }, [skillName]);
 
-  const { assignments, loading } = useUserAssignments(userId, skillName);
+  const { assignments, loading } = useUserAssignments(user?.id, skillName);
 
   // Group assignments by level
   const groupedAssignments = assignments.reduce((acc, assignment) => {

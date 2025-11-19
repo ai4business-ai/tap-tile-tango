@@ -2,6 +2,7 @@ import React from 'react';
 import { ChevronRight } from 'lucide-react';
 import { TapCard } from '@/components/ui/tap-card';
 import { useNavigate } from 'react-router-dom';
+import { UserMenu } from '@/components/UserMenu';
 const Index = () => {
   const navigate = useNavigate();
   
@@ -20,9 +21,13 @@ const Index = () => {
   };
   return <div className="min-h-screen p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-center mb-8">
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex-1"></div>
         <div className="glass-subtle rounded-3xl px-6 py-3">
           <p className="text-xs text-glass-muted font-medium">Здесь лого вашей компании</p>
+        </div>
+        <div className="flex-1 flex justify-end">
+          <UserMenu />
         </div>
       </div>
 
