@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 interface Assignment {
   id: string;
@@ -24,9 +25,10 @@ export const useUserAssignments = (userId: string | undefined, skillSlug: string
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const [localSubmissions, setLocalSubmissions] = useLocalStorage<any[]>('user_submissions', []);
 
   const fetchAssignments = async () => {
-    if (!userId || !skillSlug) {
+    if (!skillSlug) {
       setLoading(false);
       return;
     }
@@ -50,23 +52,45 @@ export const useUserAssignments = (userId: string | undefined, skillSlug: string
 
       if (assignmentsError) throw assignmentsError;
 
-      // Get user submissions for these assignments
-      const assignmentIds = assignmentsData?.map(a => a.id) || [];
-      const { data: submissionsData, error: submissionsError } = await supabase
-        .from('user_assignment_submissions')
-        .select('*')
-        .eq('user_id', userId)
-        .in('assignment_id', assignmentIds);
+      if (!userId) {
+        // For unauthenticated users, use localStorage
+        const combinedData = assignmentsData?.map(assignment => {
+          const localSubmission = localSubmissions.find(
+            ls => ls.assignmentId === assignment.id
+          );
+          return {
+            ...assignment,
+            submission: localSubmission ? {
+              id: `local-${assignment.id}`,
+              status: localSubmission.status,
+              user_answer: localSubmission.userAnswer,
+              ai_feedback: null,
+              score: null,
+              submitted_at: localSubmission.submittedAt,
+              completed_at: null
+            } : null
+          };
+        });
+        setAssignments(combinedData || []);
+      } else {
+        // Get user submissions for authenticated users
+        const assignmentIds = assignmentsData?.map(a => a.id) || [];
+        const { data: submissionsData, error: submissionsError } = await supabase
+          .from('user_assignment_submissions')
+          .select('*')
+          .eq('user_id', userId)
+          .in('assignment_id', assignmentIds);
 
-      if (submissionsError) throw submissionsError;
+        if (submissionsError) throw submissionsError;
 
-      // Combine assignments with submissions
-      const combinedData = assignmentsData?.map(assignment => ({
-        ...assignment,
-        submission: submissionsData?.find(s => s.assignment_id === assignment.id) || null
-      }));
+        // Combine assignments with submissions
+        const combinedData = assignmentsData?.map(assignment => ({
+          ...assignment,
+          submission: submissionsData?.find(s => s.assignment_id === assignment.id) || null
+        }));
 
-      setAssignments(combinedData || []);
+        setAssignments(combinedData || []);
+      }
     } catch (error: any) {
       console.error('Error fetching assignments:', error);
       toast({
@@ -84,7 +108,35 @@ export const useUserAssignments = (userId: string | undefined, skillSlug: string
   }, [userId, skillSlug]);
 
   const submitAssignment = async (assignmentId: string, userAnswer: string) => {
-    if (!userId) return { data: null, error: new Error('User not authenticated') };
+    if (!userId) {
+      // Save to localStorage for unauthenticated users
+      const existing = localSubmissions.find(ls => ls.assignmentId === assignmentId);
+      const newSubmission = {
+        assignmentId,
+        status: 'submitted' as const,
+        userAnswer,
+        submittedAt: new Date().toISOString()
+      };
+
+      if (existing) {
+        setLocalSubmissions(
+          localSubmissions.map(ls =>
+            ls.assignmentId === assignmentId ? newSubmission : ls
+          )
+        );
+      } else {
+        setLocalSubmissions([...localSubmissions, newSubmission]);
+      }
+
+      await fetchAssignments();
+      
+      toast({
+        title: 'Сохранено локально',
+        description: 'Войдите, чтобы получить проверку AI',
+      });
+      
+      return { data: newSubmission, error: null };
+    }
 
     try {
       const { data, error } = await supabase
@@ -123,7 +175,18 @@ export const useUserAssignments = (userId: string | undefined, skillSlug: string
     aiFeedback?: any,
     score?: number
   ) => {
-    if (!userId) return;
+    if (!userId) {
+      // Update localStorage for unauthenticated users
+      setLocalSubmissions(
+        localSubmissions.map(ls =>
+          ls.assignmentId === assignmentId
+            ? { ...ls, status, updatedAt: new Date().toISOString() }
+            : ls
+        )
+      );
+      await fetchAssignments();
+      return;
+    }
 
     try {
       const updateData: any = { 

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Settings } from 'lucide-react';
+import { ArrowLeft, Settings, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useUserSkills } from '@/hooks/useUserSkills';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -149,6 +150,24 @@ const MyProgress = () => {
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* Auth Alert for Guest Users */}
+      {!user && (
+        <Alert className="mb-6 glass-card border-primary-orange/30">
+          <LogIn className="h-4 w-4 text-primary-orange" />
+          <AlertDescription className="ml-2 text-sm">
+            Ваш прогресс сохраняется локально. 
+            <Button 
+              variant="link" 
+              className="p-0 h-auto ml-1 text-primary-orange font-semibold"
+              onClick={() => navigate('/auth')}
+            >
+              Войдите
+            </Button>
+            , чтобы синхронизировать данные в облаке и получать AI-проверку заданий.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Skills Diagram - Radar Chart */}
       <div className="relative glass-card rounded-3xl p-6 mb-6 h-80 overflow-hidden shadow-inner">
