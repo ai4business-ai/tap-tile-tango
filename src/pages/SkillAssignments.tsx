@@ -76,19 +76,19 @@ const SkillAssignments = () => {
     <div className="min-h-screen">
       {!user && <GuestBanner />}
       <div className="p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <button 
-          onClick={() => navigate('/tasks')}
-          className="w-8 h-8 flex items-center justify-center"
-        >
-          <ArrowLeft className="w-6 h-6 text-foreground" />
-        </button>
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">{skillTitle}</h1>
-          <p className="text-sm text-muted-foreground">Задания по уровням</p>
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6">
+          <button 
+            onClick={() => navigate('/tasks')}
+            className="w-8 h-8 flex items-center justify-center"
+          >
+            <ArrowLeft className="w-6 h-6 text-foreground" />
+          </button>
+          <div>
+            <h1 className="text-xl font-semibold text-foreground">{skillTitle}</h1>
+            <p className="text-sm text-muted-foreground">Задания по уровням</p>
+          </div>
         </div>
-      </div>
 
         {/* Levels */}
         <div className="space-y-6">
@@ -222,6 +222,7 @@ const SkillAssignments = () => {
             </div>
           );
         })}
+        </div>
       </div>
     </div>
   );

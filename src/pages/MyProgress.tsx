@@ -117,7 +117,7 @@ const MyProgress = () => {
         
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4">
           <button 
             onClick={() => navigate('/')}
             className="w-10 h-10 glass-subtle rounded-2xl flex items-center justify-center"
@@ -128,47 +128,48 @@ const MyProgress = () => {
             <h1 className="text-xl font-semibold text-glass">Мой прогресс</h1>
             <p className="text-sm text-glass-muted">8 навыков</p>
           </div>
+          </div>
+          <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+            <DialogTrigger asChild>
+              <button className="w-10 h-10 glass-subtle rounded-2xl flex items-center justify-center">
+                <Settings className="w-6 h-6 text-glass-muted" />
+              </button>
+            </DialogTrigger>
+            <DialogContent className="glass-strong border-white/30 max-w-md max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="text-glass">Настройка целевых уровней</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 mt-4">
+                {skills.map((skill, index) => (
+                  <div key={index} className="space-y-2">
+                    <h4 className="text-sm font-medium text-glass">{skill.title}</h4>
+                    <Select 
+                      value={skill.targetLevel.toString()} 
+                      onValueChange={(value) => updateSkillTargetLevel(index, parseInt(value))}
+                    >
+                      <SelectTrigger className="glass-subtle border-white/30">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="glass-strong border-white/30">
+                        <SelectItem value="1">Basic</SelectItem>
+                        <SelectItem value="2">Pro</SelectItem>
+                        <SelectItem value="3">AI-Native</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ))}
+                <Button 
+                  onClick={() => setIsSettingsOpen(false)}
+                  className="w-full mt-6 bg-white/20 hover:bg-white/30 text-glass border border-white/30"
+                >
+                  Сохранить
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
-        <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-          <DialogTrigger asChild>
-            <button className="w-10 h-10 glass-subtle rounded-2xl flex items-center justify-center">
-              <Settings className="w-6 h-6 text-glass-muted" />
-            </button>
-          </DialogTrigger>
-          <DialogContent className="glass-strong border-white/30 max-w-md max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="text-glass">Настройка целевых уровней</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 mt-4">
-              {skills.map((skill, index) => (
-                <div key={index} className="space-y-2">
-                  <h4 className="text-sm font-medium text-glass">{skill.title}</h4>
-                  <Select 
-                    value={skill.targetLevel.toString()} 
-                    onValueChange={(value) => updateSkillTargetLevel(index, parseInt(value))}
-                  >
-                    <SelectTrigger className="glass-subtle border-white/30">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="glass-strong border-white/30">
-                      <SelectItem value="1">Basic</SelectItem>
-                      <SelectItem value="2">Pro</SelectItem>
-                      <SelectItem value="3">AI-Native</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              ))}
-              <Button 
-                onClick={() => setIsSettingsOpen(false)}
-                className="w-full mt-6 bg-white/20 hover:bg-white/30 text-glass border border-white/30"
-              >
-                Сохранить
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
 
-      {/* Skills Diagram - Radar Chart */}
+        {/* Skills Diagram - Radar Chart */}
       <div className="relative glass-card rounded-3xl p-6 mb-6 h-80 overflow-hidden shadow-inner">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative w-60 h-60">
