@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, Play, BookOpen, FileText } from 'lucide-react';
+import { ArrowLeft, Play, BookOpen, FileText, Lock, Check, Clock, PlayCircle } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { GuestBanner } from '@/components/GuestBanner';
 import { useUserAssignments } from '@/hooks/useUserAssignments';
@@ -172,7 +172,9 @@ const SkillAssignments = () => {
                <div className="space-y-3">
                 {levelAssignments.map((assignment, index) => {
                   const assignmentStatus = assignment.submission?.status || 'not_started';
-                  const isClickable = assignment.task_id && assignmentStatus !== 'completed';
+                  const isAvailable = assignment.task_id !== null;
+                  const isCompleted = assignmentStatus === 'completed';
+                  const isClickable = isAvailable && !isCompleted;
                   
                   const handleAssignmentClick = () => {
                     if (isClickable) {
@@ -192,26 +194,52 @@ const SkillAssignments = () => {
                     <div 
                       key={assignment.id}
                       onClick={handleAssignmentClick}
-                      className={`bg-background/30 rounded-xl p-3 border border-white/5 transition-colors ${
-                        isClickable
-                          ? 'hover:bg-background/50 cursor-pointer' 
-                          : 'cursor-default'
+                      className={`rounded-xl p-3 border transition-all ${
+                        !isAvailable
+                          ? 'bg-muted/20 border-muted/30 cursor-not-allowed opacity-60'
+                          : isClickable
+                          ? 'bg-background/40 border-white/10 hover:bg-background/60 hover:border-primary-orange/30 cursor-pointer hover-scale' 
+                          : 'bg-background/30 border-white/5 cursor-default opacity-70'
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-foreground">{assignment.title}</p>
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                          displayStatus === 'completed' 
-                            ? 'border-green-500 bg-green-500' 
-                            : displayStatus === 'planned'
-                            ? 'border-yellow-400/50'
-                            : 'border-gray-400/30'
-                        }`}>
-                          {displayStatus === 'completed' && (
-                            <div className="w-2 h-2 rounded-full bg-white"></div>
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex-1">
+                          <p className={`text-sm font-medium ${
+                            isAvailable ? 'text-foreground' : 'text-muted-foreground'
+                          }`}>
+                            {assignment.title}
+                          </p>
+                          {!isAvailable && (
+                            <p className="text-xs text-muted-foreground mt-1">
+                              🔒 Скоро будет доступно
+                            </p>
                           )}
-                          {displayStatus === 'planned' && (
-                            <div className="w-2 h-2 rounded-full bg-yellow-400/50"></div>
+                        </div>
+                        
+                        {/* Status indicator */}
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {!isAvailable ? (
+                            <div className="w-6 h-6 rounded-full bg-muted/40 border-2 border-muted/50 flex items-center justify-center">
+                              <Lock className="w-3 h-3 text-muted-foreground" />
+                            </div>
+                          ) : (
+                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                              displayStatus === 'completed' 
+                                ? 'border-green-500 bg-green-500' 
+                                : displayStatus === 'planned'
+                                ? 'border-yellow-400 bg-yellow-400/20'
+                                : 'border-primary-orange/40 bg-primary-orange/10'
+                            }`}>
+                              {displayStatus === 'completed' && (
+                                <Check className="w-4 h-4 text-white" />
+                              )}
+                              {displayStatus === 'planned' && (
+                                <Clock className="w-3 h-3 text-yellow-600" />
+                              )}
+                              {displayStatus === 'not_started' && isAvailable && (
+                                <PlayCircle className="w-3 h-3 text-primary-orange" />
+                              )}
+                            </div>
                           )}
                         </div>
                       </div>

@@ -88,7 +88,7 @@ const Index = () => {
 
       {/* My Tasks Card */}
       <TapCard className="mb-4" onClick={() => handleCardClick('Мои задания')}>
-        <div className="glass-strong rounded-3xl p-6 relative overflow-hidden shadow-inner">
+        <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
           <h3 className="text-lg font-semibold mb-1 text-glass">Мои задания</h3>
           <p className="text-sm text-glass-muted mb-3">89 заданий</p>
           
