@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 interface Skill {
   id: string;
@@ -28,39 +27,9 @@ export const useUserSkills = (userId: string | undefined) => {
   const [skills, setSkills] = useState<UserSkill[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
-  const [localSkills, setLocalSkills] = useLocalStorage<any[]>('user_skills', []);
 
   const fetchUserSkills = async () => {
     if (!userId) {
-      // Load from localStorage for unauthenticated users
-      try {
-        const { data: allSkills } = await supabase
-          .from('skills')
-          .select('*')
-          .order('order_index', { ascending: true });
-
-        if (allSkills) {
-          const localData = localSkills.find(ls => ls.skillId) ? localSkills : [];
-          const skillsWithProgress = allSkills.map(skill => {
-            const localProgress = localData.find(ls => ls.skillId === skill.id);
-            return {
-              id: `local-${skill.id}`,
-              user_id: 'local',
-              skill_id: skill.id,
-              current_level: 1,
-              target_level: localProgress?.targetLevel || 1,
-              progress_percent: 0,
-              is_goal_achieved: false,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-              skill: skill
-            };
-          });
-          setSkills(skillsWithProgress);
-        }
-      } catch (error) {
-        console.error('Error loading skills:', error);
-      }
       setLoading(false);
       return;
     }
@@ -118,37 +87,7 @@ export const useUserSkills = (userId: string | undefined) => {
   }, [userId]);
 
   const updateTargetLevel = async (skillId: string, targetLevel: number) => {
-    if (!userId) {
-      // Save to localStorage for unauthenticated users
-      const existing = localSkills.find(ls => ls.skillId === skillId);
-      if (existing) {
-        setLocalSkills(
-          localSkills.map(ls => 
-            ls.skillId === skillId 
-              ? { ...ls, targetLevel, updatedAt: new Date().toISOString() }
-              : ls
-          )
-        );
-      } else {
-        setLocalSkills([
-          ...localSkills,
-          { skillId, targetLevel, updatedAt: new Date().toISOString() }
-        ]);
-      }
-      
-      // Update local state
-      setSkills(skills.map(s => 
-        s.skill_id === skillId 
-          ? { ...s, target_level: targetLevel }
-          : s
-      ));
-      
-      toast({
-        title: 'Сохранено локально',
-        description: 'Войдите, чтобы сохранить прогресс в облаке',
-      });
-      return;
-    }
+    if (!userId) return;
 
     try {
       const { error } = await supabase
