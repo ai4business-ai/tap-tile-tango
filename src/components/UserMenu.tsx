@@ -31,19 +31,19 @@ export const UserMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-          <Avatar className="h-10 w-10">
+        <Button variant="ghost" className="relative h-12 w-12 rounded-full">
+          <Avatar className="h-12 w-12 border-2 border-primary-orange/30">
             <AvatarImage src={user.user_metadata?.avatar_url} alt="User avatar" />
-            <AvatarFallback className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+            <AvatarFallback className="bg-gradient-to-br from-primary-orange to-sky-blue text-white font-semibold">
               {getInitials()}
             </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end">
+      <DropdownMenuContent className="w-56 glass-card border-white/60" align="end">
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
+            <p className="text-sm font-semibold leading-none text-deep-purple">
               {user.user_metadata?.full_name || 'Пользователь'}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
@@ -52,7 +52,7 @@ export const UserMenu = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut()}>
+        <DropdownMenuItem onClick={() => signOut()} className="text-destructive focus:text-destructive">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Выйти</span>
         </DropdownMenuItem>

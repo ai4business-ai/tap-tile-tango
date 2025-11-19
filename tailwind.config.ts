@@ -62,25 +62,20 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Dark theme education app colors
-				'progress-blue': 'hsl(var(--progress-blue))',
-				'cyan-gradient': 'hsl(var(--cyan-gradient))',
-				'cyan-accent': 'hsl(var(--cyan-accent))',
-				'teal-gradient': 'hsl(var(--teal-gradient))',
-				'green-gradient': 'hsl(var(--green-gradient))',
-				'green-accent': 'hsl(var(--green-accent))',
-				'task-red': 'hsl(var(--task-red))',
-				'gray-light': 'hsl(var(--gray-light))',
-				// Additional dark theme colors
-				'dark-cyan': 'hsl(var(--dark-cyan))',
-				'dark-teal': 'hsl(var(--dark-teal))',
-				'dark-slate': 'hsl(var(--dark-slate))',
-				'light-cyan': 'hsl(var(--light-cyan))'
+				// Glass Liquid Design colors
+				'primary-orange': 'hsl(var(--primary-orange))',
+				'deep-purple': 'hsl(var(--deep-purple))',
+				'sky-blue': 'hsl(var(--sky-blue))',
+			},
+			fontFamily: {
+				sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				'2xl': '1rem',
+				'3xl': '1.5rem',
 			},
 			keyframes: {
 				'accordion-down': {
