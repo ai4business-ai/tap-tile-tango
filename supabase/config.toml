@@ -5,3 +5,6 @@ verify_jwt = true
 
 [functions.prompt-tester]
 verify_jwt = true
+
+[functions.set-user-environment]
+verify_jwt = false

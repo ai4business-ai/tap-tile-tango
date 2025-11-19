@@ -100,6 +100,7 @@ export type Database = {
           created_at: string
           date: string
           device_id: string
+          environment: Database["public"]["Enums"]["environment_type"]
           id: string
           task_id: string
           updated_at: string
@@ -109,6 +110,7 @@ export type Database = {
           created_at?: string
           date?: string
           device_id: string
+          environment?: Database["public"]["Enums"]["environment_type"]
           id?: string
           task_id: string
           updated_at?: string
@@ -118,6 +120,7 @@ export type Database = {
           created_at?: string
           date?: string
           device_id?: string
+          environment?: Database["public"]["Enums"]["environment_type"]
           id?: string
           task_id?: string
           updated_at?: string
@@ -160,6 +163,7 @@ export type Database = {
           assignment_id: string
           completed_at: string | null
           created_at: string
+          environment: Database["public"]["Enums"]["environment_type"]
           id: string
           score: number | null
           status: Database["public"]["Enums"]["assignment_status"]
@@ -173,6 +177,7 @@ export type Database = {
           assignment_id: string
           completed_at?: string | null
           created_at?: string
+          environment?: Database["public"]["Enums"]["environment_type"]
           id?: string
           score?: number | null
           status?: Database["public"]["Enums"]["assignment_status"]
@@ -186,6 +191,7 @@ export type Database = {
           assignment_id?: string
           completed_at?: string | null
           created_at?: string
+          environment?: Database["public"]["Enums"]["environment_type"]
           id?: string
           score?: number | null
           status?: Database["public"]["Enums"]["assignment_status"]
@@ -208,6 +214,7 @@ export type Database = {
         Row: {
           created_at: string
           current_level: number
+          environment: Database["public"]["Enums"]["environment_type"]
           id: string
           is_goal_achieved: boolean
           progress_percent: number
@@ -219,6 +226,7 @@ export type Database = {
         Insert: {
           created_at?: string
           current_level?: number
+          environment?: Database["public"]["Enums"]["environment_type"]
           id?: string
           is_goal_achieved?: boolean
           progress_percent?: number
@@ -230,6 +238,7 @@ export type Database = {
         Update: {
           created_at?: string
           current_level?: number
+          environment?: Database["public"]["Enums"]["environment_type"]
           id?: string
           is_goal_achieved?: boolean
           progress_percent?: number
@@ -253,10 +262,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      initialize_user_skills: {
-        Args: { p_user_id: string }
-        Returns: undefined
+      get_current_environment: {
+        Args: never
+        Returns: Database["public"]["Enums"]["environment_type"]
       }
+      initialize_user_skills:
+        | {
+            Args: {
+              p_environment?: Database["public"]["Enums"]["environment_type"]
+              p_user_id: string
+            }
+            Returns: undefined
+          }
+        | { Args: { p_user_id: string }; Returns: undefined }
       log_security_event: {
         Args: { details?: Json; event_type: string; user_id?: string }
         Returns: undefined
@@ -272,6 +290,7 @@ export type Database = {
         | "in_progress"
         | "submitted"
         | "completed"
+      environment_type: "dev" | "prod"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -405,6 +424,7 @@ export const Constants = {
         "submitted",
         "completed",
       ],
+      environment_type: ["dev", "prod"],
     },
   },
 } as const

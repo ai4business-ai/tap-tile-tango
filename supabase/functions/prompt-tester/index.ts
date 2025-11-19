@@ -18,7 +18,7 @@ function getToday(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-async function getCurrentCount(deviceId: string, taskId: string): Promise<number> {
+async function getCurrentCount(deviceId: string, taskId: string, environment: string): Promise<number> {
   const today = getToday();
   const { data, error } = await supabase
     .from('prompt_attempts')
@@ -26,6 +26,7 @@ async function getCurrentCount(deviceId: string, taskId: string): Promise<number
     .eq('device_id', deviceId)
     .eq('task_id', taskId)
     .eq('date', today)
+    .eq('environment', environment)
     .maybeSingle();
 
   if (error) {
@@ -35,9 +36,9 @@ async function getCurrentCount(deviceId: string, taskId: string): Promise<number
   return data?.count ?? 0;
 }
 
-async function incrementAndGet(deviceId: string, taskId: string): Promise<{ allowed: boolean; remaining: number; count: number }>{
+async function incrementAndGet(deviceId: string, taskId: string, environment: string): Promise<{ allowed: boolean; remaining: number; count: number }>{
   const today = getToday();
-  const current = await getCurrentCount(deviceId, taskId);
+  const current = await getCurrentCount(deviceId, taskId, environment);
 
   if (current >= DAILY_LIMIT) {
     return { allowed: false, remaining: 0, count: current };
@@ -49,6 +50,7 @@ async function incrementAndGet(deviceId: string, taskId: string): Promise<{ allo
       task_id: taskId,
       date: today,
       count: 1,
+      environment: environment,
     });
     if (insertError) {
       console.error('Error inserting attempts:', insertError);
@@ -63,7 +65,8 @@ async function incrementAndGet(deviceId: string, taskId: string): Promise<{ allo
       .update({ count: next })
       .eq('device_id', deviceId)
       .eq('task_id', taskId)
-      .eq('date', today);
+      .eq('date', today)
+      .eq('environment', environment);
     if (updateError) {
       console.error('Error updating attempts:', updateError);
       return { allowed: true, remaining: Math.max(0, DAILY_LIMIT - next), count: next };
@@ -158,8 +161,11 @@ serve(async (req) => {
     const device = (deviceId && String(deviceId))
       || (req.headers.get('x-device-id') || (req.headers.get('user-agent') || 'unknown')).slice(0, 64);
 
+    // Get environment from header (set by client)
+    const environment = req.headers.get('x-environment') || 'dev';
+
     // Increment attempts first (counts any request with a non-empty prompt)
-    const attempts = await incrementAndGet(device, taskId);
+    const attempts = await incrementAndGet(device, taskId, environment);
     if (!attempts.allowed) {
       console.log(`Prompt test request - Task: ${taskContext}, Remaining attempts: 0`);
       return new Response(JSON.stringify({
