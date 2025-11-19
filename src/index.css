@@ -175,3 +175,10 @@ All colors MUST be HSL.
     background: linear-gradient(135deg, hsl(var(--deep-purple)) 0%, hsl(var(--sky-blue)) 100%);
   }
 }
+
+/* Safe area for iOS devices */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottom-navigation {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}
