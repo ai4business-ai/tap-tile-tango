@@ -8,60 +8,49 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Dark theme base */
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    /* Light theme - Glass Liquid Design */
+    --background: 210 40% 98%;
+    --foreground: 303 89% 19%;
 
-    --card: 217 33% 17%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 303 89% 19%;
 
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 303 89% 19%;
 
-    /* Primary - Cyan accent */
-    --primary: 188 100% 42%;
-    --primary-foreground: 222 47% 11%;
+    /* Primary - Orange #F3AE5C */
+    --primary: 32 86% 66%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Dark slate */
-    --secondary: 215 28% 17%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary - Deep Purple #610658 */
+    --secondary: 303 89% 19%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 303 40% 40%;
 
-    /* Accent - Teal */
-    --accent: 174 72% 56%;
-    --accent-foreground: 222 47% 11%;
+    /* Accent - Sky Blue #08ADFD */
+    --accent: 199 98% 51%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217 33% 25%;
-    --input: 217 33% 25%;
-    --ring: 188 100% 42%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 32 86% 66%;
 
-    /* Dark gradient colors */
-    --gradient-start: 222 47% 11%;
-    --gradient-middle: 220 20% 15%;
-    --gradient-end: 217 33% 25%;
+    /* Glass Liquid colors */
+    --primary-orange: 32 86% 66%;
+    --deep-purple: 303 89% 19%;
+    --sky-blue: 199 98% 51%;
     
-    /* Dark theme education app colors */
-    --progress-blue: 188 85% 65%;
-    --cyan-gradient: 188 100% 42%;
-    --cyan-accent: 180 95% 50%;
-    --teal-gradient: 174 72% 56%;
-    --green-gradient: 160 60% 50%;
-    --green-accent: 160 60% 60%;
-    --task-red: 0 65% 60%;
-    --gray-light: 215 20% 65%;
-    
-    /* Additional dark theme colors */
-    --dark-cyan: 188 85% 40%;
-    --dark-teal: 174 60% 45%;
-    --dark-slate: 215 25% 20%;
-    --light-cyan: 188 85% 75%;
+    /* Gradient colors */
+    --gradient-peach: 30 100% 97%;
+    --gradient-blue: 199 100% 95%;
+    --gradient-purple: 300 100% 97%;
 
-    --radius: 1rem;
+    --radius: 1.5rem;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -119,58 +108,70 @@ All colors MUST be HSL.
 
   body {
     @apply text-foreground min-h-screen;
-    background: linear-gradient(135deg, #0a0e27 0%, #0f1419 35%, #1a2332 70%, #243447 100%);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #FFF5EB 0%, #E8F4FD 50%, #F0E6F6 100%);
     background-attachment: fixed;
   }
 
-  /* Glass Morphism utilities - Dark theme optimized */
+  /* Glass Morphism utilities - Light theme optimized */
   .glass {
-    background: rgba(30, 41, 59, 0.4);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.08);
   }
   
   .glass-card {
-    background: rgba(30, 41, 59, 0.5);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.125);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45), 
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.12), 
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
   }
   
   .glass-subtle {
-    background: rgba(15, 23, 42, 0.3);
+    background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(12px) saturate(150%);
     -webkit-backdrop-filter: blur(12px) saturate(150%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.05);
   }
   
   .glass-strong {
-    background: rgba(51, 65, 85, 0.6);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(28px) saturate(200%);
     -webkit-backdrop-filter: blur(28px) saturate(200%);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 0 rgba(255, 255, 255, 1);
   }
 
-  /* Text on Glass - Dark theme */
+  /* Text on Glass - Light theme */
   .text-glass {
-    @apply text-white drop-shadow-sm;
+    @apply text-deep-purple drop-shadow-sm;
   }
   
   .text-glass-muted {
-    @apply text-slate-300;
+    @apply text-muted-foreground;
   }
   
   /* Hover effects for glass elements */
   .glass:hover, .glass-card:hover {
-    border-color: rgba(0, 188, 212, 0.3);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4),
-                0 0 20px 0 rgba(0, 188, 212, 0.1);
+    border-color: rgba(243, 174, 92, 0.5);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.12),
+                0 0 20px 0 rgba(243, 174, 92, 0.3);
+    transform: translateY(-2px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Gradient backgrounds */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary-orange)) 0%, hsl(var(--sky-blue)) 100%);
+  }
+  
+  .bg-gradient-purple-blue {
+    background: linear-gradient(135deg, hsl(var(--deep-purple)) 0%, hsl(var(--sky-blue)) 100%);
   }
 }

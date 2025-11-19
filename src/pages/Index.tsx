@@ -1,8 +1,11 @@
 import React from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, BookOpen, Target, Video, FileText } from 'lucide-react';
 import { TapCard } from '@/components/ui/tap-card';
 import { useNavigate } from 'react-router-dom';
 import { UserMenu } from '@/components/UserMenu';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 const Index = () => {
   const navigate = useNavigate();
   
@@ -19,12 +22,13 @@ const Index = () => {
       console.log(`Clicked: ${cardName}`);
     }
   };
-  return <div className="min-h-screen p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
+  return (
+    <div className="min-h-screen p-4 md:p-6 lg:p-8 max-w-md mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex-1"></div>
         <div className="glass-subtle rounded-3xl px-6 py-3">
-          <p className="text-xs text-glass-muted font-medium">Здесь лого вашей компании</p>
+          <p className="text-xs text-muted-foreground font-medium">Здесь лого вашей компании</p>
         </div>
         <div className="flex-1 flex justify-end">
           <UserMenu />
@@ -32,39 +36,47 @@ const Index = () => {
       </div>
 
 
-      {/* Module Card */}
+      {/* Next Task Card */}
       <TapCard className="mb-4" onClick={() => handleCardClick('Анализ данных')}>
-        <div className="glass-card rounded-3xl p-6 shadow-inner flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-              <div className="w-5 h-5 bg-white/40 rounded-lg transform rotate-45"></div>
+        <div className="glass-card rounded-3xl p-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-orange to-sky-blue flex items-center justify-center shadow-md">
+              <FileText className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-sm text-glass-muted">Следующее задание</p>
-              <p className="text-sm font-medium text-glass">Анализ Word/PDF документа</p>
+              <p className="text-xs text-muted-foreground mb-1">Следующее задание</p>
+              <p className="text-sm font-semibold text-deep-purple">Анализ Word/PDF документа</p>
             </div>
           </div>
-          <ChevronRight className="w-5 h-5 text-glass-muted" />
+          <ChevronRight className="w-5 h-5 text-muted-foreground" />
         </div>
       </TapCard>
 
-      {/* Progress Card */}
+      {/* My Progress Card */}
       <TapCard className="mb-4" onClick={() => handleCardClick('Мой прогресс')}>
-        <div className="glass-strong rounded-3xl p-6 relative overflow-hidden shadow-inner">
-          <h3 className="text-lg font-semibold mb-1 text-glass">Мой прогресс</h3>
-          <p className="text-sm text-glass-muted mb-4">8 навыков</p>
-          <div className="flex flex-wrap gap-2">
-            <div className="glass-subtle text-glass px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-              🔍 <span>Искатель</span>
+        <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-blue to-deep-purple flex items-center justify-center shadow-md">
+              <Target className="w-6 h-6 text-white" />
             </div>
-            <div className="glass-subtle text-glass px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-              📊 <span>Аналитик</span>
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-deep-purple">Мой прогресс</h3>
+              <p className="text-sm text-muted-foreground">8 навыков изучается</p>
             </div>
-            <div className="glass-subtle text-glass px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-              ⚙️ <span>Инженер</span>
-            </div>
+            <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </div>
           
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="accent" className="text-xs">
+              🔍 Искатель
+            </Badge>
+            <Badge variant="default" className="text-xs">
+              📊 Аналитик
+            </Badge>
+            <Badge variant="secondary" className="text-xs">
+              ⚙️ Инженер
+            </Badge>
+          </div>
         </div>
       </TapCard>
 
@@ -96,14 +108,29 @@ const Index = () => {
 
       {/* Webinar Records Card */}
       <TapCard onClick={() => handleCardClick('Записи вебинаров')}>
-        <div className="glass-strong rounded-3xl p-6 relative overflow-hidden shadow-inner">
-          <h3 className="text-lg font-semibold mb-1 text-glass">Записи вебинаров</h3>
-          <p className="text-sm text-glass-muted mb-4">6 вебинаров</p>
-          <button className="bg-white/20 text-glass px-4 py-2 rounded-2xl text-sm font-medium backdrop-blur-sm border border-white/30">
-            Смотреть
-          </button>
+        <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-deep-purple to-primary-orange flex items-center justify-center shadow-md">
+              <Video className="w-6 h-6 text-white" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-deep-purple">Записи вебинаров</h3>
+              <p className="text-sm text-muted-foreground">6 вебинаров доступно</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-muted-foreground" />
+          </div>
+          
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            className="w-full"
+          >
+            Смотреть записи
+          </Button>
         </div>
       </TapCard>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
