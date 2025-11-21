@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, Brain, PenTool, Lightbulb, Search, Zap, BarChart3, Target, TrendingUp } from 'lucide-react';
+import { MessageSquare, Brain, PenTool, Lightbulb, Search, Zap, BarChart3, Target, TrendingUp, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { GuestBanner } from '@/components/GuestBanner';
 import { Progress } from '@/components/ui/progress';
@@ -7,6 +7,15 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserSkills } from '@/hooks/useUserSkills';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { supabase } from '@/integrations/supabase/client';
 
 // Map skill slug to icon and color - exact match from photos
 const getSkillIcon = (slug: string) => {
@@ -48,7 +57,7 @@ const IndexPlayground = () => {
     : 0;
 
   // Calculate learning skills count
-  const learningSkillsCount = skills.filter(skill => skill.progress_percent > 0 && skill.progress_percent < 100).length;
+  const learningSkillsCount = skills.length;
 
   // Prepare radar chart data
   const radarData = skills.map(skill => ({
@@ -78,11 +87,38 @@ const IndexPlayground = () => {
               </h1>
               <p className="text-white/90 text-base">Ваш прогресс обучения</p>
             </div>
-            <button className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 border-white/40">
-              <span className="text-white text-xl font-semibold">
-                {user?.email?.[0].toUpperCase() || 'А'}
-              </span>
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 border-white/40 hover:bg-white/30 transition-colors">
+                  <span className="text-white text-xl font-semibold">
+                    {user?.email?.[0].toUpperCase() || 'А'}
+                  </span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">Аккаунт</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user?.email || 'guest@example.com'}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={async () => {
+                    if (user) {
+                      await supabase.auth.signOut();
+                      navigate('/auth');
+                    }
+                  }}
+                  className="cursor-pointer"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Выйти</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
@@ -120,7 +156,7 @@ const IndexPlayground = () => {
                       
                       const angle = (index * 360) / skills.length - 90;
                       const rad = (angle * Math.PI) / 180;
-                      const iconRadius = 145;
+                      const iconRadius = 120;
                       const iconX = cx + iconRadius * Math.cos(rad);
                       const iconY = cy + iconRadius * Math.sin(rad);
 
