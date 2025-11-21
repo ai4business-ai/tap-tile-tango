@@ -7,6 +7,7 @@ import { SecurityProvider } from "@/components/SecurityProvider";
 import { Layout } from "@/components/Layout";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
+import IndexPlayground from "./pages/IndexPlayground";
 import Tasks from "./pages/Tasks";
 import TaskCategory from "./pages/TaskCategory";
 import TaskDetail from "./pages/TaskDetail";
@@ -35,6 +36,7 @@ const App = () => {
               <Routes>
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/" element={<Index />} />
+                <Route path="/playground" element={<IndexPlayground />} />
                 <Route path="/tasks" element={<Tasks />} />
                 <Route path="/tasks/:category" element={<TaskCategory />} />
                 <Route path="/task-detail" element={<TaskDetail />} />
