@@ -15,12 +15,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { supabase } from '@/integrations/supabase/client';
 import { demoAssignments } from '@/data/demoSkills';
 
@@ -84,7 +78,6 @@ const IndexPlayground = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { skills, loading } = useUserSkills(user?.id);
-  const [selectedSkill, setSelectedSkill] = useState<{ name: string; slug: string; completed: number; total: number } | null>(null);
 
   // Calculate overall progress (fallback to demo percentages if реальные = 0)
   const overallProgress = skills.length > 0 
@@ -205,23 +198,39 @@ const IndexPlayground = () => {
                       const iconX = cx + iconRadius * Math.cos(rad);
                       const iconY = cy + iconRadius * Math.sin(rad);
 
+                      const stats = demoCompletedBySlug[skill.skill.slug] || { completed: 0, total: 0 };
+                      
                       return (
                         <g transform={`translate(${iconX},${iconY})`}>
                           <foreignObject x={-24} y={-24} width={48} height={48}>
-                            <div 
-                              className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-transform`}
-                              onClick={() => {
-                                const stats = demoCompletedBySlug[skill.skill.slug] || { completed: 0, total: 0 };
-                                setSelectedSkill({
-                                  name: skill.skill.name,
-                                  slug: skill.skill.slug,
-                                  completed: stats.completed,
-                                  total: stats.total
-                                });
-                              }}
-                            >
-                              {getSkillIcon(skill.skill.slug)}
-                            </div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <div 
+                                  className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-transform`}
+                                >
+                                  {getSkillIcon(skill.skill.slug)}
+                                </div>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="center" className="w-72">
+                                <DropdownMenuLabel>
+                                  <div className="flex items-center gap-3">
+                                    <div className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg flex-shrink-0`}>
+                                      {getSkillIcon(skill.skill.slug)}
+                                    </div>
+                                    <span className="text-sm font-semibold">{skill.skill.name}</span>
+                                  </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <div className="px-2 py-3">
+                                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                                    <span className="text-sm text-muted-foreground">Выполнено заданий</span>
+                                    <span className="text-xl font-bold text-[#8B5CF6]">
+                                      {stats.completed}/{stats.total}
+                                    </span>
+                                  </div>
+                                </div>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </foreignObject>
                         </g>
                       );
@@ -275,31 +284,6 @@ const IndexPlayground = () => {
           </div>
         </div>
       </div>
-
-      {/* Skill Detail Dialog */}
-      <Dialog open={!!selectedSkill} onOpenChange={() => setSelectedSkill(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-2xl ${selectedSkill ? getSkillColor(selectedSkill.slug) : ''} flex items-center justify-center shadow-lg flex-shrink-0`}>
-                {selectedSkill && getSkillIcon(selectedSkill.slug)}
-              </div>
-              <span>{selectedSkill?.name}</span>
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-              <span className="text-sm text-muted-foreground">Прогресс выполнения</span>
-              <span className="text-2xl font-bold text-[#8B5CF6]">
-                {selectedSkill?.completed}/{selectedSkill?.total}
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground text-center">
-              Выполнено заданий: {selectedSkill?.completed} из {selectedSkill?.total}
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
