@@ -46,23 +46,44 @@ const getSkillColor = (slug: string) => {
   return colorMap[slug] || 'bg-[#3B9DFF]';
 };
 
+const demoProgressBySlug: Record<string, number> = {
+  'communication': 23,
+  'knowledge-management': 50,
+  'content-creation': 15,
+  'problem-solving': 88,
+  'research': 67,
+  'automation': 10,
+  'data-analysis': 40,
+  'productivity': 92,
+};
+
+const getDisplayProgress = (slug: string, actualProgress: number) => {
+  if (actualProgress && actualProgress > 0) return actualProgress;
+  return demoProgressBySlug[slug] ?? 0;
+};
+
 const IndexPlayground = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { skills, loading } = useUserSkills(user?.id);
 
-  // Calculate overall progress
+  // Calculate overall progress (fallback to demo percentages if реальные = 0)
   const overallProgress = skills.length > 0 
-    ? Math.round(skills.reduce((sum, skill) => sum + skill.progress_percent, 0) / skills.length)
+    ? Math.round(
+        skills.reduce(
+          (sum, skill) => sum + getDisplayProgress(skill.skill.slug, skill.progress_percent),
+          0
+        ) / skills.length
+      )
     : 0;
 
   // Calculate learning skills count
   const learningSkillsCount = skills.length;
 
-  // Prepare radar chart data
+  // Prepare radar chart data (используем отображаемый прогресс)
   const radarData = skills.map(skill => ({
     subject: skill.skill.slug,
-    value: skill.progress_percent,
+    value: getDisplayProgress(skill.skill.slug, skill.progress_percent),
     fullMark: 100,
   }));
 
@@ -207,10 +228,10 @@ const IndexPlayground = () => {
                           {skill.current_level === 1 ? 'Basic' : skill.current_level === 2 ? 'Pro' : 'AI-Native'}
                         </span>
                         <span className="text-sm font-bold text-[#8B5CF6]">
-                          {skill.progress_percent}%
+                          {getDisplayProgress(skill.skill.slug, skill.progress_percent)}%
                         </span>
                       </div>
-                      <Progress value={skill.progress_percent} className="h-2" />
+                      <Progress value={getDisplayProgress(skill.skill.slug, skill.progress_percent)} className="h-2" />
                     </div>
                   </div>
                 </CardContent>
