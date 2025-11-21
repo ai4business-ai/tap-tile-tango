@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MessageSquare, Brain, PenTool, Lightbulb, Search, Zap, BarChart3, Target, TrendingUp, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { GuestBanner } from '@/components/GuestBanner';
@@ -15,7 +15,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { supabase } from '@/integrations/supabase/client';
+import { demoAssignments } from '@/data/demoSkills';
 
 // Map skill slug to icon and color - exact match from photos
 const getSkillIcon = (slug: string) => {
@@ -57,6 +64,17 @@ const demoProgressBySlug: Record<string, number> = {
   'productivity': 92,
 };
 
+const demoCompletedBySlug: Record<string, { completed: number; total: number }> = {
+  'communication': { completed: 2, total: 11 },
+  'knowledge-management': { completed: 5, total: 11 },
+  'content-creation': { completed: 1, total: 11 },
+  'problem-solving': { completed: 9, total: 11 },
+  'research': { completed: 8, total: 13 },
+  'automation': { completed: 1, total: 11 },
+  'data-analysis': { completed: 4, total: 11 },
+  'productivity': { completed: 10, total: 11 },
+};
+
 const getDisplayProgress = (slug: string, actualProgress: number) => {
   if (actualProgress && actualProgress > 0) return actualProgress;
   return demoProgressBySlug[slug] ?? 0;
@@ -66,6 +84,7 @@ const IndexPlayground = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { skills, loading } = useUserSkills(user?.id);
+  const [selectedSkill, setSelectedSkill] = useState<{ name: string; slug: string; completed: number; total: number } | null>(null);
 
   // Calculate overall progress (fallback to demo percentages if реальные = 0)
   const overallProgress = skills.length > 0 
@@ -79,6 +98,10 @@ const IndexPlayground = () => {
 
   // Calculate learning skills count
   const learningSkillsCount = skills.length;
+
+  // Calculate total completed assignments
+  const totalCompletedAssignments = Object.values(demoCompletedBySlug).reduce((sum, skill) => sum + skill.completed, 0);
+  const totalAssignments = Object.values(demoCompletedBySlug).reduce((sum, skill) => sum + skill.total, 0);
 
   // Prepare radar chart data (используем отображаемый прогресс)
   const radarData = skills.map(skill => ({
@@ -153,6 +176,7 @@ const IndexPlayground = () => {
                 <p className="text-sm text-muted-foreground mb-2">Общий прогресс</p>
                 <p className="text-6xl font-bold text-[#8B5CF6] mb-2">{overallProgress}%</p>
                 <p className="text-sm text-muted-foreground">{learningSkillsCount} навыков изучается</p>
+                <p className="text-xs text-muted-foreground mt-1">{totalCompletedAssignments}/{totalAssignments} заданий выполнено</p>
               </div>
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#C026D3] via-[#EC4899] to-[#F97316] flex items-center justify-center shadow-xl">
                 <TrendingUp className="w-12 h-12 text-white" strokeWidth={2.5} />
@@ -166,8 +190,8 @@ const IndexPlayground = () => {
         <Card className="border-0 shadow-xl bg-white">
           <CardContent className="p-6">
             <div className="relative">
-              <ResponsiveContainer width="100%" height={300}>
-                <RadarChart data={radarData}>
+              <ResponsiveContainer width="100%" height={320}>
+                <RadarChart data={radarData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                   <PolarGrid stroke="#E5E7EB" strokeWidth={1} />
                   <PolarAngleAxis 
                     dataKey="subject" 
@@ -177,14 +201,25 @@ const IndexPlayground = () => {
                       
                       const angle = (index * 360) / skills.length - 90;
                       const rad = (angle * Math.PI) / 180;
-                      const iconRadius = 120;
+                      const iconRadius = 135;
                       const iconX = cx + iconRadius * Math.cos(rad);
                       const iconY = cy + iconRadius * Math.sin(rad);
 
                       return (
                         <g transform={`translate(${iconX},${iconY})`}>
                           <foreignObject x={-24} y={-24} width={48} height={48}>
-                            <div className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg`}>
+                            <div 
+                              className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-transform`}
+                              onClick={() => {
+                                const stats = demoCompletedBySlug[skill.skill.slug] || { completed: 0, total: 0 };
+                                setSelectedSkill({
+                                  name: skill.skill.name,
+                                  slug: skill.skill.slug,
+                                  completed: stats.completed,
+                                  total: stats.total
+                                });
+                              }}
+                            >
                               {getSkillIcon(skill.skill.slug)}
                             </div>
                           </foreignObject>
@@ -240,6 +275,31 @@ const IndexPlayground = () => {
           </div>
         </div>
       </div>
+
+      {/* Skill Detail Dialog */}
+      <Dialog open={!!selectedSkill} onOpenChange={() => setSelectedSkill(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <div className={`w-12 h-12 rounded-2xl ${selectedSkill ? getSkillColor(selectedSkill.slug) : ''} flex items-center justify-center shadow-lg flex-shrink-0`}>
+                {selectedSkill && getSkillIcon(selectedSkill.slug)}
+              </div>
+              <span>{selectedSkill?.name}</span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+              <span className="text-sm text-muted-foreground">Прогресс выполнения</span>
+              <span className="text-2xl font-bold text-[#8B5CF6]">
+                {selectedSkill?.completed}/{selectedSkill?.total}
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground text-center">
+              Выполнено заданий: {selectedSkill?.completed} из {selectedSkill?.total}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
