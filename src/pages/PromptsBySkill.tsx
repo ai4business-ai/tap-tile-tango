@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Copy } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Accordion,
@@ -9,12 +9,26 @@ import {
 } from '@/components/ui/accordion';
 import { skillsPromptsData } from '@/data/promptsData';
 import { getSkillIcon, getSkillColor } from '@/utils/skillIcons';
+import { toast } from 'sonner';
 
 const PromptsBySkill = () => {
   const navigate = useNavigate();
   const { skillSlug } = useParams<{ skillSlug: string }>();
 
   const skill = skillsPromptsData.find((s) => s.slug === skillSlug);
+
+  const handleCopyPrompt = async (promptText: string) => {
+    try {
+      await navigator.clipboard.writeText(promptText);
+      toast.success('Скопировано!', {
+        description: 'Промпт скопирован в буфер обмена',
+      });
+    } catch (err) {
+      toast.error('Ошибка', {
+        description: 'Не удалось скопировать промпт',
+      });
+    }
+  };
 
   if (!skill) {
     return (
@@ -49,7 +63,7 @@ const PromptsBySkill = () => {
 
       {/* Prompts List */}
       <div className="max-w-md mx-auto px-4 -mt-8">
-        <Accordion type="single" collapsible className="space-y-3">
+        <Accordion type="multiple" className="space-y-3">
           {skill.prompts.map((prompt, index) => (
             <AccordionItem
               key={prompt.id}
@@ -68,9 +82,18 @@ const PromptsBySkill = () => {
                   </AccordionTrigger>
                   <AccordionContent className="px-4 pb-4">
                     <div className="bg-[#8B5CF6]/5 rounded-2xl p-4 mt-2">
-                      <h4 className="text-sm font-semibold text-[#8B5CF6] mb-3">
-                        Идеальный промпт:
-                      </h4>
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="text-sm font-semibold text-[#8B5CF6]">
+                          Идеальный промпт:
+                        </h4>
+                        <button
+                          onClick={() => handleCopyPrompt(prompt.prompt)}
+                          className="p-2 rounded-lg bg-[#8B5CF6]/10 hover:bg-[#8B5CF6]/20 transition-colors"
+                          aria-label="Копировать промпт"
+                        >
+                          <Copy className="w-4 h-4 text-[#8B5CF6]" />
+                        </button>
+                      </div>
                       <p className="text-sm text-foreground leading-relaxed">
                         {prompt.prompt}
                       </p>
