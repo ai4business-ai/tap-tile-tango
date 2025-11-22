@@ -21,7 +21,7 @@ export const BottomNavigation = () => {
   const tabs = [
     { title: "Прогресс", icon: TrendingUp, path: "/my-progress" },
     { title: "Задания", icon: ClipboardList, path: "/tasks" },
-    { title: "Промпты", icon: BookOpen, path: "/prompts" },
+    { title: "Теория", icon: BookOpen, path: "/webinar-records" },
     { title: "Следующее", icon: PlayCircle, path: "next" },
     { title: "Профиль", icon: User, path: user ? "/my-progress" : "/auth" },
   ];
