@@ -20,6 +20,8 @@ import TaskSpecializedGPT from "./pages/TaskSpecializedGPT";
 import TaskClientResponse from "./pages/TaskClientResponse";
 import TaskMeetingAgenda from "./pages/TaskMeetingAgenda";
 import TaskFeedback from "./pages/TaskFeedback";
+import PromptsLibrary from "./pages/PromptsLibrary";
+import PromptsBySkill from "./pages/PromptsBySkill";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +51,8 @@ const App = () => {
                 <Route path="/task/client-response" element={<TaskClientResponse />} />
                 <Route path="/task/meeting-agenda" element={<TaskMeetingAgenda />} />
                 <Route path="/task/feedback-colleagues" element={<TaskFeedback />} />
+                <Route path="/prompts" element={<PromptsLibrary />} />
+                <Route path="/prompts/:skillSlug" element={<PromptsBySkill />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
