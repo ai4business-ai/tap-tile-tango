@@ -2,16 +2,16 @@ import { MessageSquare, Brain, PenTool, Lightbulb, Search, Zap, BarChart3, Targe
 
 export const getSkillIcon = (slug: string) => {
   const iconMap: Record<string, React.ReactNode> = {
-    'communication': <MessageSquare className="w-5 h-5 text-white" />,
-    'knowledge-management': <Brain className="w-5 h-5 text-white" />,
-    'content-creation': <PenTool className="w-5 h-5 text-white" />,
-    'problem-solving': <Lightbulb className="w-5 h-5 text-white" />,
-    'research': <Search className="w-5 h-5 text-white" />,
-    'automation': <Zap className="w-5 h-5 text-white" />,
-    'data-analysis': <BarChart3 className="w-5 h-5 text-white" />,
-    'productivity': <Target className="w-5 h-5 text-white" />,
+    'communication': <MessageSquare className="w-5 h-5 text-foreground" />,
+    'knowledge-management': <Brain className="w-5 h-5 text-foreground" />,
+    'content-creation': <PenTool className="w-5 h-5 text-foreground" />,
+    'problem-solving': <Lightbulb className="w-5 h-5 text-foreground" />,
+    'research': <Search className="w-5 h-5 text-foreground" />,
+    'automation': <Zap className="w-5 h-5 text-foreground" />,
+    'data-analysis': <BarChart3 className="w-5 h-5 text-foreground" />,
+    'productivity': <Target className="w-5 h-5 text-foreground" />,
   };
-  return iconMap[slug] || <Target className="w-5 h-5 text-white" />;
+  return iconMap[slug] || <Target className="w-5 h-5 text-foreground" />;
 };
 
 export const getSkillColor = (slug: string) => {
