@@ -106,6 +106,9 @@ export const useUserSkills = (userId: string | undefined) => {
   };
 
   useEffect(() => {
+    // Reset state when userId changes to prevent mixing demo/real data
+    setSkills([]);
+    setLoading(true);
     fetchUserSkills();
   }, [userId]);
 
@@ -117,6 +120,14 @@ export const useUserSkills = (userId: string | undefined) => {
         description: 'Зарегистрируйтесь, чтобы изменять целевой уровень навыков',
         variant: 'destructive',
       });
+      return;
+    }
+
+    // Validate UUID format to prevent using demo skill IDs
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(skillId)) {
+      console.warn('Invalid skill ID format, skipping update and reloading real data:', skillId);
+      await fetchUserSkills();
       return;
     }
 
