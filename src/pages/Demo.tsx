@@ -4,7 +4,7 @@ import { TapCard } from '@/components/ui/tap-card';
 import { useAuth } from '@/hooks/useAuth';
 import { useNextAssignment } from '@/hooks/useNextAssignment';
 import { useUserSkills } from '@/hooks/useUserSkills';
-import { TrendingUp, ChevronRight, FileText, Video } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
@@ -16,7 +16,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getSkillIcon, getSkillColor } from '@/utils/skillIcons';
+import { getSkillIcon, getSkillColor } from '@/utils/skillIconsDemo';
+import ProgressMainIcon from '@/assets/progress-main.svg';
+import TaskIcon from '@/assets/task-icon.svg';
+import WebinarIcon from '@/assets/webinar-icon.svg';
 
 const demoProgressBySlug: Record<string, number> = {
   'communication': 23,
@@ -121,8 +124,8 @@ const Demo = () => {
                 <p className="text-sm text-muted-foreground">{learningSkillsCount} навыков изучается</p>
                 <p className="text-xs text-muted-foreground mt-1">{totalCompletedAssignments}/{totalAssignments} заданий выполнено</p>
               </div>
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#C026D3] via-[#EC4899] to-[#F97316] flex items-center justify-center shadow-xl">
-                <TrendingUp className="w-12 h-12 text-white" strokeWidth={2.5} />
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#C026D3] via-[#EC4899] to-[#F97316] flex items-center justify-center shadow-xl p-4">
+                <img src={ProgressMainIcon} alt="Progress" className="w-full h-full object-contain" />
               </div>
             </div>
             <Progress value={overallProgress} className="h-2.5 mt-4" />
@@ -211,8 +214,8 @@ const Demo = () => {
         }}>
           <div className="glass-card rounded-3xl p-6 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-orange to-sky-blue flex items-center justify-center shadow-md">
-                <FileText className="w-6 h-6 text-white" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-orange to-sky-blue flex items-center justify-center shadow-md p-2">
+                <img src={TaskIcon} alt="Task" className="w-full h-full object-contain" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground mb-1">Следующее задание</p>
@@ -253,8 +256,8 @@ const Demo = () => {
         <TapCard onClick={() => navigate('/webinar-records')}>
           <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-deep-purple to-primary-orange flex items-center justify-center shadow-md">
-                <Video className="w-6 h-6 text-white" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-deep-purple to-primary-orange flex items-center justify-center shadow-md p-2">
+                <img src={WebinarIcon} alt="Webinar" className="w-full h-full object-contain" />
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-bold text-deep-purple">Записи вебинаров</h3>
