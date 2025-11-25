@@ -4,7 +4,7 @@ project_id = "nhxrajtfxavkkzqyfrok"
 verify_jwt = true
 
 [functions.prompt-tester]
-verify_jwt = true
+verify_jwt = false
 
 [functions.set-user-environment]
 verify_jwt = false
