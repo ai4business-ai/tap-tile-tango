@@ -30,42 +30,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
-        // Initialize user_skills for new users
-        if (session?.user && event === 'SIGNED_IN') {
-          await initializeUserSkills(session.user.id);
-        }
       }
     );
 
     return () => subscription.unsubscribe();
   }, []);
-
-  const initializeUserSkills = async (userId: string) => {
-    try {
-      const currentEnvironment = getCurrentEnvironment();
-      
-      // Check if user_skills already exist for this environment
-      const { data } = await supabase
-        .from('user_skills')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('environment', currentEnvironment)
-        .limit(1);
-      
-      if (!data || data.length === 0) {
-        await supabase.rpc('initialize_user_skills', {
-          p_user_id: userId,
-          p_environment: currentEnvironment
-        });
-      }
-    } catch (error) {
-      console.error('Error initializing user skills:', error);
-    }
-  };
 
   const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
