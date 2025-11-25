@@ -51,17 +51,25 @@ export const useUserAssignments = (userId: string | undefined, skillSlug: string
 
       if (skillError) throw skillError;
 
-      // Get assignments for this skill
+      // Get assignments for this skill with is_locked check
       const { data: assignmentsData, error: assignmentsError } = await supabase
         .from('assignments')
-        .select('*')
+        .select(`
+          *,
+          skills!inner(is_locked)
+        `)
         .eq('skill_id', skillData.id)
         .order('order_index', { ascending: true });
 
       if (assignmentsError) throw assignmentsError;
 
+      // Filter out assignments from locked skills
+      const unlockedAssignments = assignmentsData?.filter(
+        (a: any) => !a.skills?.is_locked
+      ) || [];
+
       // Get user submissions for these assignments
-      const assignmentIds = assignmentsData?.map(a => a.id) || [];
+      const assignmentIds = unlockedAssignments?.map(a => a.id) || [];
       const { data: submissionsData, error: submissionsError } = await supabase
         .from('user_assignment_submissions')
         .select('*')
@@ -71,7 +79,7 @@ export const useUserAssignments = (userId: string | undefined, skillSlug: string
       if (submissionsError) throw submissionsError;
 
       // Combine assignments with submissions
-      const combinedData = assignmentsData?.map(assignment => ({
+      const combinedData = unlockedAssignments?.map(assignment => ({
         ...assignment,
         submission: submissionsData?.find(s => s.assignment_id === assignment.id) || null
       }));

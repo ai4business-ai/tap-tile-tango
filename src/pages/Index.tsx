@@ -45,7 +45,10 @@ const Index = () => {
 
 
       {/* Next Task Card */}
-      <TapCard className="mb-4" onClick={() => navigate(getNextTaskPath())}>
+      <TapCard className="mb-4" onClick={async () => {
+        const nextPath = await getNextTaskPath();
+        navigate(nextPath);
+      }}>
         <div className="glass-card rounded-3xl p-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-orange to-sky-blue flex items-center justify-center shadow-md">

@@ -1,76 +1,78 @@
-import React from 'react';
-import { ArrowLeft, Lock } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Skill {
+  id: string;
+  name: string;
+  slug: string;
+  is_locked: boolean;
+  assignment_count: number;
+}
 
 const Tasks = () => {
   const navigate = useNavigate();
+  const [skills, setSkills] = useState<Skill[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleTaskClick = (taskTitle: string, isLocked: boolean) => {
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        // Fetch skills with assignment counts
+        const { data: skillsData, error: skillsError } = await supabase
+          .from('skills')
+          .select('id, name, slug, is_locked, order_index')
+          .order('order_index', { ascending: true });
+
+        if (skillsError) throw skillsError;
+
+        // Fetch assignment counts for each skill
+        const { data: assignmentsData, error: assignmentsError } = await supabase
+          .from('assignments')
+          .select('skill_id');
+
+        if (assignmentsError) throw assignmentsError;
+
+        // Count assignments per skill
+        const assignmentCounts = assignmentsData.reduce((acc, curr) => {
+          acc[curr.skill_id] = (acc[curr.skill_id] || 0) + 1;
+          return acc;
+        }, {} as Record<string, number>);
+
+        // Combine data
+        const skillsWithCounts = skillsData.map(skill => ({
+          ...skill,
+          assignment_count: assignmentCounts[skill.id] || 0,
+        }));
+
+        setSkills(skillsWithCounts);
+      } catch (error) {
+        console.error('Error fetching skills:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSkills();
+  }, []);
+
+  const handleTaskClick = (slug: string, isLocked: boolean) => {
     if (isLocked) {
-      return; // Do nothing if locked
+      return;
     }
-    
-    if (taskTitle === "Коммуникация и работа в команде") {
-      navigate('/skill-assignments/communication');
-    } else if (taskTitle === "Исследования и обработка информации") {
-      navigate('/skill-assignments/research');
-    } else if (taskTitle === "Анализ и визуализация данных") {
-      navigate('/tasks/data-analysis');
-    } else {
-      console.log(`Clicked: ${taskTitle}`);
-    }
+    navigate(`/skill-assignments/${slug}`);
   };
 
-  const tasks = [
-    {
-      title: "Коммуникация и работа в команде",
-      count: "11 заданий",
-      isLocked: false,
-      levels: ["Basic", "Pro", "AI-Native"]
-    },
-    {
-      title: "Управление знаниями",
-      count: "11 заданий",
-      isLocked: true,
-      levels: ["Basic", "Pro", "AI-Native"]
-    },
-    {
-      title: "Создание контента", 
-      count: "11 заданий",
-      isLocked: true,
-      levels: ["Basic", "Pro", "AI-Native"]
-    },
-    {
-      title: "Решение задач и принятие решений",
-      count: "11 заданий",
-      isLocked: true,
-      levels: ["Basic", "Pro", "AI-Native"]
-    },
-    {
-      title: "Исследования и обработка информации",
-      count: "12 заданий",
-      isLocked: false,
-      levels: ["Basic", "Pro", "AI-Native"]
-    },
-    {
-      title: "Автоматизация процессов",
-      count: "11 заданий",
-      isLocked: true,
-      levels: ["Basic", "Pro", "AI-Native"]
-    },
-    {
-      title: "Анализ и визуализация данных",
-      count: "11 заданий", 
-      isLocked: true,
-      levels: ["Basic", "Pro", "AI-Native"]
-    },
-    {
-      title: "Продуктивность",
-      count: "11 заданий",
-      isLocked: true,
-      levels: ["Basic", "Pro", "AI-Native"]
-    }
-  ];
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background p-4">
+        <div className="max-w-lg mx-auto">
+          <div className="text-center py-8">Загрузка...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-4 md:p-6 lg:p-8 max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
@@ -85,32 +87,38 @@ const Tasks = () => {
           </button>
           <div>
             <h1 className="text-xl font-semibold text-glass">Мои задания</h1>
-            <p className="text-sm text-glass-muted">89 заданий</p>
+            <p className="text-sm text-glass-muted">
+              {skills.reduce((sum, s) => sum + s.assignment_count, 0)} заданий
+            </p>
           </div>
         </div>
       </div>
 
       {/* Tasks List */}
-      <div className="space-y-4">
-        {tasks.map((task, index) => (
-          <div 
-            key={index} 
-            className={`glass-card rounded-3xl p-5 shadow-inner relative transition-all ${
-              task.isLocked ? 'opacity-60' : 'cursor-pointer hover:bg-white/25'
+      <div className="space-y-3 pb-24">
+        {skills.map((skill) => (
+          <div
+            key={skill.id}
+            onClick={() => handleTaskClick(skill.slug, skill.is_locked)}
+            className={`bg-card border border-border rounded-lg p-5 ${
+              skill.is_locked
+                ? "opacity-60 cursor-not-allowed"
+                : "cursor-pointer hover:border-primary/50 transition-colors"
             }`}
-            onClick={() => handleTaskClick(task.title, task.isLocked)}
           >
-            <div>
-              <h3 className="text-lg font-semibold text-glass mb-1">{task.title}</h3>
-              <p className="text-sm text-glass-muted">{task.count}</p>
-            </div>
-            
-            {/* Lock icon */}
-            {task.isLocked && (
-              <div className="absolute bottom-6 right-6">
-                <Lock className="w-6 h-6 text-glass-muted" />
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <h3 className="text-lg font-medium text-foreground mb-1">
+                  {skill.name}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {skill.assignment_count} заданий
+                </p>
               </div>
-            )}
+              {skill.is_locked && (
+                <Lock className="w-5 h-5 text-muted-foreground" />
+              )}
+            </div>
           </div>
         ))}
       </div>
