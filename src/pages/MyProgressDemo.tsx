@@ -79,13 +79,14 @@ const MyProgress = () => {
 
   const radarData = skills.map(skill => {
     const currentProgress = getDisplayProgress(skill.skill.slug, skill.progress_percent);
-    const targetPercent = getLevelAsPercent(skill.target_level);
+    const boughtLevelPercent = getLevelAsPercent(skill.current_level); // Купленный уровень
     
     return {
       subject: skill.skill.slug,
-      // Прогресс ограничен целевым уровнем (геймификация покупки уровней)
-      value: Math.min(currentProgress, targetPercent),
-      targetValue: targetPercent,
+      // Фиолетовый - реальный прогресс пользователя
+      value: currentProgress,
+      // Оранжевый - максимум по купленному уровню (Basic=33%, Pro=66%, AI-Native=100%)
+      targetValue: boughtLevelPercent,
       fullMark: 100,
     };
   });
