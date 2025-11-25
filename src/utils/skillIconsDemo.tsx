@@ -1,11 +1,11 @@
-import communicationIcon from '@/assets/skills/communication.jpg';
-import knowledgeManagementIcon from '@/assets/skills/knowledge-management.jpg';
-import contentCreationIcon from '@/assets/skills/content-creation.jpg';
-import problemSolvingIcon from '@/assets/skills/problem-solving.jpg';
-import researchIcon from '@/assets/skills/research.jpg';
-import automationIcon from '@/assets/skills/automation.jpg';
-import dataAnalysisIcon from '@/assets/skills/data-analysis.jpg';
-import productivityIcon from '@/assets/skills/productivity.jpg';
+import communicationIcon from '@/assets/skills/communication.svg';
+import knowledgeManagementIcon from '@/assets/skills/knowledge-management.svg';
+import contentCreationIcon from '@/assets/skills/content-creation.svg';
+import problemSolvingIcon from '@/assets/skills/problem-solving.svg';
+import researchIcon from '@/assets/skills/research.svg';
+import automationIcon from '@/assets/skills/automation.svg';
+import dataAnalysisIcon from '@/assets/skills/data-analysis.svg';
+import productivityIcon from '@/assets/skills/productivity.svg';
 
 export const getSkillIcon = (slug: string) => {
   const iconMap: Record<string, string> = {
@@ -20,7 +20,7 @@ export const getSkillIcon = (slug: string) => {
   };
   
   const iconSrc = iconMap[slug] || productivityIcon;
-  return <img src={iconSrc} alt={slug} className="w-5 h-5 object-contain" />;
+  return <img src={iconSrc} alt={slug} className="w-5 h-5 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />;
 };
 
 export const getSkillColor = (slug: string) => {
