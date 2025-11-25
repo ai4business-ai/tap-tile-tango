@@ -22,15 +22,6 @@ export const getSkillIcon = (slug: string) => {
 };
 
 export const getSkillColor = (slug: string) => {
-  const colorMap: Record<string, string> = {
-    'communication': 'bg-[#3B9DFF]',
-    'knowledge-management': 'bg-[#B350D6]',
-    'content-creation': 'bg-[#FF7847]',
-    'problem-solving': 'bg-[#FFA94D]',
-    'research': 'bg-[#00BCD4]',
-    'automation': 'bg-[#9C4FFF]',
-    'data-analysis': 'bg-[#5B9BFF]',
-    'productivity': 'bg-[#4CAF50]',
-  };
-  return colorMap[slug] || 'bg-[#3B9DFF]';
+  // Все навыки используют единый primary цвет
+  return 'bg-[#1956FF]';
 };
