@@ -95,9 +95,7 @@ const MyProgress = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
-      {!user && <GuestBanner />}
-      
-      <GuestLimitDialog 
+      <GuestLimitDialog
         open={showGuestLimit} 
         onOpenChange={setShowGuestLimit}
         feature="Изменение целевого уровня навыков"

@@ -84,8 +84,6 @@ const IndexPlayground = () => {
   }
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
-      {!user && <GuestBanner />}
-      
       {/* Purple Header */}
       <div className="bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 pt-12 pb-40 relative">
         <div className="max-w-md mx-auto">
