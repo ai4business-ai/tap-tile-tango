@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { supabase, setUserEnvironment } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import { getCurrentEnvironment } from '@/lib/environment';
 
 interface AuthContextType {
@@ -47,11 +47,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const initializeUserSkills = async (userId: string) => {
     try {
       const currentEnvironment = getCurrentEnvironment();
-      
-      // Call setUserEnvironment in background, don't block main logic
-      setUserEnvironment(userId).catch(err => {
-        console.warn('Non-critical: Failed to set user environment:', err);
-      });
       
       // Check if user_skills already exist for this environment
       const { data } = await supabase
