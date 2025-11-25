@@ -69,6 +69,7 @@ export default {
 			},
 			fontFamily: {
 				sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+				'source-serif': ['Source Serif Pro', 'serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

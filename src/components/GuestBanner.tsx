@@ -21,7 +21,7 @@ export const GuestBanner = () => {
   };
 
   return (
-    <div className="sticky top-0 z-40">
+    <div className="sticky top-0 z-[60]">
       <AnimatePresence mode="wait">
         {isCollapsed ? (
           <motion.div
