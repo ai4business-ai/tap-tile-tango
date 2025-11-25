@@ -67,11 +67,28 @@ const MyProgress = () => {
   const [showGuestLimit, setShowGuestLimit] = useState(false);
 
   // Prepare radar chart data
-  const radarData = skills.map(skill => ({
-    subject: skill.skill.slug,
-    value: getDisplayProgress(skill.skill.slug, skill.progress_percent),
-    fullMark: 100,
-  }));
+  // Конвертация уровня в проценты для геймификации
+  const getLevelAsPercent = (level: number) => {
+    switch (level) {
+      case 1: return 33;  // Basic
+      case 2: return 66;  // Pro
+      case 3: return 100; // AI-Native
+      default: return 33;
+    }
+  };
+
+  const radarData = skills.map(skill => {
+    const currentProgress = getDisplayProgress(skill.skill.slug, skill.progress_percent);
+    const targetPercent = getLevelAsPercent(skill.target_level);
+    
+    return {
+      subject: skill.skill.slug,
+      // Прогресс ограничен целевым уровнем (геймификация покупки уровней)
+      value: Math.min(currentProgress, targetPercent),
+      targetValue: targetPercent,
+      fullMark: 100,
+    };
+  });
 
   const updateSkillTargetLevel = async (skillId: string, targetLevel: number) => {
     await updateTargetLevel(skillId, targetLevel);
@@ -173,6 +190,17 @@ const MyProgress = () => {
                       );
                     }}
                   />
+                  {/* Целевой уровень - показывает купленный уровень навыка */}
+                  <Radar 
+                    name="Целевой уровень" 
+                    dataKey="targetValue" 
+                    stroke="#F3AE5C"
+                    fill="#F3AE5C"
+                    fillOpacity={0.15}
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                  />
+                  {/* Текущий прогресс - ограничен целевым уровнем */}
                   <Radar 
                     name="Прогресс" 
                     dataKey="value" 
