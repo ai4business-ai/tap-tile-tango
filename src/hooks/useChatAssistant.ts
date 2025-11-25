@@ -52,11 +52,18 @@ export const useChatAssistant = () => {
     }
 
     try {
+      // Check if user is authenticated (optional warning, not blocking)
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        console.warn('User is not authenticated - chat will work but with limited features');
+      }
+      
       console.log('Sending message to chat assistant:', { 
         messageLength: message.length, 
         taskContext: taskContext.substring(0, 50) + '...', 
         threadId, 
-        assistantId 
+        assistantId,
+        authenticated: !!session
       });
       
       const { data, error } = await supabase.functions.invoke('chat-assistant', {

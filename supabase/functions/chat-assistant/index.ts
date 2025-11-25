@@ -187,6 +187,24 @@ serve(async (req) => {
   try {
     console.log('Chat assistant function called');
     
+    // Optional authentication check - allows both authenticated and guest users
+    const authHeader = req.headers.get('Authorization');
+    let userId: string | null = null;
+    
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+      
+      if (user) {
+        userId = user.id;
+        console.log('Authenticated user:', userId);
+      } else {
+        console.log('Invalid token, proceeding as guest');
+      }
+    } else {
+      console.log('No authorization header, proceeding as guest');
+    }
+    
     const requestBody = await req.json();
     const { message, taskContext, threadId, assistantId, documentId } = requestBody;
     

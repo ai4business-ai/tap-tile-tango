@@ -125,6 +125,14 @@ const deviceIdRef = useRef<string>('');
     setPrompt('');
 
     try {
+      console.log('Sending prompt to tester:', {
+        prompt: userMessage.content.substring(0, 50) + '...',
+        taskContext,
+        taskId,
+        documentId: documentId || undefined,
+        deviceId: deviceIdRef.current
+      });
+      
       const { data, error: supabaseError } = await supabase.functions.invoke('prompt-tester', {
         body: {
           prompt: userMessage.content,
@@ -135,7 +143,10 @@ const deviceIdRef = useRef<string>('');
         }
       });
 
+      console.log('Received response from prompt-tester:', { data, error: supabaseError });
+
       if (supabaseError) {
+        console.error('Supabase error details:', supabaseError);
         throw new Error(supabaseError.message);
       }
 
@@ -160,7 +171,10 @@ const deviceIdRef = useRef<string>('');
       }
     } catch (err) {
       console.error('Error testing prompt:', err);
-      setError('Ошибка при тестировании промпта');
+      const errorMessage = err instanceof Error ? err.message : 'Неизвестная ошибка';
+      console.error('Error message:', errorMessage);
+      setError(`Ошибка при тестировании промпта: ${errorMessage}`);
+      toast.error(`Ошибка: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
