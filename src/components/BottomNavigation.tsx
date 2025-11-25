@@ -21,8 +21,8 @@ export const BottomNavigation = () => {
   const tabs = [
     { title: "Прогресс", icon: TrendingUp, path: "/my-progress" },
     { title: "Задания", icon: ClipboardList, path: "/tasks" },
-    { title: "Теория", icon: BookOpen, path: "/webinar-records" },
     { title: "Следующее", icon: PlayCircle, path: "next" },
+    { title: "Теория", icon: BookOpen, path: "/webinar-records" },
     { title: "Профиль", icon: User, path: "/" },
   ];
 
@@ -55,6 +55,7 @@ export const BottomNavigation = () => {
         <ExpandableTabs
           tabs={tabs}
           onChange={handleChange}
+          activeIndex={selected}
           activeColor="text-primary-orange"
           className="glass-card border-white/60 shadow-2xl"
         />
