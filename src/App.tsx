@@ -10,8 +10,6 @@ import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import IndexPlayground from "./pages/IndexPlayground";
 import Tasks from "./pages/Tasks";
-import TaskCategory from "./pages/TaskCategory";
-import TaskDetail from "./pages/TaskDetail";
 import WebinarRecords from "./pages/WebinarRecords";
 import MyProgress from "./pages/MyProgress";
 import SkillAssignments from "./pages/SkillAssignments";
@@ -41,8 +39,6 @@ const App = () => {
                 <Route path="/" element={<Index />} />
                 <Route path="/playground" element={<IndexPlayground />} />
                 <Route path="/tasks" element={<Tasks />} />
-                <Route path="/tasks/:category" element={<TaskCategory />} />
-                <Route path="/task-detail" element={<TaskDetail />} />
                 <Route path="/webinar-records" element={<WebinarRecords />} />
                 <Route path="/my-progress" element={<MyProgress />} />
                 <Route path="/skill-assignments/:skillName" element={<SkillAssignments />} />

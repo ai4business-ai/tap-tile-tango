@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, Copy } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,12 +11,41 @@ import {
 import { skillsPromptsData } from '@/data/promptsData';
 import { getSkillIcon, getSkillColor } from '@/utils/skillIcons';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const PromptsBySkill = () => {
   const navigate = useNavigate();
   const { skillSlug } = useParams<{ skillSlug: string }>();
+  const [skillName, setSkillName] = useState<string>('');
+  const [loading, setLoading] = useState(true);
 
-  const skill = skillsPromptsData.find((s) => s.slug === skillSlug);
+  const promptsData = skillsPromptsData.find((s) => s.slug === skillSlug);
+
+  useEffect(() => {
+    const fetchSkillName = async () => {
+      if (!skillSlug) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('skills')
+          .select('name')
+          .eq('slug', skillSlug)
+          .single();
+
+        if (error) throw error;
+        
+        if (data) {
+          setSkillName(data.name);
+        }
+      } catch (error) {
+        console.error('Error fetching skill:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSkillName();
+  }, [skillSlug]);
 
   const handleCopyPrompt = async (promptText: string) => {
     try {
@@ -30,7 +60,15 @@ const PromptsBySkill = () => {
     }
   };
 
-  if (!skill) {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-muted-foreground">Загрузка...</p>
+      </div>
+    );
+  }
+
+  if (!promptsData || !skillName) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-muted-foreground">Навык не найден</p>
@@ -52,10 +90,10 @@ const PromptsBySkill = () => {
           </button>
 
           <div className="flex items-center gap-4 mb-4">
-            <div className={`w-16 h-16 rounded-2xl ${getSkillColor(skill.slug)} flex items-center justify-center shadow-lg flex-shrink-0`}>
-              {getSkillIcon(skill.slug)}
+            <div className={`w-16 h-16 rounded-2xl ${getSkillColor(skillSlug || '')} flex items-center justify-center shadow-lg flex-shrink-0`}>
+              {getSkillIcon(skillSlug || '')}
             </div>
-            <h1 className="text-3xl font-bold text-white">{skill.name}</h1>
+            <h1 className="text-3xl font-bold text-white">{skillName}</h1>
           </div>
           <p className="text-white/90 text-base">Задания по уровням</p>
         </div>
@@ -64,7 +102,7 @@ const PromptsBySkill = () => {
       {/* Prompts List */}
       <div className="max-w-md mx-auto px-4 -mt-8">
         <Accordion type="multiple" className="space-y-3">
-          {skill.prompts.map((prompt, index) => (
+          {promptsData.prompts.map((prompt, index) => (
             <AccordionItem
               key={prompt.id}
               value={`prompt-${index}`}
