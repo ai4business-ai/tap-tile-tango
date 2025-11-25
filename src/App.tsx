@@ -13,6 +13,7 @@ import IndexPlayground from "./pages/IndexPlayground";
 import Tasks from "./pages/Tasks";
 import WebinarRecords from "./pages/WebinarRecords";
 import MyProgress from "./pages/MyProgress";
+import MyProgressDemo from "./pages/MyProgressDemo";
 import SkillAssignments from "./pages/SkillAssignments";
 import TaskDocumentAnalysis from "./pages/TaskDocumentAnalysis";
 import TaskDeepResearch from "./pages/TaskDeepResearch";
@@ -43,6 +44,7 @@ const App = () => {
                 <Route path="/tasks" element={<Tasks />} />
                 <Route path="/webinar-records" element={<WebinarRecords />} />
                 <Route path="/my-progress" element={<MyProgress />} />
+                <Route path="/my-progress-demo" element={<MyProgressDemo />} />
                 <Route path="/skill-assignments/:skillName" element={<SkillAssignments />} />
                 <Route path="/task/document-analysis" element={<TaskDocumentAnalysis />} />
                 <Route path="/task/deep-research" element={<TaskDeepResearch />} />
