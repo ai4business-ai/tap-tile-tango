@@ -15,7 +15,7 @@ export const Layout = ({ children }: LayoutProps) => {
     <>
       {!user && <GuestBanner />}
       <TopHeader />
-      <main className="pb-28 pt-20">
+      <main className="pb-28 pt-24">
         {children}
       </main>
       <BottomNavigation />
