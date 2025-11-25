@@ -85,7 +85,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
       {/* Purple Header */}
-      <div className="bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 pt-12 pb-40 relative">
+      <div className="bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 pt-28 pb-40 relative -mt-20">
         <div className="max-w-md mx-auto">
           <div className="flex items-start justify-between">
             <div>
