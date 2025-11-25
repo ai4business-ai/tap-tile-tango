@@ -9,7 +9,7 @@ import { useUserSkills } from '@/hooks/useUserSkills';
 import { GuestBanner } from '@/components/GuestBanner';
 import { GuestLimitDialog } from '@/components/GuestLimitDialog';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
-import { getSkillIcon, getSkillColor } from '@/utils/skillIcons';
+import { getSkillIcon, getSkillColor } from '@/utils/skillIconsDemo';
 import {
   Dialog,
   DialogContent,
