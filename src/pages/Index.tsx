@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { TapCard } from '@/components/ui/tap-card';
 import { useAuth } from '@/hooks/useAuth';
-import { GuestBanner } from '@/components/GuestBanner';
 import { useNextAssignment } from '@/hooks/useNextAssignment';
 import { useUserSkills } from '@/hooks/useUserSkills';
 import { TrendingUp, ChevronRight, FileText, Video } from 'lucide-react';
@@ -85,8 +84,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
-      {!user && <GuestBanner />}
-      
       {/* Purple Header */}
       <div className="bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 pt-12 pb-40 relative">
         <div className="max-w-md mx-auto">
