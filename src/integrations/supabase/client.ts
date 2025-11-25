@@ -26,15 +26,28 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
 export async function setUserEnvironment(userId: string) {
   const environment = getCurrentEnvironment();
   
-  try {
-    const { error } = await supabase.functions.invoke('set-user-environment', {
-      body: { userId, environment }
-    });
-    
-    if (error) {
-      console.error('Error setting user environment:', error);
+  const maxRetries = 3;
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const { error } = await supabase.functions.invoke('set-user-environment', {
+        body: { userId, environment }
+      });
+      
+      if (!error) {
+        console.log('User environment set successfully:', environment);
+        return;
+      }
+      
+      console.warn(`Attempt ${i + 1} failed:`, error);
+    } catch (error) {
+      console.warn(`Attempt ${i + 1} exception:`, error);
     }
-  } catch (error) {
-    console.error('Error invoking set-user-environment:', error);
+    
+    // Wait before next attempt (500ms, 1s, 2s)
+    if (i < maxRetries - 1) {
+      await new Promise(resolve => setTimeout(resolve, 500 * Math.pow(2, i)));
+    }
   }
+  
+  console.warn('Failed to set user environment after all retries - continuing anyway');
 }

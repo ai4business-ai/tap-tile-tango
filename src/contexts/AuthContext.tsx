@@ -46,10 +46,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const initializeUserSkills = async (userId: string) => {
     try {
-      // Set environment for the user
-      await setUserEnvironment(userId);
-      
       const currentEnvironment = getCurrentEnvironment();
+      
+      // Call setUserEnvironment in background, don't block main logic
+      setUserEnvironment(userId).catch(err => {
+        console.warn('Non-critical: Failed to set user environment:', err);
+      });
       
       // Check if user_skills already exist for this environment
       const { data } = await supabase
