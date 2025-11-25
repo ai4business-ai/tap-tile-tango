@@ -90,14 +90,6 @@ const Index = () => {
     fullMark: 100,
   }));
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Загрузка...</div>
-      </div>
-    );
-  }
-
   const showBanner = !user && !isBannerCollapsed;
   const headerOffset = showBanner ? '-mt-36' : '-mt-28';
   const headerPadding = showBanner ? 'pt-44' : 'pt-36';
