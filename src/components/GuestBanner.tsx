@@ -32,7 +32,7 @@ export const GuestBanner = () => {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 backdrop-blur-md border-b border-orange-500/20">
+            <div className="bg-background/95 backdrop-blur-md border-b border-orange-500/30 shadow-sm">
               <div className="max-w-2xl mx-auto px-4 py-3">
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                   <div className="flex items-center gap-3 flex-1">
