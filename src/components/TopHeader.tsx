@@ -41,9 +41,11 @@ export const TopHeader = () => {
   };
 
   const shouldHighlightAvatar = !user && isBannerCollapsed;
+  const showBanner = !user && !isBannerCollapsed;
+  const topPosition = showBanner ? 'top-[60px]' : 'top-0';
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 top-header">
+    <div className={`fixed ${topPosition} left-0 right-0 z-50 top-header transition-all duration-300`}>
       <div className="max-w-md mx-auto px-4 pt-4">
         <div className="glass-header rounded-3xl px-6">
           {/* Main header row */}

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TapCard } from '@/components/ui/tap-card';
 import { useAuth } from '@/hooks/useAuth';
@@ -49,6 +50,21 @@ const Index = () => {
   const { user } = useAuth();
   const { getNextTaskPath } = useNextAssignment();
   const { skills, loading } = useUserSkills(user?.id);
+  const [isBannerCollapsed, setIsBannerCollapsed] = useState(() => {
+    return localStorage.getItem('guestBannerCollapsed') === 'true';
+  });
+
+  useEffect(() => {
+    const checkBannerState = () => {
+      setIsBannerCollapsed(localStorage.getItem('guestBannerCollapsed') === 'true');
+    };
+    window.addEventListener('storage', checkBannerState);
+    const interval = setInterval(checkBannerState, 100);
+    return () => {
+      window.removeEventListener('storage', checkBannerState);
+      clearInterval(interval);
+    };
+  }, []);
 
   // Calculate overall progress
   const overallProgress = skills.length > 0 
@@ -82,10 +98,14 @@ const Index = () => {
     );
   }
 
+  const showBanner = !user && !isBannerCollapsed;
+  const headerOffset = showBanner ? '-mt-36' : '-mt-28';
+  const headerPadding = showBanner ? 'pt-44' : 'pt-36';
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
       {/* Purple Header */}
-      <div className="bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 pt-36 pb-40 relative -mt-28">
+      <div className={`bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 ${headerPadding} pb-40 relative ${headerOffset} transition-all duration-300`}>
         <div className="max-w-md mx-auto">
           <div className="flex items-start justify-between">
             <div>
