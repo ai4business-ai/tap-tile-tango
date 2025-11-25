@@ -23,22 +23,7 @@ export const GuestBanner = () => {
   return (
     <div className="sticky top-0 z-[60]">
       <AnimatePresence mode="wait">
-        {isCollapsed ? (
-          <motion.div
-            key="collapsed"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="overflow-hidden"
-          >
-            <div 
-              onClick={handleExpand}
-              className="h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-500 cursor-pointer hover:h-1.5 transition-all"
-              title="Нажмите, чтобы развернуть"
-            />
-          </motion.div>
-        ) : (
+        {!isCollapsed && (
           <motion.div
             key="expanded"
             initial={{ height: 0, opacity: 0 }}
