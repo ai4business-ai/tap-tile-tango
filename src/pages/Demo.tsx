@@ -87,11 +87,27 @@ const Demo = () => {
   const totalAssignments = Object.values(demoCompletedBySlug).reduce((sum, skill) => sum + skill.total, 0);
 
   // Prepare radar chart data
-  const radarData = skills.map(skill => ({
-    subject: skill.skill.slug,
-    value: getDisplayProgress(skill.skill.slug, skill.progress_percent),
-    fullMark: 100,
-  }));
+  // Конвертация уровня в проценты для геймификации
+  const getLevelAsPercent = (level: number) => {
+    switch (level) {
+      case 1: return 33;  // Basic
+      case 2: return 66;  // Pro
+      case 3: return 100; // AI-Native
+      default: return 33;
+    }
+  };
+
+  const radarData = skills.map(skill => {
+    const currentProgress = getDisplayProgress(skill.skill.slug, skill.progress_percent);
+    const boughtLevelPercent = getLevelAsPercent(skill.current_level);
+
+    return {
+      subject: skill.skill.slug,
+      value: currentProgress,
+      targetValue: boughtLevelPercent,
+      fullMark: 100,
+    };
+  });
 
   const showBanner = !user && !isBannerCollapsed;
   const headerOffset = showBanner ? '-mt-36' : '-mt-28';
@@ -193,6 +209,18 @@ const Demo = () => {
                       );
                     }}
                   />
+                  {/* Целевой уровень - показывает купленный уровень навыка */
+                  }
+                  <Radar 
+                    name="Целевой уровень" 
+                    dataKey="targetValue" 
+                    stroke="#02E8FF"
+                    fill="#02E8FF"
+                    fillOpacity={0.15}
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                  />
+                  {/* Текущий прогресс */}
                   <Radar 
                     name="Прогресс" 
                     dataKey="value" 
