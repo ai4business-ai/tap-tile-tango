@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { Layout } from "@/components/Layout";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
+import Demo from "./pages/Demo";
 import IndexPlayground from "./pages/IndexPlayground";
 import Tasks from "./pages/Tasks";
 import WebinarRecords from "./pages/WebinarRecords";
@@ -40,6 +41,7 @@ const App = () => {
               <Routes>
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/" element={<Index />} />
+                <Route path="/demo" element={<Demo />} />
                 <Route path="/playground" element={<IndexPlayground />} />
                 <Route path="/tasks" element={<Tasks />} />
                 <Route path="/webinar-records" element={<WebinarRecords />} />
