@@ -101,6 +101,12 @@ export const TopHeader = () => {
                     </p>
                   </div>
                   <button 
+                    onClick={() => window.open('https://t.me/your_support', '_blank')}
+                    className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors"
+                  >
+                    Поддержка
+                  </button>
+                  <button 
                     onClick={handleSignOut}
                     className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors"
                   >
@@ -120,6 +126,12 @@ export const TopHeader = () => {
                     className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors"
                   >
                     Зарегистрироваться
+                  </button>
+                  <button 
+                    onClick={() => window.open('https://t.me/your_support', '_blank')}
+                    className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors"
+                  >
+                    Поддержка
                   </button>
                 </>
               )}
