@@ -116,7 +116,7 @@ const TaskClientResponse = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 md:p-6 lg:p-8 w-full max-w-4xl mx-auto overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 px-4 pb-4 md:px-6 md:pb-6 lg:px-8 lg:pb-8 w-full max-w-4xl mx-auto overflow-x-hidden">
       <div className="flex items-center gap-4 mb-6">
         <button 
           onClick={() => navigate('/skill-assignments/communication')}
