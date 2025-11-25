@@ -1,146 +1,300 @@
-import React from 'react';
-import { ChevronRight, BookOpen, Target, Video, FileText } from 'lucide-react';
-import { TapCard } from '@/components/ui/tap-card';
 import { useNavigate } from 'react-router-dom';
-import { UserMenu } from '@/components/UserMenu';
-import { GuestBanner } from '@/components/GuestBanner';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { TapCard } from '@/components/ui/tap-card';
 import { useAuth } from '@/hooks/useAuth';
+import { GuestBanner } from '@/components/GuestBanner';
 import { useNextAssignment } from '@/hooks/useNextAssignment';
+import { useUserSkills } from '@/hooks/useUserSkills';
+import { TrendingUp, LogOut, ChevronRight, FileText, Video } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Card, CardContent } from '@/components/ui/card';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { supabase } from '@/integrations/supabase/client';
+import { getSkillIcon, getSkillColor } from '@/utils/skillIcons';
+
+const demoProgressBySlug: Record<string, number> = {
+  'communication': 23,
+  'knowledge-management': 50,
+  'content-creation': 15,
+  'problem-solving': 88,
+  'research': 67,
+  'automation': 10,
+  'data-analysis': 40,
+  'productivity': 92,
+};
+
+const demoCompletedBySlug: Record<string, { completed: number; total: number }> = {
+  'communication': { completed: 2, total: 11 },
+  'knowledge-management': { completed: 5, total: 11 },
+  'content-creation': { completed: 1, total: 11 },
+  'problem-solving': { completed: 9, total: 11 },
+  'research': { completed: 8, total: 13 },
+  'automation': { completed: 1, total: 11 },
+  'data-analysis': { completed: 4, total: 11 },
+  'productivity': { completed: 10, total: 11 },
+};
+
+const getDisplayProgress = (slug: string, actualProgress: number) => {
+  if (actualProgress && actualProgress > 0) return actualProgress;
+  return demoProgressBySlug[slug] ?? 0;
+};
 
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { getNextTaskPath } = useNextAssignment();
-  
-  const handleCardClick = (cardName: string) => {
-    if (cardName === 'Ваши задания' || cardName === 'Мои задания') {
-      navigate('/tasks');
-    } else if (cardName === 'Записи вебинаров') {
-      navigate('/webinar-records');
-    } else if (cardName === 'Мой прогресс') {
-      navigate('/my-progress');
-    } else if (cardName === 'Анализ данных') {
-      navigate('/task/document-analysis');
-    } else {
-      console.log(`Clicked: ${cardName}`);
-    }
-  };
+  const { skills, loading } = useUserSkills(user?.id);
+
+  // Calculate overall progress
+  const overallProgress = skills.length > 0 
+    ? Math.round(
+        skills.reduce(
+          (sum, skill) => sum + getDisplayProgress(skill.skill.slug, skill.progress_percent),
+          0
+        ) / skills.length
+      )
+    : 0;
+
+  // Calculate learning skills count
+  const learningSkillsCount = skills.length;
+
+  // Calculate total completed assignments
+  const totalCompletedAssignments = Object.values(demoCompletedBySlug).reduce((sum, skill) => sum + skill.completed, 0);
+  const totalAssignments = Object.values(demoCompletedBySlug).reduce((sum, skill) => sum + skill.total, 0);
+
+  // Prepare radar chart data
+  const radarData = skills.map(skill => ({
+    subject: skill.skill.slug,
+    value: getDisplayProgress(skill.skill.slug, skill.progress_percent),
+    fullMark: 100,
+  }));
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-muted-foreground">Загрузка...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
       {!user && <GuestBanner />}
-      <div className="p-4 md:p-6 lg:p-8 max-w-md mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex-1"></div>
-        <div className="glass-subtle rounded-3xl px-6 py-3">
-          <p className="text-xs text-muted-foreground font-medium">Здесь лого вашей компании</p>
-        </div>
-        <div className="flex-1 flex justify-end">
-          <UserMenu />
+      
+      {/* Purple Header */}
+      <div className="bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 pt-12 pb-40 relative">
+        <div className="max-w-md mx-auto">
+          <div className="glass-subtle rounded-3xl px-6 py-3 flex items-center justify-between mb-6">
+            <p className="text-xs text-white/80 font-medium">Здесь лого вашей компании</p>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 border-white/40 hover:bg-white/30 transition-colors">
+                  <span className="text-white text-sm font-semibold">
+                    {user?.email?.[0].toUpperCase() || 'G'}
+                  </span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 bg-popover/95 backdrop-blur-xl border-border z-50">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">Аккаунт</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user?.email || 'guest@example.com'}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={async () => {
+                    if (user) {
+                      await supabase.auth.signOut();
+                      navigate('/auth');
+                    } else {
+                      navigate('/auth');
+                    }
+                  }}
+                  className="cursor-pointer"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>{user ? 'Выйти' : 'Войти'}</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-white mb-2">
+                Привет, {user?.email?.split('@')[0] || 'Гость'}!
+              </h1>
+              <p className="text-white/90 text-base">Ваш прогресс обучения</p>
+            </div>
+          </div>
         </div>
       </div>
 
+      <div className="max-w-md mx-auto px-4 -mt-32 pb-24 space-y-4">
+        {/* Overall Progress Card */}
+        <Card className="border-0 shadow-xl bg-white">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <p className="text-sm text-muted-foreground mb-2">Общий прогресс</p>
+                <p className="text-6xl font-bold text-[#8B5CF6] mb-2">{overallProgress}%</p>
+                <p className="text-sm text-muted-foreground">{learningSkillsCount} навыков изучается</p>
+                <p className="text-xs text-muted-foreground mt-1">{totalCompletedAssignments}/{totalAssignments} заданий выполнено</p>
+              </div>
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#C026D3] via-[#EC4899] to-[#F97316] flex items-center justify-center shadow-xl">
+                <TrendingUp className="w-12 h-12 text-white" strokeWidth={2.5} />
+              </div>
+            </div>
+            <Progress value={overallProgress} className="h-2.5 mt-4" />
+          </CardContent>
+        </Card>
 
-      {/* Next Task Card */}
-      <TapCard className="mb-4" onClick={async () => {
-        const nextPath = await getNextTaskPath();
-        navigate(nextPath);
-      }}>
-        <div className="glass-card rounded-3xl p-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-orange to-sky-blue flex items-center justify-center shadow-md">
-              <FileText className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground mb-1">Следующее задание</p>
-              <p className="text-sm font-semibold text-deep-purple">Следующее задание</p>
-            </div>
-          </div>
-          <ChevronRight className="w-5 h-5 text-muted-foreground" />
-        </div>
-      </TapCard>
+        {/* Radar Chart Card - Clickable */}
+        <Card 
+          className="border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all"
+          onClick={() => navigate('/my-progress')}
+        >
+          <CardContent className="p-6">
+            <div className="relative">
+              <ResponsiveContainer width="100%" height={320}>
+                <RadarChart data={radarData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                  <PolarGrid stroke="#E5E7EB" strokeWidth={1} />
+                  <PolarAngleAxis 
+                    dataKey="subject" 
+                    tick={({ payload, x, y, cx, cy, index }) => {
+                      const skill = skills.find(s => s.skill.slug === payload.value);
+                      if (!skill) return null;
+                      
+                      const angle = (index * 360) / skills.length - 90;
+                      const rad = (angle * Math.PI) / 180;
+                      const iconRadius = 135;
+                      const iconX = cx + iconRadius * Math.cos(rad);
+                      const iconY = cy + iconRadius * Math.sin(rad);
 
-      {/* My Progress Card */}
-      <TapCard className="mb-4" onClick={() => handleCardClick('Мой прогресс')}>
-        <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-blue to-deep-purple flex items-center justify-center shadow-md">
-              <Target className="w-6 h-6 text-white" />
+                      const stats = demoCompletedBySlug[skill.skill.slug] || { completed: 0, total: 0 };
+                      
+                      return (
+                        <g transform={`translate(${iconX},${iconY})`}>
+                          <foreignObject x={-24} y={-24} width={48} height={48}>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <div 
+                                  className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-transform`}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  {getSkillIcon(skill.skill.slug)}
+                                </div>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="center" className="w-72 bg-popover/95 backdrop-blur-xl border-border z-50">
+                                <DropdownMenuLabel>
+                                  <div className="flex items-center gap-3">
+                                    <div className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg flex-shrink-0`}>
+                                      {getSkillIcon(skill.skill.slug)}
+                                    </div>
+                                    <span className="text-sm font-semibold">{skill.skill.name}</span>
+                                  </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <div className="px-2 py-3">
+                                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                                    <span className="text-sm text-muted-foreground">Выполнено заданий</span>
+                                    <span className="text-xl font-bold text-[#8B5CF6]">
+                                      {stats.completed}/{stats.total}
+                                    </span>
+                                  </div>
+                                </div>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </foreignObject>
+                        </g>
+                      );
+                    }}
+                  />
+                  <Radar 
+                    name="Прогресс" 
+                    dataKey="value" 
+                    stroke="#8B5CF6" 
+                    fill="#8B5CF6" 
+                    fillOpacity={0.25}
+                    strokeWidth={3}
+                  />
+                </RadarChart>
+              </ResponsiveContainer>
             </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-bold text-deep-purple">Мой прогресс</h3>
-              <p className="text-sm text-muted-foreground">8 навыков изучается</p>
+          </CardContent>
+        </Card>
+
+        {/* Next Task Card */}
+        <TapCard onClick={async () => {
+          const nextPath = await getNextTaskPath();
+          navigate(nextPath);
+        }}>
+          <div className="glass-card rounded-3xl p-6 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-orange to-sky-blue flex items-center justify-center shadow-md">
+                <FileText className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Следующее задание</p>
+                <p className="text-sm font-semibold text-deep-purple">Следующее задание</p>
+              </div>
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </div>
-          
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="accent" className="text-xs">
-              🔍 Искатель
-            </Badge>
-            <Badge variant="default" className="text-xs">
-              📊 Аналитик
-            </Badge>
-            <Badge variant="secondary" className="text-xs">
-              ⚙️ Инженер
-            </Badge>
-          </div>
-        </div>
-      </TapCard>
+        </TapCard>
 
-      {/* My Tasks Card */}
-      <TapCard className="mb-4" onClick={() => handleCardClick('Мои задания')}>
-        <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-          <h3 className="text-lg font-semibold mb-1 text-glass">Мои задания</h3>
-          <p className="text-sm text-glass-muted mb-3">89 заданий</p>
-          
-          {/* Progress bar */}
-          <div className="mb-4">
-            <div className="flex justify-between text-xs text-glass-muted mb-1">
-              <span>Общий прогресс</span>
-              <span>18/89</span>
+        {/* My Tasks Card */}
+        <TapCard onClick={() => navigate('/tasks')}>
+          <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
+            <h3 className="text-lg font-semibold mb-1 text-glass">Мои задания</h3>
+            <p className="text-sm text-glass-muted mb-3">89 заданий</p>
+            
+            {/* Progress bar */}
+            <div className="mb-4">
+              <div className="flex justify-between text-xs text-glass-muted mb-1">
+                <span>Общий прогресс</span>
+                <span>18/89</span>
+              </div>
+              <div className="w-full bg-white/20 rounded-full h-2">
+                <div 
+                  className="bg-white/60 h-2 rounded-full transition-all duration-500" 
+                  style={{ width: '20%' }}
+                />
+              </div>
             </div>
-            <div className="w-full bg-white/20 rounded-full h-2">
-              <div 
-                className="bg-white/60 h-2 rounded-full transition-all duration-500" 
-                style={{ width: '20%' }}
-              />
-            </div>
+            
+            <button className="bg-white/20 text-glass px-4 py-2 rounded-2xl text-sm font-medium shadow-inner backdrop-blur-sm border border-white/30">
+              +24 задания
+            </button>
           </div>
-          
-          <button className="bg-white/20 text-glass px-4 py-2 rounded-2xl text-sm font-medium shadow-inner backdrop-blur-sm border border-white/30">
-            +24 задания
-          </button>
-        </div>
-      </TapCard>
+        </TapCard>
 
-      {/* Webinar Records Card */}
-      <TapCard onClick={() => handleCardClick('Записи вебинаров')}>
-        <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-deep-purple to-primary-orange flex items-center justify-center shadow-md">
-              <Video className="w-6 h-6 text-white" />
+        {/* Webinar Records Card */}
+        <TapCard onClick={() => navigate('/webinar-records')}>
+          <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-deep-purple to-primary-orange flex items-center justify-center shadow-md">
+                <Video className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-deep-purple">Записи вебинаров</h3>
+                <p className="text-sm text-muted-foreground">6 вебинаров доступно</p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-muted-foreground" />
             </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-bold text-deep-purple">Записи вебинаров</h3>
-              <p className="text-sm text-muted-foreground">6 вебинаров доступно</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </div>
-          
-          <Button 
-            variant="secondary" 
-            size="sm" 
-            className="w-full"
-          >
-            Смотреть записи
-          </Button>
-        </div>
-      </TapCard>
-    </div>
+        </TapCard>
+      </div>
     </div>
   );
 };
