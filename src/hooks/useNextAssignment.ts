@@ -13,8 +13,7 @@ export const useNextAssignment = () => {
         const assignments = getAssignments(skill.slug);
         const nextAssignment = assignments.find(
           a => a.task_id !== null && 
-               a.submission.status !== 'completed' && 
-               a.submission.status !== 'submitted'
+               (!a.submission || (a.submission.status !== 'completed' && a.submission.status !== 'submitted'))
         );
         
         if (nextAssignment && nextAssignment.task_id) {

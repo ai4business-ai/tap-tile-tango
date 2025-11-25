@@ -25,6 +25,7 @@ interface ExpandableTabsProps {
   className?: string;
   activeColor?: string;
   onChange?: (index: number | null) => void;
+  activeIndex?: number | null;
 }
 
 const buttonVariants = {
@@ -58,6 +59,7 @@ export function ExpandableTabs({
   className,
   activeColor = "text-primary-orange",
   onChange,
+  activeIndex,
 }: ExpandableTabsProps) {
   const [selected, setSelected] = React.useState<number | null>(null);
   const outsideClickRef = React.useRef(null);
@@ -71,6 +73,9 @@ export function ExpandableTabs({
     setSelected(index);
     onChange?.(index);
   };
+  
+  // Use activeIndex for visual highlighting, selected for animation
+  const visuallyActive = activeIndex !== undefined ? activeIndex : selected;
 
   const Separator = () => (
     <div className="mx-1 h-[24px] w-[1.2px] bg-border" aria-hidden="true" />
@@ -115,7 +120,7 @@ export function ExpandableTabs({
               "relative flex items-center rounded-2xl text-xs sm:text-sm font-medium transition-all duration-300",
               "px-3 sm:px-4 py-2 sm:py-2.5",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-orange focus-visible:ring-offset-2",
-              selected === index
+              visuallyActive === index
                 ? cn("bg-white/90 shadow-md", activeColor)
                 : "text-deep-purple/70 hover:bg-white/60 hover:text-deep-purple"
             )}

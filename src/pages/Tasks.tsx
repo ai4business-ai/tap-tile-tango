@@ -25,56 +25,48 @@ const Tasks = () => {
     {
       title: "Коммуникация и работа в команде",
       count: "11 заданий",
-      badge: "+3",
       isLocked: false,
       levels: ["Basic", "Pro", "AI-Native"]
     },
     {
       title: "Управление знаниями",
       count: "11 заданий",
-      badge: "+3",
       isLocked: true,
       levels: ["Basic", "Pro", "AI-Native"]
     },
     {
       title: "Создание контента", 
       count: "11 заданий",
-      badge: "+3",
       isLocked: true,
       levels: ["Basic", "Pro", "AI-Native"]
     },
     {
       title: "Решение задач и принятие решений",
       count: "11 заданий",
-      badge: "+3",
       isLocked: true,
       levels: ["Basic", "Pro", "AI-Native"]
     },
     {
       title: "Исследования и обработка информации",
       count: "12 заданий",
-      badge: "+3",
       isLocked: false,
       levels: ["Basic", "Pro", "AI-Native"]
     },
     {
       title: "Автоматизация процессов",
       count: "11 заданий",
-      badge: "+3", 
       isLocked: true,
       levels: ["Basic", "Pro", "AI-Native"]
     },
     {
       title: "Анализ и визуализация данных",
       count: "11 заданий", 
-      badge: "+3",
       isLocked: true,
       levels: ["Basic", "Pro", "AI-Native"]
     },
     {
       title: "Продуктивность",
       count: "11 заданий",
-      badge: "+3",
       isLocked: true,
       levels: ["Basic", "Pro", "AI-Native"]
     }
@@ -103,19 +95,14 @@ const Tasks = () => {
         {tasks.map((task, index) => (
           <div 
             key={index} 
-            className={`glass-card rounded-3xl p-6 pb-20 shadow-inner relative transition-all ${
+            className={`glass-card rounded-3xl p-5 shadow-inner relative transition-all ${
               task.isLocked ? 'opacity-60' : 'cursor-pointer hover:bg-white/25'
             }`}
             onClick={() => handleTaskClick(task.title, task.isLocked)}
           >
             <div>
               <h3 className="text-lg font-semibold text-glass mb-1">{task.title}</h3>
-              <p className="text-sm text-glass-muted mb-3">{task.count}</p>
-              
-              {/* Badge positioned below text */}
-              <span className="bg-white/20 text-glass text-sm font-medium px-3 py-1 rounded-2xl border border-white/30">
-                {task.badge}
-              </span>
+              <p className="text-sm text-glass-muted">{task.count}</p>
             </div>
             
             {/* Lock icon */}
