@@ -7,7 +7,6 @@ export interface PromptItem {
 export interface SkillPrompts {
   slug: string;
   name: string;
-  totalAssignments: number;
   prompts: PromptItem[];
 }
 
@@ -15,7 +14,6 @@ export const skillsPromptsData: SkillPrompts[] = [
   {
     slug: 'communication',
     name: 'Коммуникация и работа в команде',
-    totalAssignments: 11,
     prompts: [
       {
         id: '1',
@@ -37,7 +35,6 @@ export const skillsPromptsData: SkillPrompts[] = [
   {
     slug: 'knowledge-management',
     name: 'Управление знаниями',
-    totalAssignments: 11,
     prompts: [
       {
         id: '1',
@@ -54,7 +51,6 @@ export const skillsPromptsData: SkillPrompts[] = [
   {
     slug: 'productivity',
     name: 'Продуктивность',
-    totalAssignments: 11,
     prompts: [
       {
         id: '1',
@@ -71,7 +67,6 @@ export const skillsPromptsData: SkillPrompts[] = [
   {
     slug: 'content-creation',
     name: 'Создание контента',
-    totalAssignments: 11,
     prompts: [
       {
         id: '1',
@@ -88,7 +83,6 @@ export const skillsPromptsData: SkillPrompts[] = [
   {
     slug: 'data-analysis',
     name: 'Анализ и визуализация данных',
-    totalAssignments: 11,
     prompts: [
       {
         id: '1',
@@ -105,7 +99,6 @@ export const skillsPromptsData: SkillPrompts[] = [
   {
     slug: 'problem-solving',
     name: 'Решение задач и принятие решений',
-    totalAssignments: 11,
     prompts: [
       {
         id: '1',
@@ -122,7 +115,6 @@ export const skillsPromptsData: SkillPrompts[] = [
   {
     slug: 'automation',
     name: 'Автоматизация процессов',
-    totalAssignments: 11,
     prompts: [
       {
         id: '1',
@@ -139,7 +131,6 @@ export const skillsPromptsData: SkillPrompts[] = [
   {
     slug: 'research',
     name: 'Исследования и обработка информации',
-    totalAssignments: 11,
     prompts: [
       {
         id: '1',
