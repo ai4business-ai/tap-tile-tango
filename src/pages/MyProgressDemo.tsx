@@ -177,12 +177,12 @@ const MyProgress = () => {
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <div className="px-2 py-3">
-                                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                                    <span className="text-sm text-muted-foreground">Выполнено заданий</span>
-                                    <span className="text-xl font-bold text-[#8B5CF6]">
-                                      {stats.completed}/{stats.total}
-                                    </span>
-                                  </div>
+                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <span className="text-sm text-muted-foreground">Выполнено заданий</span>
+                    <span className="text-xl font-bold text-[#8277EC]">
+                      {stats.completed}/{stats.total}
+                    </span>
+                  </div>
                                 </div>
                               </DropdownMenuContent>
                             </DropdownMenu>
@@ -195,8 +195,8 @@ const MyProgress = () => {
                   <Radar 
                     name="Целевой уровень" 
                     dataKey="targetValue" 
-                    stroke="#F3AE5C"
-                    fill="#F3AE5C"
+                    stroke="#02E8FF"
+                    fill="#02E8FF"
                     fillOpacity={0.15}
                     strokeWidth={2}
                     strokeDasharray="5 5"
@@ -205,9 +205,9 @@ const MyProgress = () => {
                   <Radar 
                     name="Прогресс" 
                     dataKey="value" 
-                    stroke="#8B5CF6" 
-                    fill="#8B5CF6" 
-                    fillOpacity={0.25}
+                    stroke="#8277EC" 
+                    fill="#8277EC" 
+                    fillOpacity={0.15}
                     strokeWidth={3}
                   />
                 </RadarChart>
@@ -233,14 +233,23 @@ const MyProgress = () => {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-foreground text-base mb-2">{skill.skill.name}</h3>
                       <div className="flex items-center justify-between gap-3 mb-2">
-                        <span className="text-xs font-medium text-[#8B5CF6] bg-[#8B5CF6]/10 px-2 py-1 rounded-full">
+                        <span className="text-xs font-medium text-[#8277EC] bg-[#8277EC]/10 border border-[#8277EC]/30 px-2 py-1 rounded-full">
                           {skill.current_level === 1 ? 'Basic' : skill.current_level === 2 ? 'Pro' : 'AI-Native'}
                         </span>
-                        <span className="text-sm font-bold text-[#8B5CF6]">
+                        <span className="text-sm font-bold text-[#8277EC]">
                           {getDisplayProgress(skill.skill.slug, skill.progress_percent)}%
                         </span>
                       </div>
-                      <Progress value={getDisplayProgress(skill.skill.slug, skill.progress_percent)} className="h-2" />
+                      <Progress 
+                        value={getDisplayProgress(skill.skill.slug, skill.progress_percent)} 
+                        className={`h-2 ${
+                          skills.indexOf(skill) % 3 === 0 
+                            ? '[&>div]:bg-gradient-to-r [&>div]:from-[#1956FF] [&>div]:to-[#8277EC]'
+                            : skills.indexOf(skill) % 3 === 1 
+                            ? '[&>div]:bg-gradient-to-r [&>div]:from-[#1956FF] [&>div]:to-[#02E8FF]'
+                            : '[&>div]:bg-gradient-to-r [&>div]:from-[#8277EC] [&>div]:to-[#02E8FF]'
+                        }`}
+                      />
                     </div>
                   </div>
                 </CardContent>
