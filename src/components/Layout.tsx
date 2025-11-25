@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { BottomNavigation } from './BottomNavigation';
+import { TopHeader } from './TopHeader';
 import { useLocation } from 'react-router-dom';
 
 interface LayoutProps {
@@ -14,7 +15,8 @@ export const Layout = ({ children }: LayoutProps) => {
 
   return (
     <>
-      <main className={hideNavigation ? '' : 'pb-28'}>
+      {!hideNavigation && <TopHeader />}
+      <main className={hideNavigation ? '' : 'pb-28 pt-20'}>
         {children}
       </main>
       {!hideNavigation && <BottomNavigation />}

@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { GuestBanner } from '@/components/GuestBanner';
 import { useNextAssignment } from '@/hooks/useNextAssignment';
 import { useUserSkills } from '@/hooks/useUserSkills';
-import { TrendingUp, LogOut, ChevronRight, FileText, Video } from 'lucide-react';
+import { TrendingUp, ChevronRight, FileText, Video } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
@@ -16,7 +16,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { supabase } from '@/integrations/supabase/client';
 import { getSkillIcon, getSkillColor } from '@/utils/skillIcons';
 
 const demoProgressBySlug: Record<string, number> = {
@@ -91,44 +90,6 @@ const Index = () => {
       {/* Purple Header */}
       <div className="bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 pt-12 pb-40 relative">
         <div className="max-w-md mx-auto">
-          <div className="glass-subtle rounded-3xl px-6 py-3 flex items-center justify-between mb-6">
-            <p className="text-xs text-white/80 font-medium">Здесь лого вашей компании</p>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 border-white/40 hover:bg-white/30 transition-colors">
-                  <span className="text-white text-sm font-semibold">
-                    {user?.email?.[0].toUpperCase() || 'G'}
-                  </span>
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-popover/95 backdrop-blur-xl border-border z-50">
-                <DropdownMenuLabel>
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">Аккаунт</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user?.email || 'guest@example.com'}
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                  onClick={async () => {
-                    if (user) {
-                      await supabase.auth.signOut();
-                      navigate('/auth');
-                    } else {
-                      navigate('/auth');
-                    }
-                  }}
-                  className="cursor-pointer"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>{user ? 'Выйти' : 'Войти'}</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-4xl font-bold text-white mb-2">
