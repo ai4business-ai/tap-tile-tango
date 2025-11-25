@@ -25,7 +25,7 @@ export const useNextAssignment = () => {
         );
         
         if (nextAssignment && nextAssignment.task_id) {
-          return `/task-detail?taskId=${nextAssignment.task_id}`;
+          return `/task/${nextAssignment.task_id}`;
         }
       }
     } else {
@@ -54,7 +54,7 @@ export const useNextAssignment = () => {
         });
 
         if (nextAssignment && nextAssignment.task_id) {
-          return `/task-detail?taskId=${nextAssignment.task_id}`;
+          return `/task/${nextAssignment.task_id}`;
         }
       } catch (error) {
         console.error('Error fetching next assignment:', error);
