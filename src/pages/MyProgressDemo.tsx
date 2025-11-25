@@ -122,8 +122,8 @@ const MyProgress = () => {
               <ChevronLeft className="w-6 h-6 text-foreground" />
             </button>
             <div>
-              <h1 className="text-xl font-semibold text-foreground">Мой прогресс</h1>
-              <p className="text-sm text-muted-foreground">{skills.length} навыков</p>
+              <h1 className="text-xl font-semibold text-gray-900">Мой прогресс</h1>
+              <p className="text-sm text-[#8277EC]">{skills.length} навыков</p>
             </div>
           </div>
           <button 
@@ -218,7 +218,7 @@ const MyProgress = () => {
 
         {/* Skills List */}
         <div>
-          <h2 className="text-2xl font-bold text-foreground mb-4">Навыки</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Навыки</h2>
           <div className="space-y-3">
             {skills.map((skill) => (
               <Card 
@@ -231,7 +231,7 @@ const MyProgress = () => {
                       {getSkillIcon(skill.skill.slug)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-foreground text-base mb-2">{skill.skill.name}</h3>
+                      <h3 className="font-semibold text-gray-900 text-base mb-2">{skill.skill.name}</h3>
                       <div className="flex items-center justify-between gap-3 mb-2">
                         <span className="text-xs font-medium text-[#8277EC] bg-[#8277EC]/10 border border-[#8277EC]/30 px-2 py-1 rounded-full">
                           {skill.current_level === 1 ? 'Basic' : skill.current_level === 2 ? 'Pro' : 'AI-Native'}
