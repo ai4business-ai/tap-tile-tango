@@ -35,13 +35,13 @@ export const BottomNavigation = () => {
     setSelected(index !== -1 ? index : null);
   }, [location.pathname]);
 
-  const handleChange = (index: number | null) => {
+  const handleChange = async (index: number | null) => {
     if (index !== null) {
       setSelected(index);
       
       if (tabs[index].path === "next") {
         // Handle "Next Assignment" action
-        const nextPath = getNextTaskPath();
+        const nextPath = await getNextTaskPath();
         navigate(nextPath);
       } else {
         navigate(tabs[index].path);

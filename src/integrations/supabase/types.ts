@@ -132,6 +132,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_locked: boolean
           name: string
           order_index: number
           slug: string
@@ -141,6 +142,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_locked?: boolean
           name: string
           order_index: number
           slug: string
@@ -150,6 +152,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_locked?: boolean
           name?: string
           order_index?: number
           slug?: string

@@ -60,6 +60,12 @@ export const useGuestMode = () => {
     const skill = demoSkills.find(s => s.slug === skillSlug);
     if (!skill) return [];
 
+    // Only return assignments from unlocked skills for guests
+    const UNLOCKED_SKILL_SLUGS = ['communication', 'research'];
+    if (!UNLOCKED_SKILL_SLUGS.includes(skillSlug)) {
+      return [];
+    }
+
     return demoAssignments
       .filter(a => a.skill_id === skill.id)
       .map(assignment => {
