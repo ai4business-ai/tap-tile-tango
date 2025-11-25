@@ -20,7 +20,7 @@ export const getSkillIcon = (slug: string) => {
   };
   
   const iconSrc = iconMap[slug] || productivityIcon;
-  return <img src={iconSrc} alt={slug} className="w-5 h-5 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />;
+  return <img src={iconSrc} alt="" className="w-8 h-8 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />;
 };
 
 export const getSkillColor = (slug: string) => {
