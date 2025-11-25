@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useGuestMode } from './useGuestMode';
+import { getCurrentEnvironment } from '@/lib/environment';
 
 interface Skill {
   id: string;
@@ -58,22 +59,39 @@ export const useUserSkills = (userId: string | undefined) => {
     }
 
     try {
-      // First, try to get user skills
-      const { data: userSkillsData, error: userSkillsError } = await supabase
+      const currentEnvironment = getCurrentEnvironment();
+
+      // First, try to get user skills with timeout
+      const fetchPromise = supabase
         .from('user_skills')
         .select(`
           *,
           skill:skills(*)
         `)
         .eq('user_id', userId)
-        .order('skill.order_index', { ascending: true });
+        .eq('environment', currentEnvironment);
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Request timeout')), 10000)
+      );
+
+      const { data: userSkillsData, error: userSkillsError } = await Promise.race([
+        fetchPromise,
+        timeoutPromise
+      ]) as any;
 
       if (userSkillsError) throw userSkillsError;
 
+      // Sort on client side instead of server
+      const sortedData = (userSkillsData || []).sort((a: any, b: any) =>
+        (a.skill?.order_index || 0) - (b.skill?.order_index || 0)
+      );
+
       // If no user skills found, initialize them
-      if (!userSkillsData || userSkillsData.length === 0) {
+      if (sortedData.length === 0) {
         const { error: initError } = await supabase.rpc('initialize_user_skills', {
-          p_user_id: userId
+          p_user_id: userId,
+          p_environment: currentEnvironment
         });
 
         if (initError) throw initError;
@@ -86,18 +104,45 @@ export const useUserSkills = (userId: string | undefined) => {
             skill:skills(*)
           `)
           .eq('user_id', userId)
-          .order('skill.order_index', { ascending: true });
+          .eq('environment', currentEnvironment);
 
         if (newError) throw newError;
-        setSkills(newData || []);
+        
+        const sortedNewData = (newData || []).sort((a: any, b: any) =>
+          (a.skill?.order_index || 0) - (b.skill?.order_index || 0)
+        );
+        setSkills(sortedNewData);
       } else {
-        setSkills(userSkillsData);
+        setSkills(sortedData);
       }
     } catch (error: any) {
       console.error('Error fetching user skills:', error);
+      
+      // Fallback to demo data on error
+      const guestSkills = guestMode.getSkills();
+      const mappedSkills = guestSkills.map(skill => ({
+        id: skill.id,
+        user_id: userId || 'guest',
+        skill_id: skill.id,
+        current_level: skill.current_level,
+        target_level: skill.target_level,
+        progress_percent: skill.progress_percent,
+        is_goal_achieved: skill.is_goal_achieved,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        skill: {
+          id: skill.id,
+          name: skill.name,
+          slug: skill.slug,
+          description: skill.description,
+          order_index: skill.order_index,
+        },
+      }));
+      setSkills(mappedSkills);
+      
       toast({
-        title: 'Ошибка',
-        description: 'Не удалось загрузить навыки',
+        title: 'Используются демо-данные',
+        description: 'Не удалось загрузить ваши навыки, показаны примерные данные',
         variant: 'destructive',
       });
     } finally {
