@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
+import { ArrowLeft } from 'lucide-react';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -65,6 +66,14 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50">
       <div className="w-full max-w-md bg-card/60 backdrop-blur-sm border border-border/50 p-8 rounded-2xl shadow-xl">
+        <Button
+          onClick={() => navigate('/')}
+          variant="ghost"
+          size="icon"
+          className="mb-4"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
             Добро пожаловать

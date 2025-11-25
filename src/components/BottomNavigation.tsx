@@ -23,7 +23,7 @@ export const BottomNavigation = () => {
     { title: "Задания", icon: ClipboardList, path: "/tasks" },
     { title: "Теория", icon: BookOpen, path: "/webinar-records" },
     { title: "Следующее", icon: PlayCircle, path: "next" },
-    { title: "Профиль", icon: User, path: user ? "/my-progress" : "/auth" },
+    { title: "Профиль", icon: User, path: "/" },
   ];
 
   useEffect(() => {
