@@ -147,6 +147,14 @@ All colors MUST be HSL.
     box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.15),
                 inset 0 1px 0 0 rgba(255, 255, 255, 1);
   }
+  
+  .glass-header {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.08);
+  }
 
   /* Text on Glass - Light theme */
   .text-glass {
@@ -180,5 +188,11 @@ All colors MUST be HSL.
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .bottom-navigation {
     padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}
+
+@supports (padding-top: env(safe-area-inset-top)) {
+  .top-header {
+    padding-top: calc(1rem + env(safe-area-inset-top));
   }
 }
