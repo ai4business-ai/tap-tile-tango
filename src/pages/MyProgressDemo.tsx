@@ -160,8 +160,8 @@ const MyProgress = () => {
                           <foreignObject x={-24} y={-24} width={48} height={48}>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
-                                <div 
-                                  className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-transform`}
+                                 <div 
+                                  className="w-12 h-12 rounded-2xl bg-[#1956FF] flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-transform"
                                 >
                                   {getSkillIcon(skill.skill.slug)}
                                 </div>
@@ -169,9 +169,9 @@ const MyProgress = () => {
                               <DropdownMenuContent align="center" className="w-72 bg-popover/95 backdrop-blur-xl border-border z-50">
                                 <DropdownMenuLabel>
                                   <div className="flex items-center gap-3">
-                                    <div className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg flex-shrink-0`}>
-                                      {getSkillIcon(skill.skill.slug)}
-                                    </div>
+                                   <div className="w-12 h-12 rounded-2xl bg-[#1956FF] flex items-center justify-center shadow-lg flex-shrink-0">
+                                     {getSkillIcon(skill.skill.slug)}
+                                   </div>
                                     <span className="text-sm font-semibold">{skill.skill.name}</span>
                                   </div>
                                 </DropdownMenuLabel>
@@ -179,9 +179,9 @@ const MyProgress = () => {
                                 <div className="px-2 py-3">
                                   <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                                     <span className="text-sm text-muted-foreground">Выполнено заданий</span>
-                                    <span className="text-xl font-bold text-[#8B5CF6]">
-                                      {stats.completed}/{stats.total}
-                                    </span>
+                                   <span className="text-xl font-bold text-[#8277EC]">
+                                     {stats.completed}/{stats.total}
+                                   </span>
                                   </div>
                                 </div>
                               </DropdownMenuContent>
@@ -195,8 +195,8 @@ const MyProgress = () => {
                   <Radar 
                     name="Целевой уровень" 
                     dataKey="targetValue" 
-                    stroke="#F3AE5C"
-                    fill="#F3AE5C"
+                    stroke="#02E8FF"
+                    fill="#02E8FF"
                     fillOpacity={0.15}
                     strokeWidth={2}
                     strokeDasharray="5 5"
@@ -205,9 +205,9 @@ const MyProgress = () => {
                   <Radar 
                     name="Прогресс" 
                     dataKey="value" 
-                    stroke="#8B5CF6" 
-                    fill="#8B5CF6" 
-                    fillOpacity={0.25}
+                    stroke="#8277EC" 
+                    fill="#8277EC" 
+                    fillOpacity={0.15}
                     strokeWidth={3}
                   />
                 </RadarChart>
@@ -226,21 +226,25 @@ const MyProgress = () => {
                 className="border-0 shadow-md bg-white"
               >
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-16 h-16 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-md flex-shrink-0`}>
+                   <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-2xl bg-[#1956FF] flex items-center justify-center shadow-md flex-shrink-0">
                       {getSkillIcon(skill.skill.slug)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-foreground text-base mb-2">{skill.skill.name}</h3>
                       <div className="flex items-center justify-between gap-3 mb-2">
-                        <span className="text-xs font-medium text-[#8B5CF6] bg-[#8B5CF6]/10 px-2 py-1 rounded-full">
+                        <span className="text-xs font-medium text-[#8277EC] bg-[#8277EC]/10 px-2 py-1 rounded-full border border-[#8277EC]/30">
                           {skill.current_level === 1 ? 'Basic' : skill.current_level === 2 ? 'Pro' : 'AI-Native'}
                         </span>
-                        <span className="text-sm font-bold text-[#8B5CF6]">
+                        <span className="text-sm font-bold text-[#8277EC]">
                           {getDisplayProgress(skill.skill.slug, skill.progress_percent)}%
                         </span>
                       </div>
-                      <Progress value={getDisplayProgress(skill.skill.slug, skill.progress_percent)} className="h-2" />
+                      <Progress 
+                        value={getDisplayProgress(skill.skill.slug, skill.progress_percent)} 
+                        className="h-2 bg-muted" 
+                        indicatorClassName="bg-gradient-to-r from-[#1956FF] to-[#8277EC]"
+                      />
                     </div>
                   </div>
                 </CardContent>
