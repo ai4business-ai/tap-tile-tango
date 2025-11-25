@@ -7,7 +7,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Loader2, TestTube, Copy, Info, Send, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
 
 interface PromptTesterProps {
   taskContext: string;
@@ -130,26 +129,32 @@ const deviceIdRef = useRef<string>('');
         taskContext,
         taskId,
         documentId: documentId || undefined,
-        deviceId: deviceIdRef.current
+        deviceId: deviceIdRef.current,
       });
-      
-      const { data, error: supabaseError } = await supabase.functions.invoke('prompt-tester', {
-        body: {
+
+      const response = await fetch('https://nhxrajtfxavkkzqyfrok.supabase.co/functions/v1/prompt-tester', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           prompt: userMessage.content,
           taskContext,
           taskId,
           documentId: documentId || undefined,
           deviceId: deviceIdRef.current,
-        }
+        }),
       });
 
-      console.log('Received response from prompt-tester:', { data, error: supabaseError });
-
-      if (supabaseError) {
-        console.error('Supabase error details:', supabaseError);
-        throw new Error(supabaseError.message);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('HTTP error from prompt-tester:', response.status, errorText);
+        throw new Error(`HTTP ошибка: ${response.status} ${errorText}`);
       }
 
+      const data = await response.json();
+
+      console.log('Received response from prompt-tester:', { data });
       // Always update attempts counter when we get a response from backend
       if (data.remaining !== undefined) {
         updateAttempts(data.remaining);

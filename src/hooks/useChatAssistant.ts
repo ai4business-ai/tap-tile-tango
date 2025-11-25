@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+
 
 interface Message {
   role: 'user' | 'tutor';
@@ -44,52 +44,44 @@ export const useChatAssistant = () => {
   ): Promise<string> => {
     setIsLoading(true);
     
-    // Client-side validation
-    const validation = validateMessage(message);
-    if (!validation.isValid) {
-      setIsLoading(false);
-      throw new Error(validation.error);
-    }
-
     try {
-      // Check if user is authenticated (optional warning, not blocking)
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        console.warn('User is not authenticated - chat will work but with limited features');
-      }
-      
-      console.log('Sending message to chat assistant:', { 
-        messageLength: message.length, 
-        taskContext: taskContext.substring(0, 50) + '...', 
-        threadId, 
+      console.log('Sending message to chat assistant:', {
+        messageLength: message.length,
+        taskContext: taskContext.substring(0, 50) + '...',
+        threadId,
         assistantId,
-        authenticated: !!session
       });
-      
-      const { data, error } = await supabase.functions.invoke('chat-assistant', {
-        body: {
+
+      const response = await fetch('https://nhxrajtfxavkkzqyfrok.supabase.co/functions/v1/chat-assistant', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           message,
           taskContext,
           threadId,
           assistantId,
-          documentId
-        }
+          documentId,
+        }),
       });
 
-      if (error) {
-        console.error('Supabase function error:', error);
-        
-        // Handle specific error cases
-        if (error.message?.includes('401') || error.message?.includes('unauthorized')) {
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('HTTP error from chat-assistant:', response.status, errorText);
+
+        if (response.status === 401) {
           throw new Error('Необходима авторизация. Пожалуйста, войдите в систему.');
         }
-        
-        if (error.message?.includes('429') || error.message?.includes('rate limit')) {
+
+        if (response.status === 429) {
           throw new Error('Превышен лимит запросов. Попробуйте позже.');
         }
-        
-        throw new Error(`Ошибка отправки сообщения: ${error.message}`);
+
+        throw new Error(`Ошибка отправки сообщения: ${response.status} ${errorText}`);
       }
+
+      const data = await response.json();
 
       if (!data) {
         throw new Error('Не получен ответ от сервера');
