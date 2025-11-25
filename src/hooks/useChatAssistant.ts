@@ -71,11 +71,21 @@ export const useChatAssistant = () => {
 
       if (error) {
         console.error('Supabase function error:', error);
-        throw new Error(`Failed to send message: ${error.message}`);
+        
+        // Handle specific error cases
+        if (error.message?.includes('401') || error.message?.includes('unauthorized')) {
+          throw new Error('Необходима авторизация. Пожалуйста, войдите в систему.');
+        }
+        
+        if (error.message?.includes('429') || error.message?.includes('rate limit')) {
+          throw new Error('Превышен лимит запросов. Попробуйте позже.');
+        }
+        
+        throw new Error(`Ошибка отправки сообщения: ${error.message}`);
       }
 
       if (!data) {
-        throw new Error('No response data received');
+        throw new Error('Не получен ответ от сервера');
       }
 
       console.log('Received response from chat assistant:', data);

@@ -187,19 +187,6 @@ serve(async (req) => {
   try {
     console.log('Chat assistant function called');
     
-    // Enhanced authentication check since JWT verification is now enabled
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      logSuspiciousActivity('MISSING_AUTH', { url: req.url }, req);
-      return new Response(
-        JSON.stringify({ error: 'Missing or invalid authorization header' }),
-        { 
-          status: 401, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
-    
     const requestBody = await req.json();
     const { message, taskContext, threadId, assistantId, documentId } = requestBody;
     
