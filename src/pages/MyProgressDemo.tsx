@@ -240,11 +240,12 @@ const MyProgress = () => {
                           {getDisplayProgress(skill.skill.slug, skill.progress_percent)}%
                         </span>
                       </div>
-                      <Progress 
-                        value={getDisplayProgress(skill.skill.slug, skill.progress_percent)} 
-                        className="h-2 bg-muted" 
-                        indicatorClassName="bg-gradient-to-r from-[#1956FF] to-[#8277EC]"
-                      />
+                      <div className="relative w-full h-2 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-[#1956FF] to-[#8277EC] transition-all duration-500"
+                          style={{ width: `${getDisplayProgress(skill.skill.slug, skill.progress_percent)}%` }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </CardContent>
