@@ -9,16 +9,16 @@ import ProductivityIcon from '@/assets/icons/productivity.svg';
 
 export const getSkillIcon = (slug: string) => {
   const iconMap: Record<string, React.ReactNode> = {
-    'communication': <img src={CommunicationIcon} alt="Communication" className="w-10 h-10 object-contain" />,
-    'knowledge-management': <img src={KnowledgeManagementIcon} alt="Knowledge Management" className="w-10 h-10 object-contain" />,
-    'content-creation': <img src={ContentCreationIcon} alt="Content Creation" className="w-10 h-10 object-contain" />,
-    'problem-solving': <img src={ProblemSolvingIcon} alt="Problem Solving" className="w-10 h-10 object-contain" />,
-    'research': <img src={ResearchIcon} alt="Research" className="w-10 h-10 object-contain" />,
-    'automation': <img src={AutomationIcon} alt="Automation" className="w-10 h-10 object-contain" />,
-    'data-analysis': <img src={DataAnalysisIcon} alt="Data Analysis" className="w-10 h-10 object-contain" />,
-    'productivity': <img src={ProductivityIcon} alt="Productivity" className="w-10 h-10 object-contain" />,
+    'communication': <img src={CommunicationIcon} alt="Communication" className="w-full h-full object-contain p-2" />,
+    'knowledge-management': <img src={KnowledgeManagementIcon} alt="Knowledge Management" className="w-full h-full object-contain p-2" />,
+    'content-creation': <img src={ContentCreationIcon} alt="Content Creation" className="w-full h-full object-contain p-2" />,
+    'problem-solving': <img src={ProblemSolvingIcon} alt="Problem Solving" className="w-full h-full object-contain p-2" />,
+    'research': <img src={ResearchIcon} alt="Research" className="w-full h-full object-contain p-2" />,
+    'automation': <img src={AutomationIcon} alt="Automation" className="w-full h-full object-contain p-2" />,
+    'data-analysis': <img src={DataAnalysisIcon} alt="Data Analysis" className="w-full h-full object-contain p-2" />,
+    'productivity': <img src={ProductivityIcon} alt="Productivity" className="w-full h-full object-contain p-2" />,
   };
-  return iconMap[slug] || <img src={ProductivityIcon} alt="Productivity" className="w-10 h-10 object-contain" />;
+  return iconMap[slug] || <img src={ProductivityIcon} alt="Productivity" className="w-full h-full object-contain p-2" />;
 };
 
 export const getSkillColor = (slug: string) => {
