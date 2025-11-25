@@ -8,10 +8,12 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useNextAssignment } from '@/hooks/useNextAssignment';
 
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { getNextTaskPath } = useNextAssignment();
   
   const handleCardClick = (cardName: string) => {
     if (cardName === 'Ваши задания' || cardName === 'Мои задания') {
@@ -43,7 +45,7 @@ const Index = () => {
 
 
       {/* Next Task Card */}
-      <TapCard className="mb-4" onClick={() => handleCardClick('Анализ данных')}>
+      <TapCard className="mb-4" onClick={() => navigate(getNextTaskPath())}>
         <div className="glass-card rounded-3xl p-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-orange to-sky-blue flex items-center justify-center shadow-md">
@@ -51,7 +53,7 @@ const Index = () => {
             </div>
             <div>
               <p className="text-xs text-muted-foreground mb-1">Следующее задание</p>
-              <p className="text-sm font-semibold text-deep-purple">Анализ Word/PDF документа</p>
+              <p className="text-sm font-semibold text-deep-purple">Следующее задание</p>
             </div>
           </div>
           <ChevronRight className="w-5 h-5 text-muted-foreground" />
