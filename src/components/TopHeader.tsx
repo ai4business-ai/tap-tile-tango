@@ -1,11 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,6 +8,7 @@ export const TopHeader = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isBannerCollapsed, setIsBannerCollapsed] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const checkBannerState = () => {
@@ -51,48 +45,54 @@ export const TopHeader = () => {
   return (
     <div className="fixed top-0 left-0 right-0 z-50 top-header">
       <div className="max-w-md mx-auto px-4 pt-4">
-        <div className="glass-header rounded-3xl px-6 py-3 flex items-center justify-between">
-          {/* Left: hakku.ai branding */}
-          <div className="flex flex-col">
-            <span className="font-source-serif text-base font-semibold text-deep-purple">
-              hakku.ai
-            </span>
-            <span className="text-[10px] text-muted-foreground">
-              AI training app
-            </span>
+        <div className="glass-header rounded-3xl px-6">
+          {/* Main header row */}
+          <div className="flex items-center justify-between py-3">
+            {/* Left: hakku.ai branding */}
+            <div className="flex flex-col">
+              <span className="font-source-serif text-base font-semibold text-deep-purple">
+                hakku.ai
+              </span>
+              <span className="text-[10px] text-muted-foreground">
+                AI training app
+              </span>
+            </div>
+
+            {/* Center: Company Logo Placeholder */}
+            <div className="absolute left-1/2 -translate-x-1/2 text-center max-w-[100px]">
+              <p className="text-[10px] text-muted-foreground font-medium leading-tight">
+                Здесь лого<br/>вашей компании
+              </p>
+            </div>
+            
+            {/* Right: User Avatar Button */}
+            <button 
+              onClick={() => setMenuOpen(!menuOpen)}
+              className={`w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center border border-white/40 hover:bg-white/40 transition-all ${
+                shouldHighlightAvatar ? 'ring-2 ring-orange-500 animate-pulse' : ''
+              }`}
+            >
+              {user?.user_metadata?.avatar_url ? (
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={user.user_metadata.avatar_url} alt="User" />
+                  <AvatarFallback className="bg-transparent text-deep-purple text-sm font-semibold">
+                    {getInitials()}
+                  </AvatarFallback>
+                </Avatar>
+              ) : (
+                <span className="text-deep-purple text-sm font-semibold">
+                  {getInitials()}
+                </span>
+              )}
+            </button>
           </div>
 
-          {/* Center: Company Logo Placeholder */}
-          <p className="text-xs text-muted-foreground font-medium absolute left-1/2 -translate-x-1/2">
-            Здесь лого вашей компании
-          </p>
-          
-          {/* Right: User Avatar Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button 
-                className={`w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center border border-white/40 hover:bg-white/40 transition-all ${
-                  shouldHighlightAvatar ? 'ring-2 ring-orange-500 animate-pulse' : ''
-                }`}
-              >
-                {user?.user_metadata?.avatar_url ? (
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={user.user_metadata.avatar_url} alt="User" />
-                    <AvatarFallback className="bg-transparent text-deep-purple text-sm font-semibold">
-                      {getInitials()}
-                    </AvatarFallback>
-                  </Avatar>
-                ) : (
-                  <span className="text-deep-purple text-sm font-semibold">
-                    {getInitials()}
-                  </span>
-                )}
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-white/95 backdrop-blur-md z-[70]">
+          {/* Expanding menu inside header */}
+          {menuOpen && (
+            <nav className="py-4 space-y-2 border-t border-white/20">
               {user ? (
                 <>
-                  <div className="px-2 py-1.5">
+                  <div className="pb-2">
                     <p className="text-sm font-medium text-foreground">
                       {user.user_metadata?.full_name || 'Пользователь'}
                     </p>
@@ -100,23 +100,31 @@ export const TopHeader = () => {
                       {user.email}
                     </p>
                   </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut}>
+                  <button 
+                    onClick={handleSignOut}
+                    className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors"
+                  >
                     Выйти
-                  </DropdownMenuItem>
+                  </button>
                 </>
               ) : (
                 <>
-                  <DropdownMenuItem onClick={() => navigate('/auth')}>
+                  <button 
+                    onClick={() => navigate('/auth')}
+                    className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors"
+                  >
                     Войти
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/auth')}>
+                  </button>
+                  <button 
+                    onClick={() => navigate('/auth')}
+                    className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors"
+                  >
                     Зарегистрироваться
-                  </DropdownMenuItem>
+                  </button>
                 </>
               )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </nav>
+          )}
         </div>
       </div>
     </div>
