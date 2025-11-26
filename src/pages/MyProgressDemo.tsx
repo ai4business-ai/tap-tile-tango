@@ -216,7 +216,7 @@ const MyProgress = () => {
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <div 
-                                  className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-transform`}
+                                  className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer`}
                                 >
                                   {getSkillIcon(skill.skill.slug)}
                                 </div>
@@ -227,13 +227,13 @@ const MyProgress = () => {
                                     <div className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg flex-shrink-0`}>
                                       {getSkillIcon(skill.skill.slug)}
                                     </div>
-                                    <span className="text-sm font-semibold">{skill.skill.name}</span>
+                                    <span className="text-sm font-semibold text-gray-900">{skill.skill.name}</span>
                                   </div>
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <div className="px-2 py-3">
                   <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                    <span className="text-sm text-muted-foreground">Выполнено заданий</span>
+                    <span className="text-sm text-gray-900">Выполнено заданий</span>
                     <span className="text-xl font-bold text-[#8277EC]">
                       {stats.completed}/{stats.total}
                     </span>
