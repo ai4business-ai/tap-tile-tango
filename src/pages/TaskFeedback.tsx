@@ -116,7 +116,7 @@ const TaskFeedback = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 px-4 pb-4 md:px-6 md:pb-6 lg:px-8 lg:pb-8 w-full max-w-4xl mx-auto overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 px-4 pb-4 md:px-6 md:pb-6 lg:px-8 lg:pb-8 w-full md:max-w-md mx-auto overflow-x-hidden">
       <div className="flex items-center gap-4 mb-6">
         <button 
           onClick={() => navigate('/skill-assignments/communication')}
