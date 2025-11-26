@@ -204,7 +204,7 @@ const MyProgress = () => {
                       
                       const angle = (index * 360) / skills.length - 90;
                       const rad = (angle * Math.PI) / 180;
-                      const iconRadius = 135;
+                      const iconRadius = 150;
                       const iconX = cx + iconRadius * Math.cos(rad);
                       const iconY = cy + iconRadius * Math.sin(rad);
 
