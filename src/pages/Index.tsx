@@ -68,11 +68,11 @@ const Index = () => {
     };
   }, []);
 
-  // Calculate overall progress
+  // Calculate overall progress from real data
   const overallProgress = skills.length > 0 
     ? Math.round(
         skills.reduce(
-          (sum, skill) => sum + getDisplayProgress(skill.skill.slug, skill.progress_percent),
+          (sum, skill) => sum + skill.progress_percent,
           0
         ) / skills.length
       )
