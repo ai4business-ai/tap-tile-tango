@@ -5,7 +5,7 @@ import {
   ClipboardList,
   PlayCircle,
   BookOpen,
-  User
+  Home
 } from 'lucide-react';
 import { ExpandableTabs } from '@/components/ui/expandable-tabs';
 import { useNextAssignment } from '@/hooks/useNextAssignment';
@@ -23,7 +23,7 @@ export const BottomNavigation = () => {
     { title: "Задания", icon: ClipboardList, path: "/tasks" },
     { title: "Следующее", icon: PlayCircle, path: "next" },
     { title: "Теория", icon: BookOpen, path: "/webinar-records" },
-    { title: "Профиль", icon: User, path: "/" },
+    { title: "Главная", icon: Home, path: "/" },
   ];
 
   useEffect(() => {
