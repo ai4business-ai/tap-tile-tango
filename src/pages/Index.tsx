@@ -4,6 +4,7 @@ import { TapCard } from '@/components/ui/tap-card';
 import { useAuth } from '@/hooks/useAuth';
 import { useNextAssignment } from '@/hooks/useNextAssignment';
 import { useUserSkills } from '@/hooks/useUserSkills';
+import { useUserAssignmentStats } from '@/hooks/useUserAssignmentStats';
 import { TrendingUp, ChevronRight, FileText, Video } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
@@ -50,6 +51,7 @@ const Index = () => {
   const { user } = useAuth();
   const { getNextTaskPath } = useNextAssignment();
   const { skills, loading } = useUserSkills(user?.id);
+  const { stats } = useUserAssignmentStats(user?.id);
   const [isBannerCollapsed, setIsBannerCollapsed] = useState(() => {
     return localStorage.getItem('guestBannerCollapsed') === 'true';
   });
@@ -79,9 +81,9 @@ const Index = () => {
   // Calculate learning skills count
   const learningSkillsCount = skills.length;
 
-  // Calculate total completed assignments
-  const totalCompletedAssignments = Object.values(demoCompletedBySlug).reduce((sum, skill) => sum + skill.completed, 0);
-  const totalAssignments = Object.values(demoCompletedBySlug).reduce((sum, skill) => sum + skill.total, 0);
+  // Use real assignment stats from database
+  const totalCompletedAssignments = stats.completedAssignments;
+  const totalAssignments = stats.totalAssignments;
 
   // Prepare radar chart data
   const radarData = skills.map(skill => ({
@@ -227,24 +229,24 @@ const Index = () => {
         <TapCard onClick={() => navigate('/tasks')}>
           <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
             <h3 className="text-lg font-semibold mb-1 text-glass">Мои задания</h3>
-            <p className="text-sm text-glass-muted mb-3">89 заданий</p>
+            <p className="text-sm text-glass-muted mb-3">{stats.totalAssignments} заданий</p>
             
             {/* Progress bar */}
             <div className="mb-4">
               <div className="flex justify-between text-xs text-glass-muted mb-1">
                 <span>Общий прогресс</span>
-                <span>18/89</span>
+                <span>{stats.completedAssignments}/{stats.totalAssignments}</span>
               </div>
               <div className="w-full bg-white/20 rounded-full h-2">
                 <div 
                   className="bg-white/60 h-2 rounded-full transition-all duration-500" 
-                  style={{ width: '20%' }}
+                  style={{ width: `${stats.completionPercentage}%` }}
                 />
               </div>
             </div>
             
             <button className="bg-white/20 text-glass px-4 py-2 rounded-2xl text-sm font-medium shadow-inner backdrop-blur-sm border border-white/30">
-              +24 задания
+              +{stats.totalAssignments - stats.completedAssignments} задания
             </button>
           </div>
         </TapCard>
