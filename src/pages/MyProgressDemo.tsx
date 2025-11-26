@@ -193,7 +193,7 @@ const MyProgress = () => {
         <Card className="border-0 shadow-xl bg-white mb-6">
           <CardContent className="p-6">
             <div className="relative">
-              <ResponsiveContainer width="100%" height={320}>
+              <ResponsiveContainer width="100%" height={360}>
                 <RadarChart data={radarData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                   <PolarGrid stroke="#E5E7EB" strokeWidth={1} />
                   <PolarAngleAxis 
@@ -204,7 +204,7 @@ const MyProgress = () => {
                       
                       const angle = (index * 360) / skills.length - 90;
                       const rad = (angle * Math.PI) / 180;
-                      const iconRadius = 150;
+                      const iconRadius = 142;
                       const iconX = cx + iconRadius * Math.cos(rad);
                       const iconY = cy + iconRadius * Math.sin(rad);
 
