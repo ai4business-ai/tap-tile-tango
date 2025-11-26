@@ -7,6 +7,7 @@ import { useUserSkills } from '@/hooks/useUserSkills';
 import { ChevronRight } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
 import {
   DropdownMenu,
@@ -113,29 +114,68 @@ const Demo = () => {
   const headerOffset = showBanner ? '-mt-36' : '-mt-28';
   const headerPadding = showBanner ? 'pt-44' : 'pt-36';
 
+  const getInitials = () => {
+    if (!user) return 'G';
+    if (user.user_metadata?.full_name) {
+      const names = user.user_metadata.full_name.split(' ');
+      return names.map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    }
+    return user.email?.[0].toUpperCase() || 'G';
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
-      {/* Purple Header */}
-      <div className={`bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 ${headerPadding} pb-40 relative ${headerOffset} transition-all duration-300`}>
-        <div className="max-w-md mx-auto">
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-4xl font-bold text-white mb-2">
-                Привет, {user?.email?.split('@')[0] || 'Гость'}!
-              </h1>
-              <p className="text-white/90 text-base">Ваш прогресс обучения</p>
+      {/* Custom Top Header */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <div className="max-w-md mx-auto px-4 pt-4">
+          <div className="glass-header rounded-3xl px-6">
+            <div className="flex items-center justify-between py-3">
+              {/* Left: hakku.ai branding */}
+              <div className="flex flex-col">
+                <span className="font-source-serif text-base font-semibold text-gray-900">
+                  hakku.ai
+                </span>
+                <span className="text-[10px] text-gray-900">
+                  AI training app
+                </span>
+              </div>
+
+              {/* Center: Company Logo Placeholder */}
+              <div className="absolute left-1/2 -translate-x-1/2 text-center max-w-[100px]">
+                <p className="text-[10px] text-gray-900 font-medium leading-tight">
+                  Здесь лого<br/>вашей компании
+                </p>
+              </div>
+              
+              {/* Right: User Avatar Button */}
+              <button 
+                className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center border border-[#F37168] hover:bg-white/40 transition-all"
+              >
+                {user?.user_metadata?.avatar_url ? (
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={user.user_metadata.avatar_url} alt="User" />
+                    <AvatarFallback className="bg-transparent text-gray-900 text-sm font-semibold">
+                      {getInitials()}
+                    </AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <span className="text-gray-900 text-sm font-semibold">
+                    {getInitials()}
+                  </span>
+                )}
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-md mx-auto px-4 -mt-32 pb-24 space-y-4">
+      <div className="max-w-md mx-auto px-4 pb-24 pt-24 space-y-4">
         {/* Overall Progress Card */}
         <Card className="border-0 shadow-xl bg-white">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <p className="text-sm text-muted-foreground mb-2">Общий прогресс</p>
+                <p className="text-sm text-muted-foreground mb-2">Прогресс обучения</p>
                 <p className="text-6xl font-bold text-[#8B5CF6] mb-2">{overallProgress}%</p>
                 <p className="text-sm text-muted-foreground">{learningSkillsCount} навыков изучается</p>
                 <p className="text-xs text-muted-foreground mt-1">{totalCompletedAssignments}/{totalAssignments} заданий выполнено</p>
@@ -154,8 +194,9 @@ const Demo = () => {
           onClick={() => navigate('/my-progress')}
         >
           <CardContent className="p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Мой прогресс</h3>
             <div className="relative">
-              <ResponsiveContainer width="100%" height={320}>
+              <ResponsiveContainer width="100%" height={360}>
                 <RadarChart data={radarData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                   <PolarGrid stroke="#E5E7EB" strokeWidth={1} />
                   <PolarAngleAxis 
@@ -166,7 +207,7 @@ const Demo = () => {
                       
                       const angle = (index * 360) / skills.length - 90;
                       const rad = (angle * Math.PI) / 180;
-                      const iconRadius = 135;
+                      const iconRadius = 142;
                       const iconX = cx + iconRadius * Math.cos(rad);
                       const iconY = cy + iconRadius * Math.sin(rad);
 
@@ -178,7 +219,7 @@ const Demo = () => {
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <div 
-                                  className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-transform`}
+                                  className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer`}
                                   onClick={(e) => e.stopPropagation()}
                                 >
                                   {getSkillIcon(skill.skill.slug)}
@@ -214,19 +255,19 @@ const Demo = () => {
                   <Radar 
                     name="Целевой уровень" 
                     dataKey="targetValue" 
-                    stroke="#02E8FF"
-                    fill="#02E8FF"
-                    fillOpacity={0.15}
-                    strokeWidth={2}
+                    stroke="#F37168"
+                    fill="#F37168"
+                    fillOpacity={0.1}
+                    strokeWidth={1.5}
                     strokeDasharray="5 5"
                   />
                   {/* Текущий прогресс */}
                   <Radar 
                     name="Прогресс" 
                     dataKey="value" 
-                    stroke="#8B5CF6" 
-                    fill="#8B5CF6" 
-                    fillOpacity={0.25}
+                    stroke="#8277EC" 
+                    fill="#8277EC" 
+                    fillOpacity={0.15}
                     strokeWidth={3}
                   />
                 </RadarChart>
@@ -245,10 +286,7 @@ const Demo = () => {
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-orange to-sky-blue flex items-center justify-center shadow-md p-2">
                 <img src={TaskIcon} alt="Task" className="w-full h-full object-contain" />
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Следующее задание</p>
-                <p className="text-sm font-semibold text-deep-purple">Следующее задание</p>
-              </div>
+              <span className="text-sm font-semibold text-deep-purple">Следующее задание</span>
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </div>
@@ -257,11 +295,10 @@ const Demo = () => {
         {/* My Tasks Card */}
         <TapCard onClick={() => navigate('/tasks')}>
           <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-            <h3 className="text-lg font-semibold mb-1 text-glass">Мои задания</h3>
-            <p className="text-sm text-glass-muted mb-3">89 заданий</p>
+            <h3 className="text-lg font-semibold mb-3 text-glass">Мои задания</h3>
             
             {/* Progress bar */}
-            <div className="mb-4">
+            <div>
               <div className="flex justify-between text-xs text-glass-muted mb-1">
                 <span>Общий прогресс</span>
                 <span>18/89</span>
@@ -273,25 +310,18 @@ const Demo = () => {
                 />
               </div>
             </div>
-            
-            <button className="bg-white/20 text-glass px-4 py-2 rounded-2xl text-sm font-medium shadow-inner backdrop-blur-sm border border-white/30">
-              +24 задания
-            </button>
           </div>
         </TapCard>
 
         {/* Webinar Records Card */}
         <TapCard onClick={() => navigate('/webinar-records')}>
           <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-deep-purple to-primary-orange flex items-center justify-center shadow-md p-2">
                 <img src={WebinarIcon} alt="Webinar" className="w-full h-full object-contain" />
               </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-deep-purple">Записи вебинаров</h3>
-                <p className="text-sm text-muted-foreground">6 вебинаров доступно</p>
-              </div>
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+              <h3 className="text-lg font-bold text-deep-purple">Записи вебинаров</h3>
+              <ChevronRight className="w-5 h-5 text-muted-foreground ml-auto" />
             </div>
           </div>
         </TapCard>
