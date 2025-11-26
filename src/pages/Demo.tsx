@@ -124,23 +124,66 @@ const Demo = () => {
   };
 
   return (
-    <div className="min-h-screen pb-16">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
       {/* Glass Header */}
       <div className="fixed top-0 left-0 right-0 z-50 top-header transition-all duration-300">
-...
-      </div>
+        <div className="max-w-md mx-auto px-4 pt-4">
+          <div className="glass-header rounded-3xl px-6">
+            <div className="flex items-center justify-between py-3">
+              {/* Left: hakku.ai branding */}
+              <div className="flex flex-col">
+                <span className="font-source-serif text-base font-semibold text-gray-900">
+                  hakku.ai
+                </span>
+                <span className="text-[10px] text-gray-900">
+                  AI training app
+                </span>
+              </div>
 
-      {/* Purple gradient header with greeting */}
-      <div className="bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 pt-28 pb-40 relative overflow-hidden rounded-b-[40px]">
-        <div className="relative z-10 max-w-md mx-auto">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Привет, {user?.user_metadata?.full_name?.split(' ')[0] || 'Гость'}!
-          </h1>
+              {/* Center: Company Logo Placeholder */}
+              <div className="absolute left-1/2 -translate-x-1/2 text-center max-w-[100px]">
+                <p className="text-[10px] text-gray-900 font-medium leading-tight">
+                  Здесь лого<br/>вашей компании
+                </p>
+              </div>
+              
+              {/* Right: User Avatar Button */}
+              <button 
+                className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center border border-[#F37168] hover:bg-white/40 transition-all"
+              >
+                {user?.user_metadata?.avatar_url ? (
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={user.user_metadata.avatar_url} alt="User" />
+                    <AvatarFallback className="bg-transparent text-gray-900 text-sm font-semibold">
+                      {getInitials()}
+                    </AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <span className="text-gray-900 text-sm font-semibold">
+                    {getInitials()}
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Main content with negative margin to overlap purple section */}
-      <div className="max-w-md mx-auto px-4 pb-24 -mt-32 relative z-20 space-y-4">
+      {/* Purple Header */}
+      <div className={`bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 ${headerPadding} pb-40 relative ${headerOffset} transition-all duration-300`}>
+        <div className="max-w-md mx-auto">
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-white mb-2">
+                Привет, {user?.email?.split('@')[0] || 'Гость'}!
+              </h1>
+              <p className="text-white/90 text-base">Ваш прогресс обучения</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-md mx-auto px-4 -mt-32 pb-24 space-y-4">
         {/* Overall Progress Card */}
         <Card className="border-0 shadow-xl bg-white">
           <CardContent className="p-6">
