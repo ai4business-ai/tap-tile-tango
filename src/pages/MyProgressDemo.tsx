@@ -146,7 +146,7 @@ const MyProgress = () => {
               
               {/* Right: User Avatar Button */}
               <button 
-                className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center border border-white/40 hover:bg-white/40 transition-all"
+                className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center border border-[#F37168] hover:bg-white/40 transition-all"
               >
                 {user?.user_metadata?.avatar_url ? (
                   <Avatar className="h-10 w-10">
@@ -178,7 +178,7 @@ const MyProgress = () => {
             </button>
             <div>
               <h1 className="text-xl font-semibold text-gray-900">Мой прогресс</h1>
-              <p className="text-sm text-[#8277EC]">{skills.length} навыков</p>
+              <p className="text-sm text-[#F37168]">{skills.length} навыков</p>
             </div>
           </div>
           <button 
@@ -250,10 +250,10 @@ const MyProgress = () => {
                   <Radar 
                     name="Целевой уровень" 
                     dataKey="targetValue" 
-                    stroke="#02E8FF"
-                    fill="#02E8FF"
-                    fillOpacity={0.15}
-                    strokeWidth={2}
+                    stroke="#F37168"
+                    fill="#F37168"
+                    fillOpacity={0.1}
+                    strokeWidth={1.5}
                     strokeDasharray="5 5"
                   />
                   {/* Текущий прогресс - ограничен целевым уровнем */}
@@ -288,7 +288,7 @@ const MyProgress = () => {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-gray-900 text-base mb-2">{skill.skill.name}</h3>
                       <div className="flex items-center justify-between gap-3 mb-2">
-                        <span className="text-xs font-medium text-[#8277EC] border border-[#8277EC]/30 px-2 py-1 rounded-full">
+                        <span className="text-xs font-medium text-[#F37168] border border-[#F37168]/30 px-2 py-1 rounded-full bg-transparent">
                           {skill.current_level === 1 ? 'Basic' : skill.current_level === 2 ? 'Pro' : 'AI-Native'}
                         </span>
                         <span className="text-sm font-bold text-[#8277EC]">
