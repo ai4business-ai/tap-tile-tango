@@ -68,15 +68,8 @@ const Index = () => {
     };
   }, []);
 
-  // Calculate overall progress from real data
-  const overallProgress = skills.length > 0 
-    ? Math.round(
-        skills.reduce(
-          (sum, skill) => sum + skill.progress_percent,
-          0
-        ) / skills.length
-      )
-    : 0;
+  // Use real overall progress from assignment stats
+  const overallProgress = stats.completionPercentage;
 
   // Calculate learning skills count
   const learningSkillsCount = skills.length;
