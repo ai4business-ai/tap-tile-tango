@@ -199,16 +199,16 @@ const Demo = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <p className="text-sm text-muted-foreground mb-2">Прогресс обучения</p>
-                <p className="text-6xl font-bold text-[#8B5CF6] mb-2">{overallProgress}%</p>
-                <p className="text-sm text-muted-foreground">{learningSkillsCount} навыков изучается</p>
-                <p className="text-xs text-muted-foreground mt-1">{totalCompletedAssignments}/{totalAssignments} заданий выполнено</p>
+                <p className="text-sm text-gray-600 mb-2">Прогресс обучения</p>
+                <p className="text-6xl font-bold text-[#8277EC] mb-2">{overallProgress}%</p>
+                <p className="text-sm text-gray-600"><span className="text-[#F37168] font-semibold">{learningSkillsCount}</span> навыков изучается</p>
+                <p className="text-xs text-gray-600 mt-1"><span className="text-[#F37168] font-semibold">{totalCompletedAssignments}/{totalAssignments}</span> заданий выполнено</p>
               </div>
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#C026D3] via-[#EC4899] to-[#F97316] flex items-center justify-center shadow-xl p-4">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center shadow-xl p-4">
                 <img src={ProgressMainIcon} alt="Progress" className="w-full h-full object-contain" />
               </div>
             </div>
-            <Progress value={overallProgress} className="h-2.5 mt-4" />
+            <Progress value={overallProgress} className="h-2.5 mt-4 [&>div]:bg-gradient-to-r [&>div]:from-[#1956FF] [&>div]:to-[#02E8FF]" />
           </CardContent>
         </Card>
 
@@ -224,7 +224,7 @@ const Demo = () => {
                 bottom: 20,
                 left: 20
               }}>
-                  <PolarGrid stroke="#E5E7EB" strokeWidth={1} />
+                  <PolarGrid stroke="#e5e7eb" strokeWidth={1} strokeOpacity={0.6} />
                   <PolarAngleAxis dataKey="subject" tick={({
                   payload,
                   x,
@@ -279,7 +279,7 @@ const Demo = () => {
                 }
                   <Radar name="Целевой уровень" dataKey="targetValue" stroke="#F37168" fill="#F37168" fillOpacity={0.1} strokeWidth={1.5} strokeDasharray="5 5" />
                   {/* Текущий прогресс */}
-                  <Radar name="Прогресс" dataKey="value" stroke="#8277EC" fill="#8277EC" fillOpacity={0.15} strokeWidth={3} />
+                  <Radar name="Прогресс" dataKey="value" stroke="#8277EC" fill="#8277EC" fillOpacity={0.15} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
             </div>
@@ -291,12 +291,12 @@ const Demo = () => {
         const nextPath = await getNextTaskPath();
         navigate(nextPath);
       }}>
-          <div className="glass-card rounded-3xl p-6 flex items-center justify-between">
+          <div className="glass-card rounded-3xl p-6 flex items-center justify-between" style={{ boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)' }}>
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-orange to-sky-blue flex items-center justify-center shadow-md p-2">
-                <img src={TaskIcon} alt="Task" className="w-full h-full object-contain" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center shadow-md p-2">
+                <img src={TaskIcon} alt="Task" className="w-full h-full object-contain brightness-0 invert" />
               </div>
-              <span className="text-sm font-semibold text-deep-purple">Следующее задание</span>
+              <span className="text-sm font-bold text-gray-900">Следующее задание</span>
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </div>
@@ -305,16 +305,16 @@ const Demo = () => {
         {/* My Tasks Card */}
         <Card className="border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all" onClick={() => navigate('/tasks')}>
           <CardContent className="p-6">
-            <h3 className="text-lg font-semibold mb-4 text-gray-900">Мои задания</h3>
+            <h3 className="text-lg font-bold mb-4 text-gray-900">Мои задания</h3>
             
             {/* Progress bar */}
             <div>
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-[#8B5CF6] font-medium">Общий прогресс</span>
-                <span className="text-sm text-[#F37168] font-semibold">18/89</span>
+                <span className="text-sm text-[#8277EC] font-medium">Общий прогресс</span>
+                <span className="text-sm text-[#F37168] font-bold">18/89</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-[#4F46E5] h-2 rounded-full transition-all duration-500" style={{
+                <div className="h-2 rounded-full transition-all duration-500 bg-gradient-to-r from-[#1956FF] to-[#8277EC]" style={{
                 width: '20%'
               }} />
               </div>
@@ -324,12 +324,12 @@ const Demo = () => {
 
         {/* Webinar Records Card */}
         <TapCard onClick={() => navigate('/webinar-records')}>
-          <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
+          <div className="glass-card rounded-3xl p-6 relative overflow-hidden" style={{ boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)' }}>
             <div className="flex items-center gap-3">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-deep-purple to-primary-orange flex items-center justify-center shadow-md p-2">
-                <img src={WebinarIcon} alt="Webinar" className="w-full h-full object-contain" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center shadow-md p-2">
+                <img src={WebinarIcon} alt="Webinar" className="w-full h-full object-contain brightness-0 invert" />
               </div>
-              <h3 className="text-lg font-bold text-deep-purple">Записи вебинаров</h3>
+              <h3 className="text-lg font-bold text-gray-900">Записи вебинаров</h3>
               <ChevronRight className="w-5 h-5 text-muted-foreground ml-auto" />
             </div>
           </div>
