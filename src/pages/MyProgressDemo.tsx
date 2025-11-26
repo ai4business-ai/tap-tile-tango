@@ -217,7 +217,6 @@ const MyProgress = () => {
                               <DropdownMenuTrigger asChild>
                                 <div 
                                   className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer`}
-                                  style={{ boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)' }}
                                 >
                                   {getSkillIcon(skill.skill.slug)}
                                 </div>
@@ -225,10 +224,7 @@ const MyProgress = () => {
                               <DropdownMenuContent align="center" className="w-72 bg-popover/95 backdrop-blur-xl border-border z-50">
                                 <DropdownMenuLabel>
                                   <div className="flex items-center gap-3">
-                                    <div 
-                                      className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg flex-shrink-0`}
-                                      style={{ boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)' }}
-                                    >
+                                    <div className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg flex-shrink-0`}>
                                       {getSkillIcon(skill.skill.slug)}
                                     </div>
                                     <span className="text-sm font-semibold text-gray-900">{skill.skill.name}</span>
