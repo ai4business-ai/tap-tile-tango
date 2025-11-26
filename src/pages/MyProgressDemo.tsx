@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Settings } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -103,6 +104,15 @@ const MyProgress = () => {
     }
   };
 
+  const getInitials = () => {
+    if (!user) return 'G';
+    if (user.user_metadata?.full_name) {
+      const names = user.user_metadata.full_name.split(' ');
+      return names.map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    }
+    return user.email?.[0].toUpperCase() || 'G';
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
       <GuestLimitDialog
@@ -111,8 +121,52 @@ const MyProgress = () => {
         feature="Изменение целевого уровня навыков"
       />
 
-      <div className="max-w-md mx-auto px-4 pb-24">
-        {/* Header */}
+      {/* Custom Top Header for this page */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <div className="max-w-md mx-auto px-4 pt-4">
+          <div className="glass-header rounded-3xl px-6">
+            <div className="flex items-center justify-between py-3">
+              {/* Left: hakku.ai branding */}
+              <div className="flex flex-col">
+                <span className="font-source-serif text-base font-semibold text-gray-900">
+                  hakku.ai
+                </span>
+                <span className="text-[10px] text-gray-900">
+                  AI training app
+                </span>
+              </div>
+
+              {/* Center: Company Logo Placeholder */}
+              <div className="absolute left-1/2 -translate-x-1/2 text-center max-w-[100px]">
+                <p className="text-[10px] text-gray-900 font-medium leading-tight">
+                  Здесь лого<br/>вашей компании
+                </p>
+              </div>
+              
+              {/* Right: User Avatar Button */}
+              <button 
+                className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center border border-white/40 hover:bg-white/40 transition-all"
+              >
+                {user?.user_metadata?.avatar_url ? (
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={user.user_metadata.avatar_url} alt="User" />
+                    <AvatarFallback className="bg-transparent text-gray-900 text-sm font-semibold">
+                      {getInitials()}
+                    </AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <span className="text-gray-900 text-sm font-semibold">
+                    {getInitials()}
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-md mx-auto px-4 pb-24 pt-24">
+        {/* Page Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <button 
@@ -130,7 +184,7 @@ const MyProgress = () => {
             onClick={handleSettingsClick}
             className="w-10 h-10 glass-subtle rounded-2xl flex items-center justify-center"
           >
-            <Settings className="w-6 h-6 text-muted-foreground" />
+            <Settings className="w-6 h-6 text-gray-900" />
           </button>
         </div>
 
