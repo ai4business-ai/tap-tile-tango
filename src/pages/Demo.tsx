@@ -333,7 +333,7 @@ const Demo = () => {
             }}>
                 <img src={WebinarIcon} alt="Webinar" className="w-full h-full object-contain brightness-0 invert" />
               </div>
-              <h3 className="text-sm font-bold text-gray-900">Записи вебинаров</h3>
+              <h3 className="font-bold text-gray-900 text-base">Записи вебинаров</h3>
               <ChevronRight className="w-5 h-5 text-muted-foreground ml-auto" />
             </div>
           </div>
