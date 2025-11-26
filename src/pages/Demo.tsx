@@ -293,10 +293,12 @@ const Demo = () => {
       }}>
           <div className="glass-card rounded-3xl p-6 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center p-2" style={{ boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)' }}>
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center p-2" style={{
+              boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)'
+            }}>
                 <img src={TaskIcon} alt="Task" className="w-full h-full object-contain brightness-0 invert" />
               </div>
-              <span className="text-sm font-bold text-gray-900">Следующее задание</span>
+              <span className="font-bold text-gray-900 text-base">Следующее задание</span>
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </div>
@@ -326,7 +328,9 @@ const Demo = () => {
         <TapCard onClick={() => navigate('/webinar-records')}>
           <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
             <div className="flex items-center gap-3">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center p-2" style={{ boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)' }}>
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center p-2" style={{
+              boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)'
+            }}>
                 <img src={WebinarIcon} alt="Webinar" className="w-full h-full object-contain brightness-0 invert" />
               </div>
               <h3 className="text-sm font-bold text-gray-900">Записи вебинаров</h3>
