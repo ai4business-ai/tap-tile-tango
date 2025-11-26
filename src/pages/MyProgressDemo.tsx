@@ -61,20 +61,6 @@ const getDisplayProgress = (slug: string, actualProgress: number) => {
   return demoProgressBySlug[slug] ?? 0;
 };
 
-const getSkillEmojiIcon = (slug: string) => {
-  const map: Record<string, string> = {
-    'communication': '💬',
-    'knowledge-management': '🧠',
-    'content-creation': '✏️',
-    'problem-solving': '💡',
-    'research': '🔍',
-    'automation': '⚙️',
-    'data-analysis': '📊',
-    'productivity': '🎯',
-  };
-  return map[slug] || '🎯';
-};
-
 const MyProgress = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -226,41 +212,35 @@ const MyProgress = () => {
                       
                       return (
                         <g transform={`translate(${iconX},${iconY})`}>
-                          <foreignObject x={-24} y={-24} width={48} height={48} xmlns="http://www.w3.org/1999/xhtml">
-                            <div style={{ width: '48px', height: '48px' }}>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <div 
+                          <foreignObject x={-24} y={-24} width={48} height={48}>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <div 
                                   className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer`}
-                                  >
-                                    <span className="text-xl" aria-hidden="true">
-                                      {getSkillEmojiIcon(skill.skill.slug)}
-                                    </span>
-                                  </div>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="center" className="w-72 bg-popover/95 backdrop-blur-xl border-border z-50">
-                                  <DropdownMenuLabel>
-                                    <div className="flex items-center gap-3">
-                                      <div className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg flex-shrink-0`}>
-                                        <span className="text-xl" aria-hidden="true">
-                                          {getSkillEmojiIcon(skill.skill.slug)}
-                                        </span>
-                                      </div>
-                                      <span className="text-sm font-semibold text-gray-900">{skill.skill.name}</span>
+                                >
+                                  {getSkillIcon(skill.skill.slug)}
+                                </div>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="center" className="w-72 bg-popover/95 backdrop-blur-xl border-border z-50">
+                                <DropdownMenuLabel>
+                                  <div className="flex items-center gap-3">
+                                    <div className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg flex-shrink-0`}>
+                                      {getSkillIcon(skill.skill.slug)}
                                     </div>
-                                  </DropdownMenuLabel>
-                                  <DropdownMenuSeparator />
-                                  <div className="px-2 py-3">
-                    <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                      <span className="text-sm text-gray-900">Выполнено заданий</span>
-                      <span className="text-xl font-bold text-[#8277EC]">
-                        {stats.completed}/{stats.total}
-                      </span>
-                    </div>
+                                    <span className="text-sm font-semibold text-gray-900">{skill.skill.name}</span>
                                   </div>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <div className="px-2 py-3">
+                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <span className="text-sm text-gray-900">Выполнено заданий</span>
+                    <span className="text-xl font-bold text-[#8277EC]">
+                      {stats.completed}/{stats.total}
+                    </span>
+                  </div>
+                                </div>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </foreignObject>
                         </g>
                       );
