@@ -170,14 +170,13 @@ const Demo = () => {
       </div>
 
       {/* Purple Header */}
-      <div className={`bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 ${headerPadding} pb-40 relative ${headerOffset} transition-all duration-300`}>
+      <div className={`bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 ${headerPadding} pb-24 relative ${headerOffset} transition-all duration-300`}>
         <div className="max-w-md mx-auto">
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-4xl font-bold text-white mb-2">
                 Привет, {user?.email?.split('@')[0] || 'Гость'}!
               </h1>
-              <p className="text-white/90 text-base">Ваш прогресс обучения</p>
             </div>
           </div>
         </div>
