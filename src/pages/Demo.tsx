@@ -9,19 +9,11 @@ import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { getSkillIcon, getSkillColor } from '@/utils/skillIconsDemo';
 import ProgressMainIcon from '@/assets/progress-main.svg';
 import TaskIcon from '@/assets/task-icon.svg';
 import WebinarIcon from '@/assets/webinar-icon.svg';
-
 const demoProgressBySlug: Record<string, number> = {
   'communication': 23,
   'knowledge-management': 50,
@@ -30,34 +22,64 @@ const demoProgressBySlug: Record<string, number> = {
   'research': 67,
   'automation': 10,
   'data-analysis': 40,
-  'productivity': 92,
+  'productivity': 92
 };
-
-const demoCompletedBySlug: Record<string, { completed: number; total: number }> = {
-  'communication': { completed: 2, total: 11 },
-  'knowledge-management': { completed: 5, total: 11 },
-  'content-creation': { completed: 1, total: 11 },
-  'problem-solving': { completed: 9, total: 11 },
-  'research': { completed: 8, total: 13 },
-  'automation': { completed: 1, total: 11 },
-  'data-analysis': { completed: 4, total: 11 },
-  'productivity': { completed: 10, total: 11 },
+const demoCompletedBySlug: Record<string, {
+  completed: number;
+  total: number;
+}> = {
+  'communication': {
+    completed: 2,
+    total: 11
+  },
+  'knowledge-management': {
+    completed: 5,
+    total: 11
+  },
+  'content-creation': {
+    completed: 1,
+    total: 11
+  },
+  'problem-solving': {
+    completed: 9,
+    total: 11
+  },
+  'research': {
+    completed: 8,
+    total: 13
+  },
+  'automation': {
+    completed: 1,
+    total: 11
+  },
+  'data-analysis': {
+    completed: 4,
+    total: 11
+  },
+  'productivity': {
+    completed: 10,
+    total: 11
+  }
 };
-
 const getDisplayProgress = (slug: string, actualProgress: number) => {
   if (actualProgress && actualProgress > 0) return actualProgress;
   return demoProgressBySlug[slug] ?? 0;
 };
-
 const Demo = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { getNextTaskPath } = useNextAssignment();
-  const { skills, loading } = useUserSkills(user?.id);
+  const {
+    user
+  } = useAuth();
+  const {
+    getNextTaskPath
+  } = useNextAssignment();
+  const {
+    skills,
+    loading
+  } = useUserSkills(user?.id);
   const [isBannerCollapsed, setIsBannerCollapsed] = useState(() => {
     return localStorage.getItem('guestBannerCollapsed') === 'true';
   });
-
   useEffect(() => {
     const checkBannerState = () => {
       setIsBannerCollapsed(localStorage.getItem('guestBannerCollapsed') === 'true');
@@ -71,14 +93,7 @@ const Demo = () => {
   }, []);
 
   // Calculate overall progress
-  const overallProgress = skills.length > 0 
-    ? Math.round(
-        skills.reduce(
-          (sum, skill) => sum + getDisplayProgress(skill.skill.slug, skill.progress_percent),
-          0
-        ) / skills.length
-      )
-    : 0;
+  const overallProgress = skills.length > 0 ? Math.round(skills.reduce((sum, skill) => sum + getDisplayProgress(skill.skill.slug, skill.progress_percent), 0) / skills.length) : 0;
 
   // Calculate learning skills count
   const learningSkillsCount = skills.length;
@@ -91,29 +106,32 @@ const Demo = () => {
   // Конвертация уровня в проценты для геймификации
   const getLevelAsPercent = (level: number) => {
     switch (level) {
-      case 1: return 33;  // Basic
-      case 2: return 66;  // Pro
-      case 3: return 100; // AI-Native
-      default: return 33;
+      case 1:
+        return 33;
+      // Basic
+      case 2:
+        return 66;
+      // Pro
+      case 3:
+        return 100;
+      // AI-Native
+      default:
+        return 33;
     }
   };
-
   const radarData = skills.map(skill => {
     const currentProgress = getDisplayProgress(skill.skill.slug, skill.progress_percent);
     const boughtLevelPercent = getLevelAsPercent(skill.current_level);
-
     return {
       subject: skill.skill.slug,
       value: currentProgress,
       targetValue: boughtLevelPercent,
-      fullMark: 100,
+      fullMark: 100
     };
   });
-
   const showBanner = !user && !isBannerCollapsed;
   const headerOffset = showBanner ? '-mt-36' : '-mt-28';
   const headerPadding = showBanner ? 'pt-44' : 'pt-36';
-
   const getInitials = () => {
     if (!user) return 'G';
     if (user.user_metadata?.full_name) {
@@ -122,9 +140,7 @@ const Demo = () => {
     }
     return user.email?.[0].toUpperCase() || 'G';
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+  return <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
       {/* Glass Header */}
       <div className="fixed top-0 left-0 right-0 z-50 top-header transition-all duration-300">
         <div className="max-w-md mx-auto px-4 pt-4">
@@ -143,26 +159,20 @@ const Demo = () => {
               {/* Center: Company Logo Placeholder */}
               <div className="absolute left-1/2 -translate-x-1/2 text-center max-w-[100px]">
                 <p className="text-[10px] text-gray-900 font-medium leading-tight">
-                  Здесь лого<br/>вашей компании
+                  Здесь лого<br />вашей компании
                 </p>
               </div>
               
               {/* Right: User Avatar Button */}
-              <button 
-                className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center border border-[#F37168] hover:bg-white/40 transition-all"
-              >
-                {user?.user_metadata?.avatar_url ? (
-                  <Avatar className="h-10 w-10">
+              <button className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center border border-[#F37168] hover:bg-white/40 transition-all">
+                {user?.user_metadata?.avatar_url ? <Avatar className="h-10 w-10">
                     <AvatarImage src={user.user_metadata.avatar_url} alt="User" />
                     <AvatarFallback className="bg-transparent text-gray-900 text-sm font-semibold">
                       {getInitials()}
                     </AvatarFallback>
-                  </Avatar>
-                ) : (
-                  <span className="text-gray-900 text-sm font-semibold">
+                  </Avatar> : <span className="text-gray-900 text-sm font-semibold">
                     {getInitials()}
-                  </span>
-                )}
+                  </span>}
               </button>
             </div>
           </div>
@@ -177,7 +187,7 @@ const Demo = () => {
               <h1 className="text-4xl font-bold text-white mb-2">
                 Привет, {user?.email?.split('@')[0] || 'Гость'}!
               </h1>
-              <p className="text-white/90 text-base">Ваш прогресс обучения</p>
+              
             </div>
           </div>
         </div>
@@ -203,39 +213,42 @@ const Demo = () => {
         </Card>
 
         {/* Radar Chart Card - Clickable */}
-        <Card 
-          className="border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all"
-          onClick={() => navigate('/my-progress')}
-        >
+        <Card className="border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all" onClick={() => navigate('/my-progress')}>
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Мой прогресс</h3>
             <div className="relative">
               <ResponsiveContainer width="100%" height={360}>
-                <RadarChart data={radarData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                <RadarChart data={radarData} margin={{
+                top: 20,
+                right: 20,
+                bottom: 20,
+                left: 20
+              }}>
                   <PolarGrid stroke="#E5E7EB" strokeWidth={1} />
-                  <PolarAngleAxis 
-                    dataKey="subject" 
-                    tick={({ payload, x, y, cx, cy, index }) => {
-                      const skill = skills.find(s => s.skill.slug === payload.value);
-                      if (!skill) return null;
-                      
-                      const angle = (index * 360) / skills.length - 90;
-                      const rad = (angle * Math.PI) / 180;
-                      const iconRadius = 142;
-                      const iconX = cx + iconRadius * Math.cos(rad);
-                      const iconY = cy + iconRadius * Math.sin(rad);
-
-                      const stats = demoCompletedBySlug[skill.skill.slug] || { completed: 0, total: 0 };
-                      
-                      return (
-                        <g transform={`translate(${iconX},${iconY})`}>
+                  <PolarAngleAxis dataKey="subject" tick={({
+                  payload,
+                  x,
+                  y,
+                  cx,
+                  cy,
+                  index
+                }) => {
+                  const skill = skills.find(s => s.skill.slug === payload.value);
+                  if (!skill) return null;
+                  const angle = index * 360 / skills.length - 90;
+                  const rad = angle * Math.PI / 180;
+                  const iconRadius = 142;
+                  const iconX = cx + iconRadius * Math.cos(rad);
+                  const iconY = cy + iconRadius * Math.sin(rad);
+                  const stats = demoCompletedBySlug[skill.skill.slug] || {
+                    completed: 0,
+                    total: 0
+                  };
+                  return <g transform={`translate(${iconX},${iconY})`}>
                           <foreignObject x={-24} y={-24} width={48} height={48}>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
-                                <div 
-                                  className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer`}
-                                  onClick={(e) => e.stopPropagation()}
-                                >
+                                <div className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer`} onClick={e => e.stopPropagation()}>
                                   {getSkillIcon(skill.skill.slug)}
                                 </div>
                               </DropdownMenuTrigger>
@@ -260,30 +273,13 @@ const Demo = () => {
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </foreignObject>
-                        </g>
-                      );
-                    }}
-                  />
+                        </g>;
+                }} />
                   {/* Целевой уровень - показывает купленный уровень навыка */
-                  }
-                  <Radar 
-                    name="Целевой уровень" 
-                    dataKey="targetValue" 
-                    stroke="#F37168"
-                    fill="#F37168"
-                    fillOpacity={0.1}
-                    strokeWidth={1.5}
-                    strokeDasharray="5 5"
-                  />
+                }
+                  <Radar name="Целевой уровень" dataKey="targetValue" stroke="#F37168" fill="#F37168" fillOpacity={0.1} strokeWidth={1.5} strokeDasharray="5 5" />
                   {/* Текущий прогресс */}
-                  <Radar 
-                    name="Прогресс" 
-                    dataKey="value" 
-                    stroke="#8277EC" 
-                    fill="#8277EC" 
-                    fillOpacity={0.15}
-                    strokeWidth={3}
-                  />
+                  <Radar name="Прогресс" dataKey="value" stroke="#8277EC" fill="#8277EC" fillOpacity={0.15} strokeWidth={3} />
                 </RadarChart>
               </ResponsiveContainer>
             </div>
@@ -292,9 +288,9 @@ const Demo = () => {
 
         {/* Next Task Card */}
         <TapCard onClick={async () => {
-          const nextPath = await getNextTaskPath();
-          navigate(nextPath);
-        }}>
+        const nextPath = await getNextTaskPath();
+        navigate(nextPath);
+      }}>
           <div className="glass-card rounded-3xl p-6 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-orange to-sky-blue flex items-center justify-center shadow-md p-2">
@@ -318,10 +314,9 @@ const Demo = () => {
                 <span className="text-sm text-[#F37168] font-semibold">18/89</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
-                  className="bg-[#4F46E5] h-2 rounded-full transition-all duration-500" 
-                  style={{ width: '20%' }}
-                />
+                <div className="bg-[#4F46E5] h-2 rounded-full transition-all duration-500" style={{
+                width: '20%'
+              }} />
               </div>
             </div>
           </CardContent>
@@ -340,8 +335,6 @@ const Demo = () => {
           </div>
         </TapCard>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Demo;
