@@ -37,29 +37,36 @@ const App = () => {
             <Toaster />
             <Sonner position="top-center" />
             <BrowserRouter>
-              <Layout>
               <Routes>
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/" element={<Index />} />
-                <Route path="/demo" element={<Demo />} />
-                <Route path="/playground" element={<IndexPlayground />} />
-                <Route path="/tasks" element={<Tasks />} />
-                <Route path="/webinar-records" element={<WebinarRecords />} />
-                <Route path="/my-progress" element={<MyProgress />} />
+                {/* Experimental page without Layout */}
                 <Route path="/my-progress-demo" element={<MyProgressDemo />} />
-                <Route path="/skill-assignments/:skillName" element={<SkillAssignments />} />
-                <Route path="/task/document-analysis" element={<TaskDocumentAnalysis />} />
-                <Route path="/task/deep-research" element={<TaskDeepResearch />} />
-                <Route path="/task/specialized-gpt" element={<TaskSpecializedGPT />} />
-                <Route path="/task/client-response" element={<TaskClientResponse />} />
-                <Route path="/task/meeting-agenda" element={<TaskMeetingAgenda />} />
-                <Route path="/task/feedback-colleagues" element={<TaskFeedback />} />
-                <Route path="/prompts" element={<PromptsLibrary />} />
-                <Route path="/prompts/:skillSlug" element={<PromptsBySkill />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
+                
+                {/* All other pages with Layout */}
+                <Route path="/*" element={
+                  <Layout>
+                    <Routes>
+                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/" element={<Index />} />
+                      <Route path="/demo" element={<Demo />} />
+                      <Route path="/playground" element={<IndexPlayground />} />
+                      <Route path="/tasks" element={<Tasks />} />
+                      <Route path="/webinar-records" element={<WebinarRecords />} />
+                      <Route path="/my-progress" element={<MyProgress />} />
+                      <Route path="/skill-assignments/:skillName" element={<SkillAssignments />} />
+                      <Route path="/task/document-analysis" element={<TaskDocumentAnalysis />} />
+                      <Route path="/task/deep-research" element={<TaskDeepResearch />} />
+                      <Route path="/task/specialized-gpt" element={<TaskSpecializedGPT />} />
+                      <Route path="/task/client-response" element={<TaskClientResponse />} />
+                      <Route path="/task/meeting-agenda" element={<TaskMeetingAgenda />} />
+                      <Route path="/task/feedback-colleagues" element={<TaskFeedback />} />
+                      <Route path="/prompts" element={<PromptsLibrary />} />
+                      <Route path="/prompts/:skillSlug" element={<PromptsBySkill />} />
+                      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </Layout>
+                } />
               </Routes>
-              </Layout>
             </BrowserRouter>
           </TooltipProvider>
         </QueryClientProvider>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Settings } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { BottomNavigation } from '@/components/BottomNavigation';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -350,6 +351,8 @@ const MyProgress = () => {
           </DialogContent>
         </Dialog>
       </div>
+      
+      <BottomNavigation />
     </div>
   );
 };
