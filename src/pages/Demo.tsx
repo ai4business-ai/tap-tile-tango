@@ -307,25 +307,25 @@ const Demo = () => {
         </TapCard>
 
         {/* My Tasks Card */}
-        <TapCard onClick={() => navigate('/tasks')}>
-          <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-            <h3 className="text-lg font-semibold mb-3 text-glass">Мои задания</h3>
+        <Card className="border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all" onClick={() => navigate('/tasks')}>
+          <CardContent className="p-6">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900">Мои задания</h3>
             
             {/* Progress bar */}
             <div>
-              <div className="flex justify-between text-xs text-glass-muted mb-1">
-                <span>Общий прогресс</span>
-                <span>18/89</span>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-[#8B5CF6] font-medium">Общий прогресс</span>
+                <span className="text-sm text-[#F37168] font-semibold">18/89</span>
               </div>
-              <div className="w-full bg-white/20 rounded-full h-2">
+              <div className="w-full bg-gray-200 rounded-full h-2">
                 <div 
-                  className="bg-white/60 h-2 rounded-full transition-all duration-500" 
+                  className="bg-[#4F46E5] h-2 rounded-full transition-all duration-500" 
                   style={{ width: '20%' }}
                 />
               </div>
             </div>
-          </div>
-        </TapCard>
+          </CardContent>
+        </Card>
 
         {/* Webinar Records Card */}
         <TapCard onClick={() => navigate('/webinar-records')}>
