@@ -170,6 +170,13 @@ const Demo = () => {
       </div>
 
       <div className="max-w-md mx-auto px-4 pb-24 pt-24 space-y-4">
+        {/* Welcome Card */}
+        <div className="bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] rounded-3xl shadow-lg p-6">
+          <h1 className="text-2xl font-bold text-white">
+            Привет, {user?.email?.split('@')[0] || 'Гость'}!
+          </h1>
+        </div>
+
         {/* Overall Progress Card */}
         <Card className="border-0 shadow-xl bg-white">
           <CardContent className="p-6">
