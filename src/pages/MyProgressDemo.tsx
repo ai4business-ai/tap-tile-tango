@@ -61,6 +61,20 @@ const getDisplayProgress = (slug: string, actualProgress: number) => {
   return demoProgressBySlug[slug] ?? 0;
 };
 
+const getSkillEmojiIcon = (slug: string) => {
+  const map: Record<string, string> = {
+    'communication': '💬',
+    'knowledge-management': '🧠',
+    'content-creation': '✏️',
+    'problem-solving': '💡',
+    'research': '🔍',
+    'automation': '⚙️',
+    'data-analysis': '📊',
+    'productivity': '🎯',
+  };
+  return map[slug] || '🎯';
+};
+
 const MyProgress = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -217,16 +231,20 @@ const MyProgress = () => {
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <div 
-                                    className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer`}
+                                  className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer`}
                                   >
-                                    {getSkillIcon(skill.skill.slug)}
+                                    <span className="text-xl" aria-hidden="true">
+                                      {getSkillEmojiIcon(skill.skill.slug)}
+                                    </span>
                                   </div>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="center" className="w-72 bg-popover/95 backdrop-blur-xl border-border z-50">
                                   <DropdownMenuLabel>
                                     <div className="flex items-center gap-3">
                                       <div className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg flex-shrink-0`}>
-                                        {getSkillIcon(skill.skill.slug)}
+                                        <span className="text-xl" aria-hidden="true">
+                                          {getSkillEmojiIcon(skill.skill.slug)}
+                                        </span>
                                       </div>
                                       <span className="text-sm font-semibold text-gray-900">{skill.skill.name}</span>
                                     </div>
