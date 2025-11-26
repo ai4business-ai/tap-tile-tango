@@ -215,7 +215,7 @@ const Demo = () => {
         {/* Radar Chart Card - Clickable */}
         <Card className="border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all" onClick={() => navigate('/my-progress')}>
           <CardContent className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Мой прогресс</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Мой прогресс</h3>
             <div className="relative">
               <ResponsiveContainer width="100%" height={360}>
                 <RadarChart data={radarData} margin={{
@@ -291,9 +291,9 @@ const Demo = () => {
         const nextPath = await getNextTaskPath();
         navigate(nextPath);
       }}>
-          <div className="glass-card rounded-3xl p-6 flex items-center justify-between" style={{ boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)' }}>
+          <div className="glass-card rounded-3xl p-6 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center shadow-md p-2">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center p-2" style={{ boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)' }}>
                 <img src={TaskIcon} alt="Task" className="w-full h-full object-contain brightness-0 invert" />
               </div>
               <span className="text-sm font-bold text-gray-900">Следующее задание</span>
@@ -311,7 +311,7 @@ const Demo = () => {
             <div>
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-[#8277EC] font-medium">Общий прогресс</span>
-                <span className="text-sm text-[#F37168] font-bold">18/89</span>
+                <span className="text-sm text-[#F37168] font-bold">40/90</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div className="h-2 rounded-full transition-all duration-500 bg-gradient-to-r from-[#1956FF] to-[#8277EC]" style={{
@@ -324,12 +324,12 @@ const Demo = () => {
 
         {/* Webinar Records Card */}
         <TapCard onClick={() => navigate('/webinar-records')}>
-          <div className="glass-card rounded-3xl p-6 relative overflow-hidden" style={{ boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)' }}>
+          <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
             <div className="flex items-center gap-3">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center shadow-md p-2">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center p-2" style={{ boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)' }}>
                 <img src={WebinarIcon} alt="Webinar" className="w-full h-full object-contain brightness-0 invert" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900">Записи вебинаров</h3>
+              <h3 className="text-sm font-bold text-gray-900">Записи вебинаров</h3>
               <ChevronRight className="w-5 h-5 text-muted-foreground ml-auto" />
             </div>
           </div>
