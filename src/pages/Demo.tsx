@@ -300,7 +300,7 @@ const Demo = () => {
               </div>
               <span className="font-bold text-gray-900 text-base">Следующее задание</span>
             </div>
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
+            <ChevronRight className="w-5 h-5 text-[#F37168]" />
           </div>
         </TapCard>
 
@@ -334,7 +334,7 @@ const Demo = () => {
                 <img src={WebinarIcon} alt="Webinar" className="w-full h-full object-contain brightness-0 invert" />
               </div>
               <h3 className="font-bold text-gray-900 text-base">Записи вебинаров</h3>
-              <ChevronRight className="w-5 h-5 text-muted-foreground ml-auto" />
+              <ChevronRight className="w-5 h-5 text-[#F37168] ml-auto" />
             </div>
           </div>
         </TapCard>
