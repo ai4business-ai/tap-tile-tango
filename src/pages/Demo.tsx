@@ -200,7 +200,7 @@ const Demo = () => {
               <div className="flex-1">
                 <p className="text-sm text-gray-600 mb-2">Прогресс обучения</p>
                 <p className="text-6xl font-bold text-[#8277EC] mb-2">{overallProgress}%</p>
-                <p className="text-gray-600 text-xs"><span className="text-[#F37168] font-semibold">{learningSkillsCount}</span> навыков изучается</p>
+                <p className="text-gray-600 text-sm"><span className="text-[#F37168] font-semibold">{learningSkillsCount}</span> навыков изучается</p>
                 <p className="text-gray-600 mt-1 text-sm"><span className="text-[#F37168] font-semibold">{totalCompletedAssignments}/{totalAssignments}</span> заданий выполнено</p>
               </div>
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center shadow-xl p-4">
