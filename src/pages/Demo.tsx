@@ -179,8 +179,8 @@ const Demo = () => {
       </div>
 
       {/* Purple Header */}
-      <div className={`bg-[#8277EC] px-6 ${headerPadding} pb-40 relative ${headerOffset} transition-all duration-300`}>
-        <div className="max-w-md mx-auto">
+      <div className={`bg-[#8277EC] ${headerPadding} pb-40 relative ${headerOffset} transition-all duration-300`}>
+        <div className="max-w-md mx-auto px-4">
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-4xl font-bold text-white mb-2">
