@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { skillsPromptsData } from '@/data/promptsData';
-import { getSkillIcon, getSkillColor } from '@/utils/skillIcons';
+import { getSkillIcon, getSkillColor } from '@/utils/skillIconsDemo';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 interface SkillWithCount {
   slug: string;
@@ -14,6 +16,7 @@ interface SkillWithCount {
 
 const PromptsLibrary = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [skills, setSkills] = useState<SkillWithCount[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -55,6 +58,15 @@ const PromptsLibrary = () => {
     fetchSkills();
   }, []);
 
+  const getInitials = () => {
+    if (!user) return 'G';
+    if (user.user_metadata?.full_name) {
+      const names = user.user_metadata.full_name.split(' ');
+      return names.map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
+    }
+    return user.email?.[0].toUpperCase() || 'G';
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -65,13 +77,54 @@ const PromptsLibrary = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 pb-24">
-      {/* Header */}
-      <div className="bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 pt-12 pb-16">
-        <div className="max-w-md mx-auto">
-          <div className="flex items-center gap-3 mb-4">
-            <BookOpen className="w-8 h-8 text-white" />
-            <h1 className="text-3xl font-bold text-white">Готовые промпты</h1>
+      {/* Glass Header */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <div className="max-w-md mx-auto px-4 pt-4">
+          <div className="glass-header rounded-3xl px-6">
+            <div className="flex items-center justify-between py-3">
+              {/* Left: hakku.ai branding */}
+              <div className="flex flex-col">
+                <span className="font-source-serif text-base font-semibold text-gray-900">
+                  hakku.ai
+                </span>
+                <span className="text-[10px] text-gray-900">
+                  AI training app
+                </span>
+              </div>
+
+              {/* Center: Company Logo Placeholder */}
+              <div className="absolute left-1/2 -translate-x-1/2 text-center max-w-[100px]">
+                <p className="text-[10px] text-gray-900 font-medium leading-tight">
+                  Здесь лого<br/>вашей компании
+                </p>
+              </div>
+              
+              {/* Right: User Avatar Button */}
+              <button 
+                className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center border border-[#F37168] hover:bg-white/40 transition-all"
+              >
+                {user?.user_metadata?.avatar_url ? (
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={user.user_metadata.avatar_url} alt="User" />
+                    <AvatarFallback className="bg-transparent text-gray-900 text-sm font-semibold">
+                      {getInitials()}
+                    </AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <span className="text-gray-900 text-sm font-semibold">
+                    {getInitials()}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
+        </div>
+      </div>
+
+      {/* Purple Header Background */}
+      <div className="bg-[#8277EC] px-6 pt-36 pb-16">
+        <div className="max-w-md mx-auto">
+          <h1 className="text-3xl font-bold text-white mb-2">Готовые промпты</h1>
           <p className="text-white/90 text-base">Идеальные решения для каждого задания</p>
         </div>
       </div>
@@ -89,18 +142,21 @@ const PromptsLibrary = () => {
               >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
-                    <div className={`w-16 h-16 rounded-2xl ${getSkillColor(skill.slug)} flex items-center justify-center shadow-md flex-shrink-0`}>
+                    <div 
+                      className={`w-16 h-16 rounded-2xl ${getSkillColor(skill.slug)} flex items-center justify-center shadow-lg flex-shrink-0`}
+                      style={{ boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)' }}
+                    >
                       {getSkillIcon(skill.slug)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-foreground text-base mb-1">
+                      <h3 className="font-semibold text-[#111827] text-base mb-1">
                         {skill.name}
                       </h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-[#F37168] font-medium">
                         {skill.assignmentCount} заданий
                       </p>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                    <ChevronRight className="w-5 h-5 text-[#F37168] flex-shrink-0" />
                   </div>
                 </CardContent>
               </Card>
