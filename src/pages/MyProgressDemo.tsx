@@ -191,9 +191,9 @@ const MyProgress = () => {
 
         {/* Radar Chart */}
         <Card className="border-0 shadow-xl bg-white mb-6">
-          <CardContent className="p-6">
+          <CardContent className="p-6 pt-8 pb-8">
             <div className="relative">
-              <ResponsiveContainer width="100%" height={360}>
+              <ResponsiveContainer width="100%" height={400}>
                 <RadarChart data={radarData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                   <PolarGrid stroke="#E5E7EB" strokeWidth={1} />
                   <PolarAngleAxis 
