@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TapCard } from '@/components/ui/tap-card';
 import { useAuth } from '@/hooks/useAuth';
 import { useNextAssignment } from '@/hooks/useNextAssignment';
 import { useUserSkills } from '@/hooks/useUserSkills';
@@ -213,7 +212,7 @@ const Demo = () => {
         </Card>
 
         {/* Radar Chart Card - Clickable */}
-        <Card className="border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all" onClick={() => navigate('/my-progress')}>
+        <Card className="border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all" onClick={() => navigate('/my-progress-demo')}>
           <CardContent className="p-6 pt-8 pb-8">
             <h3 className="text-lg font-bold text-gray-900 mb-4">Мой прогресс</h3>
             <div className="relative">
@@ -287,22 +286,22 @@ const Demo = () => {
         </Card>
 
         {/* Next Task Card */}
-        <TapCard onClick={async () => {
-        const nextPath = await getNextTaskPath();
-        navigate(nextPath);
-      }}>
-          <div className="glass-card rounded-3xl p-6 flex items-center justify-between">
+        <Card className="border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all" onClick={async () => {
+          const nextPath = await getNextTaskPath();
+          navigate(nextPath);
+        }}>
+          <CardContent className="p-6 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center p-2" style={{
-              boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)'
-            }}>
+                boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)'
+              }}>
                 <img src={TaskIcon} alt="Task" className="w-full h-full object-contain brightness-0 invert" />
               </div>
               <span className="font-bold text-gray-900 text-base">Следующее задание</span>
             </div>
             <ChevronRight className="w-5 h-5 text-[#F37168]" />
-          </div>
-        </TapCard>
+          </CardContent>
+        </Card>
 
         {/* My Tasks Card */}
         <Card className="border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all" onClick={() => navigate('/tasks')}>
@@ -325,19 +324,19 @@ const Demo = () => {
         </Card>
 
         {/* Webinar Records Card */}
-        <TapCard onClick={() => navigate('/webinar-records')}>
-          <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
+        <Card className="border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all" onClick={() => navigate('/webinar-records')}>
+          <CardContent className="p-6">
             <div className="flex items-center gap-3">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center p-2" style={{
-              boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)'
-            }}>
+                boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)'
+              }}>
                 <img src={WebinarIcon} alt="Webinar" className="w-full h-full object-contain brightness-0 invert" />
               </div>
               <h3 className="font-bold text-gray-900 text-base">Записи вебинаров</h3>
               <ChevronRight className="w-5 h-5 text-[#F37168] ml-auto" />
             </div>
-          </div>
-        </TapCard>
+          </CardContent>
+        </Card>
       </div>
     </div>;
 };
