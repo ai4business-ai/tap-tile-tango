@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { BottomNavigation } from '@/components/BottomNavigation';
 import { skillsPromptsData } from '@/data/promptsData';
 import { getSkillIcon, getSkillColor } from '@/utils/skillIconsDemo';
 import { supabase } from '@/integrations/supabase/client';
@@ -164,8 +163,6 @@ const PromptsLibrary = () => {
             ))}
         </div>
       </div>
-      
-      <BottomNavigation />
     </div>
   );
 };

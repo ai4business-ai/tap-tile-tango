@@ -38,10 +38,8 @@ const App = () => {
             <Sonner position="top-center" />
             <BrowserRouter>
               <Routes>
-                {/* Experimental pages without Layout */}
+                {/* Experimental page without Layout */}
                 <Route path="/my-progress-demo" element={<MyProgressDemo />} />
-                <Route path="/prompts" element={<PromptsLibrary />} />
-                <Route path="/prompts/:skillSlug" element={<PromptsBySkill />} />
                 
                 {/* All other pages with Layout */}
                 <Route path="/*" element={
@@ -61,6 +59,8 @@ const App = () => {
                       <Route path="/task/client-response" element={<TaskClientResponse />} />
                       <Route path="/task/meeting-agenda" element={<TaskMeetingAgenda />} />
                       <Route path="/task/feedback-colleagues" element={<TaskFeedback />} />
+                      <Route path="/prompts" element={<PromptsLibrary />} />
+                      <Route path="/prompts/:skillSlug" element={<PromptsBySkill />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>
