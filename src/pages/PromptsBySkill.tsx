@@ -9,7 +9,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { skillsPromptsData } from '@/data/promptsData';
-import { getSkillIcon, getSkillColor } from '@/utils/skillIcons';
+import { getSkillIcon, getSkillColor } from '@/utils/skillIconsDemo';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -85,7 +85,7 @@ const PromptsBySkill = () => {
         <div className="max-w-md mx-auto px-4">
           <button
             onClick={() => navigate('/prompts')}
-            className="flex items-center gap-2 text-[#111827] hover:text-[#111827]/80 mb-6 transition-colors"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-700 mb-6 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="text-base">Назад к навыкам</span>
@@ -103,49 +103,60 @@ const PromptsBySkill = () => {
       {/* Prompts List */}
       <div className="max-w-md mx-auto px-4 -mt-8">
         <Accordion type="multiple" className="space-y-3">
-          {promptsData.prompts.map((prompt, index) => (
-            <AccordionItem
-              key={prompt.id}
-              value={`prompt-${index}`}
-              className="border-0"
-            >
-              <Card className="border-0 shadow-lg bg-white overflow-hidden">
-                <CardContent className="p-0">
-                  <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-muted/30 transition-colors [&>svg]:text-[#F37168]">
-                    <div className="flex items-center gap-3 text-left">
-                      {isLastPrompt(index) ? (
+          {promptsData.prompts.map((prompt, index) => {
+            const isLocked = isLastPrompt(index);
+            return (
+              <AccordionItem
+                key={prompt.id}
+                value={`prompt-${index}`}
+                className="border-0"
+                disabled={isLocked}
+              >
+                <Card className="border-0 shadow-lg bg-white overflow-hidden">
+                  <CardContent className="p-0">
+                    {isLocked ? (
+                      <div className="px-4 py-4 flex items-center gap-3 cursor-not-allowed opacity-70">
                         <Lock className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                      ) : (
-                        <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      )}
-                      <span className="font-semibold text-[#111827]">
-                        {prompt.title}
-                      </span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4 pb-4">
-                    <div className="bg-[#8277EC]/5 rounded-2xl p-4 mt-2">
-                      <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-sm font-semibold text-[#111827]">
-                          Идеальный промпт:
-                        </h4>
-                        <button
-                          onClick={() => handleCopyPrompt(prompt.prompt)}
-                          className="p-2 rounded-lg border border-[#F37168]/30 bg-transparent hover:bg-[#F37168]/10 transition-colors"
-                          aria-label="Копировать промпт"
-                        >
-                          <Copy className="w-4 h-4 text-[#F37168]" />
-                        </button>
+                        <span className="font-semibold text-[#111827]">
+                          {prompt.title}
+                        </span>
                       </div>
-                      <p className="text-sm text-[#111827] leading-relaxed">
-                        {prompt.prompt}
-                      </p>
-                    </div>
-                  </AccordionContent>
-                </CardContent>
-              </Card>
-            </AccordionItem>
-          ))}
+                    ) : (
+                      <>
+                        <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-muted/30 transition-colors [&>svg]:text-[#F37168]">
+                          <div className="flex items-center gap-3 text-left">
+                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                            <span className="font-semibold text-[#111827]">
+                              {prompt.title}
+                            </span>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-4 pb-4">
+                          <div className="bg-[#8277EC]/5 rounded-2xl p-4 mt-2">
+                            <div className="flex items-center justify-between mb-3">
+                              <h4 className="text-sm font-semibold text-gray-600">
+                                Идеальный промпт:
+                              </h4>
+                              <button
+                                onClick={() => handleCopyPrompt(prompt.prompt)}
+                                className="p-2 rounded-lg border border-[#F37168]/30 bg-transparent hover:bg-[#F37168]/10 transition-colors"
+                                aria-label="Копировать промпт"
+                              >
+                                <Copy className="w-4 h-4 text-[#F37168]" />
+                              </button>
+                            </div>
+                            <p className="text-sm text-[#111827] leading-relaxed">
+                              {prompt.prompt}
+                            </p>
+                          </div>
+                        </AccordionContent>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+              </AccordionItem>
+            );
+          })}
         </Accordion>
       </div>
     </div>
