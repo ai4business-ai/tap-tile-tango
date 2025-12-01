@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, Copy } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Copy, Lock, ChevronDown } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Accordion,
@@ -76,14 +76,16 @@ const PromptsBySkill = () => {
     );
   }
 
+  const isLastPrompt = (index: number) => index === promptsData.prompts.length - 1;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 pb-24">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 pt-12 pb-16">
-        <div className="max-w-md mx-auto">
+      <div className="bg-[#8277EC] pt-36 pb-16 -mt-28">
+        <div className="max-w-md mx-auto px-4">
           <button
             onClick={() => navigate('/prompts')}
-            className="flex items-center gap-2 text-white/90 hover:text-white mb-6 transition-colors"
+            className="flex items-center gap-2 text-[#111827] hover:text-[#111827]/80 mb-6 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="text-base">Назад к навыкам</span>
@@ -95,7 +97,6 @@ const PromptsBySkill = () => {
             </div>
             <h1 className="text-3xl font-bold text-white">{skillName}</h1>
           </div>
-          <p className="text-white/90 text-base">Задания по уровням</p>
         </div>
       </div>
 
@@ -110,29 +111,33 @@ const PromptsBySkill = () => {
             >
               <Card className="border-0 shadow-lg bg-white overflow-hidden">
                 <CardContent className="p-0">
-                  <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-muted/30 transition-colors">
+                  <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-muted/30 transition-colors [&>svg]:text-[#F37168]">
                     <div className="flex items-center gap-3 text-left">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="font-semibold text-foreground">
+                      {isLastPrompt(index) ? (
+                        <Lock className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                      ) : (
+                        <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      )}
+                      <span className="font-semibold text-[#111827]">
                         {prompt.title}
                       </span>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="px-4 pb-4">
-                    <div className="bg-[#8B5CF6]/5 rounded-2xl p-4 mt-2">
+                    <div className="bg-[#8277EC]/5 rounded-2xl p-4 mt-2">
                       <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-sm font-semibold text-[#8B5CF6]">
+                        <h4 className="text-sm font-semibold text-[#111827]">
                           Идеальный промпт:
                         </h4>
                         <button
                           onClick={() => handleCopyPrompt(prompt.prompt)}
-                          className="p-2 rounded-lg bg-[#8B5CF6]/10 hover:bg-[#8B5CF6]/20 transition-colors"
+                          className="p-2 rounded-lg border border-[#F37168]/30 bg-transparent hover:bg-[#F37168]/10 transition-colors"
                           aria-label="Копировать промпт"
                         >
-                          <Copy className="w-4 h-4 text-[#8B5CF6]" />
+                          <Copy className="w-4 h-4 text-[#F37168]" />
                         </button>
                       </div>
-                      <p className="text-sm text-foreground leading-relaxed">
+                      <p className="text-sm text-[#111827] leading-relaxed">
                         {prompt.prompt}
                       </p>
                     </div>
