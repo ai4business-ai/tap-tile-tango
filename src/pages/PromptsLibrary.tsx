@@ -67,7 +67,7 @@ const PromptsLibrary = () => {
       <div className="bg-[#8277EC] pt-36 pb-16 -mt-28">
         <div className="max-w-md mx-auto px-4">
           <h1 className="text-3xl font-bold text-white mb-2">Готовые промпты</h1>
-          <p className="text-gray-600 text-base">Идеальные решения для каждого задания</p>
+          <p className="text-white/90 text-base">Идеальные решения для каждого задания</p>
         </div>
       </div>
 
