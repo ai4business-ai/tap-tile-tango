@@ -63,8 +63,8 @@ const PromptsLibrary = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 pb-24">
-      {/* Purple Header Background */}
-      <div className="bg-[#8277EC] px-6 pt-8 pb-16">
+      {/* Purple Header Background - extends under the TopHeader */}
+      <div className="bg-[#8277EC] px-6 pt-36 pb-16 -mt-28">
         <div className="max-w-md mx-auto">
           <h1 className="text-3xl font-bold text-white mb-2">Готовые промпты</h1>
           <p className="text-white/90 text-base">Идеальные решения для каждого задания</p>
