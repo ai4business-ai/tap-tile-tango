@@ -200,8 +200,8 @@ const Demo = () => {
               <div className="flex-1">
                 <p className="text-sm text-gray-600 mb-2">Прогресс обучения</p>
                 <p className="text-6xl font-bold text-[#8277EC] mb-2">{overallProgress}%</p>
-                <p className="text-sm text-gray-600"><span className="text-[#F37168] font-semibold">{learningSkillsCount}</span> навыков изучается</p>
-                <p className="text-xs text-gray-600 mt-1"><span className="text-[#F37168] font-semibold">{totalCompletedAssignments}/{totalAssignments}</span> заданий выполнено</p>
+                <p className="text-gray-600 text-xs"><span className="text-[#F37168] font-semibold">{learningSkillsCount}</span> навыков изучается</p>
+                <p className="text-gray-600 mt-1 text-sm"><span className="text-[#F37168] font-semibold">{totalCompletedAssignments}/{totalAssignments}</span> заданий выполнено</p>
               </div>
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center shadow-xl p-4">
                 <img src={ProgressMainIcon} alt="Progress" className="w-full h-full object-contain" />
@@ -287,14 +287,14 @@ const Demo = () => {
 
         {/* Next Task Card */}
         <Card className="border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all" onClick={async () => {
-          const nextPath = await getNextTaskPath();
-          navigate(nextPath);
-        }}>
+        const nextPath = await getNextTaskPath();
+        navigate(nextPath);
+      }}>
           <CardContent className="p-6 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center p-2" style={{
-                boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)'
-              }}>
+              boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)'
+            }}>
                 <img src={TaskIcon} alt="Task" className="w-full h-full object-contain brightness-0 invert" />
               </div>
               <span className="font-bold text-gray-900 text-base">Следующее задание</span>
@@ -328,8 +328,8 @@ const Demo = () => {
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8277EC] to-[#02E8FF] flex items-center justify-center p-2" style={{
-                boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)'
-              }}>
+              boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)'
+            }}>
                 <img src={WebinarIcon} alt="Webinar" className="w-full h-full object-contain brightness-0 invert" />
               </div>
               <h3 className="font-bold text-gray-900 text-base">Записи вебинаров</h3>
