@@ -214,10 +214,10 @@ const Demo = () => {
 
         {/* Radar Chart Card - Clickable */}
         <Card className="border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all" onClick={() => navigate('/my-progress')}>
-          <CardContent className="p-6">
+          <CardContent className="p-6 pt-8 pb-8">
             <h3 className="text-lg font-bold text-gray-900 mb-4">Мой прогресс</h3>
             <div className="relative">
-              <ResponsiveContainer width="100%" height={360}>
+              <ResponsiveContainer width="100%" height={400}>
                 <RadarChart data={radarData} margin={{
                 top: 20,
                 right: 20,
@@ -237,7 +237,7 @@ const Demo = () => {
                   if (!skill) return null;
                   const angle = index * 360 / skills.length - 90;
                   const rad = angle * Math.PI / 180;
-                  const iconRadius = 142;
+                  const iconRadius = 158;
                   const iconX = cx + iconRadius * Math.cos(rad);
                   const iconY = cy + iconRadius * Math.sin(rad);
                   const stats = demoCompletedBySlug[skill.skill.slug] || {
