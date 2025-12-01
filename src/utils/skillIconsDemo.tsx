@@ -22,6 +22,6 @@ export const getSkillIcon = (slug: string) => {
 };
 
 export const getSkillColor = (slug: string) => {
-  // Все навыки используют единый primary цвет
-  return 'bg-[#1956FF]';
+  // Градиент от фиолетового к голубому
+  return 'bg-gradient-to-br from-[#8277EC] to-[#02E8FF]';
 };
