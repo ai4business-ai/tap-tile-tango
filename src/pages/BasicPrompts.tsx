@@ -58,6 +58,31 @@ const BasicPrompts = () => {
       {/* Header */}
       <div className="bg-[#8277EC] pt-36 pb-16 -mt-28">
         <div className="max-w-md mx-auto px-4">
+          {/* Branding Row */}
+          <div className="flex items-center justify-between mb-6">
+            {/* Left: hakku.ai branding */}
+            <div className="flex flex-col">
+              <span className="font-source-serif text-base font-semibold text-gray-900">
+                hakku.ai
+              </span>
+              <span className="text-xs text-gray-900">
+                AI training app
+              </span>
+            </div>
+
+            {/* Center: Company Logo Placeholder */}
+            <div className="text-center max-w-[100px]">
+              <p className="text-xs text-gray-900 font-medium leading-tight">
+                Здесь лого<br/>вашей компании
+              </p>
+            </div>
+            
+            {/* Right: G Avatar */}
+            <div className="w-10 h-10 rounded-full border-2 border-[#F37168] flex items-center justify-center">
+              <span className="text-gray-900 text-sm font-semibold">G</span>
+            </div>
+          </div>
+
           <button
             onClick={() => navigate('/prompts')}
             className="flex items-center gap-2 text-white/90 hover:text-white mb-6 transition-colors"
