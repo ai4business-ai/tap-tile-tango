@@ -24,6 +24,7 @@ import TaskMeetingAgenda from "./pages/TaskMeetingAgenda";
 import TaskFeedback from "./pages/TaskFeedback";
 import PromptsLibrary from "./pages/PromptsLibrary";
 import PromptsBySkill from "./pages/PromptsBySkill";
+import BasicPrompts from "./pages/BasicPrompts";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -60,6 +61,7 @@ const App = () => {
                       <Route path="/task/meeting-agenda" element={<TaskMeetingAgenda />} />
                       <Route path="/task/feedback-colleagues" element={<TaskFeedback />} />
                       <Route path="/prompts" element={<PromptsLibrary />} />
+                      <Route path="/prompts/basic" element={<BasicPrompts />} />
                       <Route path="/prompts/:skillSlug" element={<PromptsBySkill />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />
