@@ -63,7 +63,7 @@ export const TopHeader = () => {
             </div>
             
             {/* Right: User Avatar Button */}
-            <button onClick={() => setMenuOpen(!menuOpen)} className={`w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center border border-white/40 hover:bg-white/40 transition-all ${shouldHighlightAvatar ? 'ring-2 ring-orange-500 animate-pulse' : ''}`}>
+            <button onClick={() => setMenuOpen(!menuOpen)} className={`w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center border hover:bg-white/40 transition-all ${isPromptsPage ? 'border-[#F37168]' : 'border-white/40'} ${shouldHighlightAvatar ? 'ring-2 ring-orange-500 animate-pulse' : ''}`}>
               {user?.user_metadata?.avatar_url ? <Avatar className="h-10 w-10">
                   <AvatarImage src={user.user_metadata.avatar_url} alt="User" />
                   <AvatarFallback className="bg-transparent text-deep-purple text-sm font-semibold">
