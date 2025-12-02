@@ -74,6 +74,20 @@ const PromptsLibrary = () => {
       {/* Skills List */}
       <div className="max-w-md mx-auto px-4 -mt-8">
         <div className="space-y-3">
+          {/* Basic Prompts Card */}
+          <Card
+            className="border border-[#F37168]/30 shadow-lg bg-white cursor-pointer hover:shadow-xl transition-all hover:-translate-y-1"
+            onClick={() => navigate('/prompts/basic')}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-[#111827] text-base">
+                  Базовые промпты
+                </h3>
+                <ChevronRight className="w-5 h-5 text-[#F37168] flex-shrink-0" />
+              </div>
+            </CardContent>
+          </Card>
           {skills
             .filter((skill) => skillsPromptsData.some((s) => s.slug === skill.slug))
             .map((skill) => (
