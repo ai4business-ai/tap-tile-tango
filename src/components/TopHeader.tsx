@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 export const TopHeader = () => {
@@ -8,6 +8,7 @@ export const TopHeader = () => {
     user
   } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isBannerCollapsed, setIsBannerCollapsed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
@@ -35,7 +36,8 @@ export const TopHeader = () => {
     }
     return user.email?.[0].toUpperCase() || 'G';
   };
-  const shouldHighlightAvatar = !user && isBannerCollapsed;
+  const isPromptsPage = location.pathname.startsWith('/prompts');
+  const shouldHighlightAvatar = !user && isBannerCollapsed && !isPromptsPage;
   const showBanner = !user && !isBannerCollapsed;
   const topPosition = showBanner ? 'top-[60px]' : 'top-0';
   return <div className={`fixed ${topPosition} left-0 right-0 z-50 top-header transition-all duration-300`}>
