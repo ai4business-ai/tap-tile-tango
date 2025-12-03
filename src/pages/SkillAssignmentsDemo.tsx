@@ -113,17 +113,17 @@ const SkillAssignmentsDemo = () => {
                   )}
                 </div>
                 
-                {/* Educational Content - Blue left border blocks */}
+                {/* Educational Content - Purple left border blocks */}
                 <div className="space-y-3 mb-4">
                   <div 
-                    className="bg-[#f0f7ff] border-l-4 border-l-[#1956FF] rounded-xl p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-all"
+                    className="bg-[#f9fafb] border-l-4 border-[#8277EC] rounded-xl p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-all"
                   >
                     <span className="font-medium text-[#111827]">Обучающее видео</span>
                     <ChevronRight className="w-5 h-5 text-[#F37168]" />
                   </div>
 
                   <div 
-                    className="bg-[#f0f7ff] border-l-4 border-l-[#1956FF] rounded-xl p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-all"
+                    className="bg-[#f9fafb] border-l-4 border-[#8277EC] rounded-xl p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-all"
                   >
                     <span className="font-medium text-[#111827]">Дополнительные материалы</span>
                     <ChevronRight className="w-5 h-5 text-[#F37168]" />
