@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, Copy, Lock } from 'lucide-react';
+import { ChevronLeft, CheckCircle, Copy, Lock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Accordion,
@@ -85,10 +85,9 @@ const PromptsBySkill = () => {
         <div className="max-w-md mx-auto px-4">
           <button
             onClick={() => navigate('/prompts')}
-            className="flex items-center gap-2 text-white/90 hover:text-white mb-6 transition-colors"
+            className="w-8 h-8 flex items-center justify-center text-white/90 hover:text-white mb-6 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="text-base">Назад к навыкам</span>
+            <ChevronLeft className="w-6 h-6" />
           </button>
 
           <div className="flex items-center gap-4 mb-4">
