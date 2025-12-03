@@ -32,7 +32,7 @@ const TaskClientResponseDemo = () => {
       </div>
 
       {/* Описание и Контекст */}
-      <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6 mb-6">
+      <div className="bg-white border-0 shadow-xl rounded-3xl p-6 mb-6">
         {/* Описание задания */}
         <div className="mb-6">
           <h2 className="text-xl font-bold text-[#111827] mb-4">Описание задания</h2>
@@ -67,7 +67,7 @@ const TaskClientResponseDemo = () => {
         </div>
 
         {/* Дополнительная информация */}
-        <div className="bg-white/85 backdrop-blur-xl rounded-xl p-6 border-l-4 border-[#8277EC]">
+        <div className="bg-[#f9fafb] rounded-xl p-6 border-l-4 border-[#8277EC]">
           <h3 className="text-lg font-bold text-[#111827] mb-4">Дополнительная информация</h3>
           <ul className="space-y-3">
             <li className="flex items-start gap-3">
@@ -91,7 +91,7 @@ const TaskClientResponseDemo = () => {
       </div>
 
       {/* Ваша задача */}
-      <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6 mb-6">
+      <div className="bg-white border-0 shadow-xl rounded-3xl p-6 mb-6">
         <h2 className="text-xl font-bold text-[#111827] mb-4">Ваша задача</h2>
         <p className="text-[#4b5563] mb-6">
           Составьте промпт для ИИ, чтобы он сгенерировал для вас черновик письма Анне Ковалевой, максимально соответствующий требованиям ниже.
@@ -129,7 +129,7 @@ const TaskClientResponseDemo = () => {
         </div>
 
         {/* Подсказка */}
-        <div className="bg-white/85 backdrop-blur-xl rounded-xl p-6 border-l-4 border-[#8277EC]">
+        <div className="bg-[#f9fafb] rounded-xl p-6 border-l-4 border-[#8277EC]">
           <h3 className="font-bold text-[#111827] mb-3">Подсказка</h3>
           <p className="text-sm font-medium text-[#111827] mb-4">Подумайте над структурой вашего промпта. Что должен знать ИИ, чтобы помочь вам?</p>
           <ul className="space-y-2">
@@ -158,7 +158,7 @@ const TaskClientResponseDemo = () => {
       </div>
 
       {/* Критерии оценки */}
-      <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6 mb-6">
+      <div className="bg-white border-0 shadow-xl rounded-3xl p-6 mb-6">
         <h2 className="text-lg font-bold text-[#111827] mb-4">Критерии оценки</h2>
         <ul className="space-y-3">
           <li className="flex items-start gap-3">
@@ -185,7 +185,7 @@ const TaskClientResponseDemo = () => {
       </div>
 
       {/* Рабочая область */}
-      <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6">
+      <div className="bg-white border-0 shadow-xl rounded-3xl p-6">
         {/* Tabs */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex gap-2">
