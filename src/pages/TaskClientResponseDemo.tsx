@@ -210,9 +210,11 @@ const TaskClientResponseDemo = () => {
               Решение
             </button>
           </div>
-          <span className="px-3 py-1 text-[12px] font-medium text-[#F37168] border border-[#F37168]/30 rounded-full bg-transparent">
-            Попыток: 5/5
-          </span>
+          {activeTab === 'testing' && (
+            <span className="px-3 py-1 text-[12px] font-medium text-[#F37168] border border-[#F37168]/30 rounded-full bg-transparent">
+              Попыток: 5/5
+            </span>
+          )}
         </div>
 
         {/* Content based on active tab */}
