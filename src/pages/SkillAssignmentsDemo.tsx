@@ -98,7 +98,8 @@ const SkillAssignmentsDemo = () => {
 
           if (levelAssignments.length === 0) return null;
 
-          const isLocked = levelStatus === 'locked';
+          // Only show lock for Pro and AI-Native levels when locked
+          const isLevelLocked = level !== 'Basic' && levelStatus === 'locked';
 
           return (
             <Card key={level} className="border-0 shadow-xl bg-white">
@@ -108,33 +109,35 @@ const SkillAssignmentsDemo = () => {
                   <span className="px-4 py-1.5 text-sm font-medium text-[#F37168] border border-[#F37168]/30 rounded-full bg-transparent">
                     {level}
                   </span>
-                  {isLocked && (
+                  {isLevelLocked && (
                     <Lock className="w-5 h-5 text-[#111827]" />
                   )}
                 </div>
                 
                 {/* Educational Content - Purple left border blocks */}
-                <div className="space-y-3 mb-4">
+                <div className={`space-y-3 mb-4 ${isLevelLocked ? 'opacity-50' : ''}`}>
                   <div 
-                    className="bg-[#f9fafb] border-l-4 border-[#8277EC] rounded-xl p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-all"
+                    className={`bg-[#f9fafb] border-l-4 border-[#8277EC] rounded-xl p-4 ${
+                      isLevelLocked ? 'cursor-not-allowed' : 'cursor-pointer hover:shadow-md'
+                    } transition-all`}
                   >
                     <span className="font-medium text-[#111827]">Обучающее видео</span>
-                    <ChevronRight className="w-5 h-5 text-[#F37168]" />
                   </div>
 
                   <div 
-                    className="bg-[#f9fafb] border-l-4 border-[#8277EC] rounded-xl p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-all"
+                    className={`bg-[#f9fafb] border-l-4 border-[#8277EC] rounded-xl p-4 ${
+                      isLevelLocked ? 'cursor-not-allowed' : 'cursor-pointer hover:shadow-md'
+                    } transition-all`}
                   >
                     <span className="font-medium text-[#111827]">Дополнительные материалы</span>
-                    <ChevronRight className="w-5 h-5 text-[#F37168]" />
                   </div>
                 </div>
                 
                 {/* Tasks */}
-                <div className="space-y-3">
+                <div className={`space-y-3 ${isLevelLocked ? 'opacity-50' : ''}`}>
                   {levelAssignments.map((assignment) => {
                     const assignmentStatus = assignment.submission?.status || 'not_started';
-                    const isAvailable = assignment.task_id !== null;
+                    const isAvailable = assignment.task_id !== null && !isLevelLocked;
                     const isCompleted = assignmentStatus === 'completed';
                     const isClickable = isAvailable && !isCompleted;
                     
@@ -158,7 +161,7 @@ const SkillAssignmentsDemo = () => {
                         onClick={handleAssignmentClick}
                         className={`bg-white border border-gray-100 rounded-xl p-4 transition-all ${
                           !isAvailable
-                            ? 'opacity-60 cursor-not-allowed'
+                            ? 'cursor-not-allowed'
                             : isClickable
                             ? 'cursor-pointer hover:shadow-md hover:-translate-y-0.5' 
                             : 'cursor-default opacity-70'
@@ -173,11 +176,9 @@ const SkillAssignmentsDemo = () => {
                             </p>
                           </div>
                           
-                          {/* Status indicator */}
+                          {/* Status indicator - no lock icons for individual items */}
                           <div className="flex-shrink-0">
-                            {!isAvailable ? (
-                              <Lock className="w-5 h-5 text-[#111827]" />
-                            ) : displayStatus === 'completed' ? (
+                            {isLevelLocked ? null : displayStatus === 'completed' ? (
                               <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
                                 <Check className="w-4 h-4 text-white" />
                               </div>
