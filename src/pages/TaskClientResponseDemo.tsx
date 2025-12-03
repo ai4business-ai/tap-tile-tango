@@ -67,10 +67,9 @@ const TaskClientResponseDemo = () => {
         </div>
 
         {/* Дополнительная информация */}
-        <div className="relative bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6 overflow-hidden">
-          <div className="absolute top-0 left-0 h-full w-1 bg-[#8277EC] rounded-l-3xl"></div>
-          <h3 className="text-lg font-bold text-[#111827] mb-4 pl-3">Дополнительная информация</h3>
-          <ul className="space-y-3 pl-3">
+        <div className="bg-white/85 backdrop-blur-xl rounded-xl p-6 border-l-4 border-[#8277EC]">
+          <h3 className="text-lg font-bold text-[#111827] mb-4">Дополнительная информация</h3>
+          <ul className="space-y-3">
             <li className="flex items-start gap-3">
               <span className="h-1.5 w-1.5 rounded-full bg-[#1956FF] mt-2 flex-shrink-0"></span>
               <span className="text-[#4b5563]">Управляющая компания бизнес-центра не предоставила доступ к кабельной инфраструктуре в срок из-за проверок госорганов</span>
@@ -130,11 +129,10 @@ const TaskClientResponseDemo = () => {
         </div>
 
         {/* Подсказка */}
-        <div className="relative bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6 overflow-hidden">
-          <div className="absolute top-0 left-0 h-full w-1 bg-[#8277EC] rounded-l-3xl"></div>
-          <h3 className="font-bold text-[#111827] mb-3 pl-3">Подсказка</h3>
-          <p className="text-sm font-medium text-[#111827] mb-4 pl-3">Подумайте над структурой вашего промпта. Что должен знать ИИ, чтобы помочь вам?</p>
-          <ul className="space-y-2 pl-3">
+        <div className="bg-white/85 backdrop-blur-xl rounded-xl p-6 border-l-4 border-[#8277EC]">
+          <h3 className="font-bold text-[#111827] mb-3">Подсказка</h3>
+          <p className="text-sm font-medium text-[#111827] mb-4">Подумайте над структурой вашего промпта. Что должен знать ИИ, чтобы помочь вам?</p>
+          <ul className="space-y-2">
             <li className="flex items-start gap-3">
               <span className="h-1.5 w-1.5 rounded-full bg-[#1956FF] mt-2 flex-shrink-0"></span>
               <span className="text-sm text-[#4b5563]"><span className="font-bold text-[#111827]">Роль:</span> Кто я? (Специалист отдела по работе с клиентами...)</span>
