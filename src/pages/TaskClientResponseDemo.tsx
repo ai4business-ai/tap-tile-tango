@@ -224,7 +224,7 @@ const TaskClientResponseDemo = () => {
               value={testingPrompt}
               onChange={(e) => setTestingPrompt(e.target.value)}
               placeholder="Напишите промт для его тестирования"
-              className="min-h-[160px] bg-[#f9fafb] border-[#4b5563] rounded-xl mb-3 placeholder:text-[#4b5563]"
+              className="min-h-[160px] bg-[#f9fafb] border-transparent rounded-xl mb-3 placeholder:text-[#4b5563]"
               maxLength={4000}
             />
             <div className="flex justify-between items-center mb-4">
@@ -245,7 +245,7 @@ const TaskClientResponseDemo = () => {
               value={solutionPrompt}
               onChange={(e) => setSolutionPrompt(e.target.value)}
               placeholder="Вставьте ваш финальный промт здесь"
-              className="min-h-[160px] bg-[#FFFFFF] border-[#4b5563] rounded-xl mb-3 placeholder:text-[#4b5563]"
+              className="min-h-[160px] bg-[#f9fafb] border-transparent rounded-xl mb-3 placeholder:text-[#4b5563]"
               maxLength={4000}
             />
             <div className="flex justify-between items-center mb-4">
