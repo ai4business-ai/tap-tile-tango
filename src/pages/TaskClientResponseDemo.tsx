@@ -1,289 +1,267 @@
 import React, { useState } from 'react';
-import { ArrowLeft, FileText, Target, CheckCircle, Send, Bot, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 const TaskClientResponseDemo = () => {
   const navigate = useNavigate();
-  const [userAnswer, setUserAnswer] = useState('');
-  const [isChatMode, setIsChatMode] = useState(false);
-  const [currentMessage, setCurrentMessage] = useState('');
-  
-  const [showDescription, setShowDescription] = useState(true);
-  const [showTask, setShowTask] = useState(true);
-  const [showCriteria, setShowCriteria] = useState(true);
-  
-  const shouldShowDescription = userAnswer.trim() ? showDescription : true;
-  const shouldShowTask = userAnswer.trim() ? showTask : true;
-  const shouldShowCriteria = userAnswer.trim() ? showCriteria : true;
-
-  // Demo chat messages for visual display
-  const [chatMessages] = useState<{role: 'user' | 'tutor', content: string, timestamp: number}[]>([]);
-
-  const formatAssistantMessage = (content: string): string[] => {
-    if (!content) return [content];
-    const paragraphs = content.split(/\n\n+|\. (?=[А-ЯA-Z])/g).map(p => p.trim()).filter(p => p.length > 0);
-    return paragraphs;
-  };
+  const [activeTab, setActiveTab] = useState<'testing' | 'solution'>('testing');
+  const [testingPrompt, setTestingPrompt] = useState('');
+  const [solutionPrompt, setSolutionPrompt] = useState('');
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 px-4 pb-4 md:px-6 md:pb-6 lg:px-8 lg:pb-8 w-full md:max-w-md mx-auto overflow-x-hidden">
-      <div className="flex items-center gap-4 mb-6">
+    <div className="min-h-screen bg-[#FFFFFF] px-4 pb-8 pt-4 w-full md:max-w-md mx-auto">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6">
         <button 
           onClick={() => navigate(-1)}
           className="w-8 h-8 flex items-center justify-center"
         >
-          <ArrowLeft className="w-6 h-6 text-foreground" />
+          <ArrowLeft className="w-6 h-6 text-[#4b5563]" />
         </button>
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Ответ клиенту (Demo)</h1>
-          <p className="text-sm text-muted-foreground">BASIC уровень | Коммуникация и работа в команде</p>
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <h1 className="text-xl font-bold text-[#111827]">Ответ клиенту</h1>
+            <span className="px-2 py-0.5 text-xs font-medium text-[#F37168] border border-[#F37168]/30 rounded-full bg-transparent">
+              Basic
+            </span>
+          </div>
+          <p className="text-sm text-[#4b5563]">Коммуникация и работа в команде</p>
         </div>
       </div>
 
-      {/* Task Description */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between text-base">
-            <div className="flex items-center gap-2">
-              <FileText className="w-5 h-5 text-primary" />
-              Описание задания
-            </div>
-            {userAnswer.trim() && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setShowDescription(!showDescription)}
-                className="h-6 px-2"
-              >
-                {showDescription ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </Button>
-            )}
-          </CardTitle>
-        </CardHeader>
-        {shouldShowDescription && (
-          <CardContent className="space-y-4">
-            <div className="space-y-3">
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Вы — специалист отдела по работе с корпоративными клиентами телеком-компании «СвязьБизнес». Ваш клиент, ООО «Торговые сети», управляет сетью из 30 супермаркетов в городе. Два месяца назад вы заключили с ними выгодный контракт на предоставление пакета услуг: выделенные интернет-каналы, облачная АТС и видеонаблюдение.
-              </p>
-              
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Сегодня утром вы получили электронное письмо от IT-директора ООО «Торговые сети», Анны Ковалевой. Письмо написано в резком и раздраженном тоне. Клиент требует объяснений, почему перенос офисных линий в новый бизнес-центр, запланированный и согласованный на 15 октября, был перенесен на 5 ноября без ее ведома. Она угрожает расторжением договора и переходом к конкуренту, так как из-за переноса срывается открытие их флагманского магазина.
-              </p>
-
-              <div className="bg-muted/50 rounded-lg p-4 border border-border">
-                <h4 className="text-sm font-semibold text-foreground mb-2">Выдержка из письма клиента:</h4>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <p className="italic">Тема: Срыв сроков подключения по договору №ТК-78/02</p>
-                  <p>От: Анна Ковалева, IT-директор ООО «Торговые сети»</p>
-                  <p className="mt-3">
-                    "В каком ужасном положении оказалась ваша компания? Сегодня 11 октября, а в наш новый головной офис до сих пор не подключен интернет и телефонная связь! Напоминаю, что подключение было согласовано на 15 октября."
-                  </p>
-                  <p className="mt-2">
-                    "Из-за вашей халатности и полного отсутствия коммуникации мы вынуждены переносить открытие флагманского магазина. Несмотря на многолетнее сотрудничество, мы шокированы таким непрофессионализмом."
-                  </p>
-                  <p className="mt-2">
-                    "Требую в течение дня предоставить официальные разъяснения и новый, окончательный план работ. В противном случае мы будем вынуждены расторгнуть все договоры и обратиться к вашему конкуренту."
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-accent/20 rounded-lg p-4 border border-accent">
-                <h4 className="text-sm font-semibold text-foreground mb-2">Дополнительная информация:</h4>
-                <ul className="space-y-1 text-sm text-muted-foreground list-disc list-inside">
-                  <li>Управляющая компания бизнес-центра не предоставила доступ к кабельной инфраструктуре в срок из-за проверок госорганов</li>
-                  <li>Инженеры оперативно разработали и согласовали альтернативный маршрут прокладки кабеля</li>
-                  <li>Все технические работы будут завершены к 3 ноября</li>
-                  <li>Два дополнительных дня (4-5 ноября) заложены на обязательное тестирование всех услуг перед сдачей клиенту</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        )}
-      </Card>
-
-      {/* Task Requirements */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between text-base">
-            <div className="flex items-center gap-2">
-              <Target className="w-5 h-5 text-primary" />
-              Ваша задача
-            </div>
-            {userAnswer.trim() && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setShowTask(!showTask)}
-                className="h-6 px-2"
-              >
-                {showTask ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </Button>
-            )}
-          </CardTitle>
-        </CardHeader>
-        {shouldShowTask && (
-          <CardContent className="space-y-4">
-            <p className="text-sm font-medium text-foreground">
-              Составьте промпт для ИИ, чтобы он сгенерировал для вас черновик письма Анне Ковалевой, максимально соответствующий требованиям ниже.
+      {/* Описание и Контекст */}
+      <div className="bg-[#FFFFFF] border border-[#4b5563] rounded-xl shadow-sm p-6 mb-6">
+        {/* Описание задания */}
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-[#111827] mb-4">Описание задания</h2>
+          <div className="space-y-4">
+            <p className="text-[16px] text-[#4b5563] leading-relaxed">
+              Вы — специалист отдела по работе с корпоративными клиентами телеком-компании «СвязьБизнес». Ваш клиент, ООО «Торговые сети», управляет сетью из 30 супермаркетов в городе. Два месяца назад вы заключили с ними выгодный контракт на предоставление пакета услуг: выделенные интернет-каналы, облачная АТС и видеонаблюдение.
             </p>
+            <p className="text-[16px] text-[#4b5563] leading-relaxed">
+              Сегодня утром вы получили электронное письмо от IT-директора ООО «Торговые сети», Анны Ковалевой. Письмо написано в резком и раздраженном тоне. Клиент требует объяснений, почему перенос офисных линий в новый бизнес-центр, запланированный и согласованный на 15 октября, был перенесен на 5 ноября без ее ведома. Она угрожает расторжением договора и переходом к конкуренту, так как из-за переноса срывается открытие их флагманского магазина.
+            </p>
+          </div>
+        </div>
 
-            <div className="space-y-2">
-              <h4 className="text-sm font-semibold text-foreground">Требования к ответу:</h4>
-              <ul className="space-y-1 text-sm text-muted-foreground list-decimal list-inside">
-                <li><strong>Признание проблемы:</strong> Четко признайте факт переноса сроков и нашу ошибку в несвоевременном уведомлении</li>
-                <li><strong>Искренние извинения:</strong> Принесите извинения за доставленные неудобства и срыв ее планов</li>
-                <li><strong>Объяснение причин:</strong> Спокойно, без оправданий, объясните цепочку событий</li>
-                <li><strong>Конкретный план:</strong> Предложите новый, реалистичный план с датами</li>
-                <li><strong>Деловой и уважительный тон:</strong> Сохраняйте профессионализм</li>
-                <li><strong>Цель:</strong> Восстановить доверие и подтвердить наши обязательства</li>
-              </ul>
-            </div>
+        {/* Выдержка из письма клиента */}
+        <div className="bg-[#f9fafb] rounded-xl p-6 border-l-4 border-[#8277EC] mb-6">
+          <h3 className="text-[15px] font-bold text-[#111827] mb-4">Выдержка из письма клиента</h3>
+          <div className="space-y-2 mb-4">
+            <p className="text-[#111827] font-semibold not-italic">Тема: Срыв сроков подключения по договору №ТК-78/02</p>
+            <p className="text-[#111827] font-semibold not-italic">От: Анна Ковалева, IT-директор ООО «Торговые сети»</p>
+          </div>
+          <div className="space-y-3">
+            <p className="text-[15px] text-[#4b5563] italic leading-relaxed">
+              "В каком ужасном положении оказалась ваша компания? Сегодня 11 октября, а в наш новый головной офис до сих пор не подключен интернет и телефонная связь! Напоминаю, что подключение было согласовано на 15 октября."
+            </p>
+            <p className="text-[15px] text-[#4b5563] italic leading-relaxed">
+              "Из-за вашей халатности и полного отсутствия коммуникации мы вынуждены переносить открытие флагманского магазина. Несмотря на многолетнее сотрудничество, мы шокированы таким непрофессионализмом."
+            </p>
+            <p className="text-[15px] text-[#4b5563] italic leading-relaxed">
+              "Требую в течение дня предоставить официальные разъяснения и новый, окончательный план работ. В противном случае мы будем вынуждены расторгнуть все договоры и обратиться к вашему конкуренту."
+            </p>
+          </div>
+        </div>
 
-            <div className="bg-primary/10 rounded-lg p-4 border border-primary/30">
-              <h4 className="text-sm font-semibold text-foreground mb-2">💡 Подсказка:</h4>
-              <p className="text-sm text-muted-foreground mb-2">Подумайте над структурой вашего промпта. Что должен знать ИИ, чтобы помочь вам?</p>
-              <ul className="space-y-1 text-sm text-muted-foreground list-disc list-inside">
-                <li><strong>Роль:</strong> Кто я? (Специалист отдела по работе с клиентами...)</li>
-                <li><strong>Контекст:</strong> Что произошло? (Клиент зол, потому что...)</li>
-                <li><strong>Факты:</strong> Какие объективные данные нужно включить? (Даты, причины, технические детали...)</li>
-                <li><strong>Задача:</strong> Какую цель я преследую? (Извиниться, объяснить, предложить новый четкий план...)</li>
-                <li><strong>Тон и стиль:</strong> Каким должен быть язык письма? (Деловой, уважительный, эмпатичный...)</li>
-              </ul>
-            </div>
-          </CardContent>
-        )}
-      </Card>
+        {/* Дополнительная информация */}
+        <div className="relative bg-[#FFFFFF] border border-[#4b5563] rounded-xl shadow-sm p-6">
+          <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#8277EC] rounded-l-xl"></div>
+          <h3 className="text-lg font-bold text-[#111827] mb-4">Дополнительная информация</h3>
+          <ul className="space-y-3">
+            <li className="flex items-start gap-3">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#1956FF] mt-2 flex-shrink-0"></span>
+              <span className="text-[#4b5563]">Управляющая компания бизнес-центра не предоставила доступ к кабельной инфраструктуре в срок из-за проверок госорганов</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#1956FF] mt-2 flex-shrink-0"></span>
+              <span className="text-[#4b5563]">Инженеры оперативно разработали и согласовали альтернативный маршрут прокладки кабеля</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#1956FF] mt-2 flex-shrink-0"></span>
+              <span className="text-[#4b5563]">Все технические работы будут завершены к 3 ноября</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#1956FF] mt-2 flex-shrink-0"></span>
+              <span className="text-[#4b5563]">Два дополнительных дня (4-5 ноября) заложены на обязательное тестирование всех услуг перед сдачей клиенту</span>
+            </li>
+          </ul>
+        </div>
+      </div>
 
-      {/* Evaluation Criteria */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between text-base">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-primary" />
-              Критерии оценки
-            </div>
-            {userAnswer.trim() && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setShowCriteria(!showCriteria)}
-                className="h-6 px-2"
-              >
-                {showCriteria ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </Button>
-            )}
-          </CardTitle>
-        </CardHeader>
-        {shouldShowCriteria && (
-          <CardContent>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>✓ Полнота промпта (все необходимые элементы присутствуют)</li>
-              <li>✓ Четкость инструкций для ИИ</li>
-              <li>✓ Структурированность (роль, контекст, задача, тон)</li>
-              <li>✓ Конкретика (даты, факты, детали включены)</li>
-              <li>✓ Эмпатия и бизнес-тон</li>
-            </ul>
-          </CardContent>
-        )}
-      </Card>
+      {/* Ваша задача */}
+      <div className="bg-[#FFFFFF] border border-[#4b5563] rounded-xl shadow-sm p-6 mb-6">
+        <h2 className="text-xl font-bold text-[#111827] mb-4">Ваша задача</h2>
+        <p className="text-[#4b5563] mb-6">
+          Составьте промпт для ИИ, чтобы он сгенерировал для вас черновик письма Анне Ковалевой, максимально соответствующий требованиям ниже.
+        </p>
 
-      {!isChatMode ? (
-        <>
-          <Card className="mb-6">
-            <CardContent className="pt-6 space-y-3">
-              <label className="text-sm font-medium text-foreground block">Ваш промпт для ИИ:</label>
-              <Textarea
-                value={userAnswer}
-                onChange={(e) => setUserAnswer(e.target.value)}
-                placeholder="Напишите промпт, который поможет ИИ создать идеальное письмо клиенту..."
-                className="min-h-[200px]"
-                maxLength={4000}
-              />
-              <div className="text-sm text-muted-foreground">
-                {userAnswer.length}/4000 символов
-              </div>
-            </CardContent>
-          </Card>
+        {/* Требования к ответу */}
+        <div className="mb-6">
+          <h3 className="font-bold text-[#111827] mb-4">Требования к ответу:</h3>
+          <ul className="space-y-3">
+            <li className="flex items-start gap-3">
+              <span className="text-[#F37168] font-bold">✓</span>
+              <span className="text-[#111827]"><span className="font-semibold">Признание проблемы:</span> Четко признайте факт переноса сроков и нашу ошибку в несвоевременном уведомлении</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#F37168] font-bold">✓</span>
+              <span className="text-[#111827]"><span className="font-semibold">Искренние извинения:</span> Принесите извинения за доставленные неудобства и срыв ее планов</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#F37168] font-bold">✓</span>
+              <span className="text-[#111827]"><span className="font-semibold">Объяснение причин:</span> Спокойно, без оправданий, объясните цепочку событий</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#F37168] font-bold">✓</span>
+              <span className="text-[#111827]"><span className="font-semibold">Конкретный план:</span> Предложите новый, реалистичный план с датами</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#F37168] font-bold">✓</span>
+              <span className="text-[#111827]"><span className="font-semibold">Деловой и уважительный тон:</span> Сохраняйте профессионализм</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#F37168] font-bold">✓</span>
+              <span className="text-[#111827]"><span className="font-semibold">Цель:</span> Восстановить доверие и подтвердить наши обязательства</span>
+            </li>
+          </ul>
+        </div>
 
-          <div className="mt-6 mb-4 px-4 max-w-sm mx-auto">
-            <Button 
-              onClick={() => setIsChatMode(true)}
-              disabled={!userAnswer.trim()}
-              className="w-full py-4 text-base font-medium"
+        {/* Подсказка */}
+        <div className="relative bg-[#FFFFFF] border border-[#4b5563] rounded-xl shadow-sm p-6">
+          <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#8277EC] rounded-l-xl"></div>
+          <h3 className="font-bold text-[#111827] mb-3">💡 Подсказка</h3>
+          <p className="text-sm font-medium text-[#111827] mb-4">Подумайте над структурой вашего промпта. Что должен знать ИИ, чтобы помочь вам?</p>
+          <ul className="space-y-2">
+            <li className="flex items-start gap-3">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#1956FF] mt-2 flex-shrink-0"></span>
+              <span className="text-sm text-[#4b5563]"><span className="font-bold text-[#111827]">Роль:</span> Кто я? (Специалист отдела по работе с клиентами...)</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#1956FF] mt-2 flex-shrink-0"></span>
+              <span className="text-sm text-[#4b5563]"><span className="font-bold text-[#111827]">Контекст:</span> Что произошло? (Клиент зол, потому что...)</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#1956FF] mt-2 flex-shrink-0"></span>
+              <span className="text-sm text-[#4b5563]"><span className="font-bold text-[#111827]">Факты:</span> Какие объективные данные нужно включить? (Даты, причины, технические детали...)</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#1956FF] mt-2 flex-shrink-0"></span>
+              <span className="text-sm text-[#4b5563]"><span className="font-bold text-[#111827]">Задача:</span> Какую цель я преследую? (Извиниться, объяснить, предложить новый четкий план...)</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#1956FF] mt-2 flex-shrink-0"></span>
+              <span className="text-sm text-[#4b5563]"><span className="font-bold text-[#111827]">Тон и стиль:</span> Каким должен быть язык письма? (Деловой, уважительный, эмпатичный...)</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Критерии оценки */}
+      <div className="bg-[#FFFFFF] border border-[#4b5563] rounded-xl shadow-sm p-6 mb-6">
+        <h2 className="text-lg font-bold text-[#111827] mb-4">Критерии оценки</h2>
+        <ul className="space-y-3">
+          <li className="flex items-start gap-3">
+            <span className="text-[#F37168] font-bold">✓</span>
+            <span className="text-[15px] text-[#4b5563]">Полнота промпта (все необходимые элементы присутствуют)</span>
+          </li>
+          <li className="flex items-start gap-3">
+            <span className="text-[#F37168] font-bold">✓</span>
+            <span className="text-[15px] text-[#4b5563]">Четкость инструкций для ИИ</span>
+          </li>
+          <li className="flex items-start gap-3">
+            <span className="text-[#F37168] font-bold">✓</span>
+            <span className="text-[15px] text-[#4b5563]">Структурированность (роль, контекст, задача, тон)</span>
+          </li>
+          <li className="flex items-start gap-3">
+            <span className="text-[#F37168] font-bold">✓</span>
+            <span className="text-[15px] text-[#4b5563]">Конкретика (даты, факты, детали включены)</span>
+          </li>
+          <li className="flex items-start gap-3">
+            <span className="text-[#F37168] font-bold">✓</span>
+            <span className="text-[15px] text-[#4b5563]">Эмпатия и бизнес-тон</span>
+          </li>
+        </ul>
+      </div>
+
+      {/* Рабочая область */}
+      <div className="bg-[#FFFFFF] border border-[#4b5563] rounded-xl shadow-lg shadow-gray-100 p-6">
+        {/* Tabs */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setActiveTab('testing')}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                activeTab === 'testing'
+                  ? 'text-[#F37168] border border-[#F37168]/30 bg-transparent shadow-sm'
+                  : 'text-[#4b5563] border border-transparent'
+              }`}
             >
-              <CheckCircle className="w-4 h-4 mr-2" />
+              Тестирование
+            </button>
+            <button
+              onClick={() => setActiveTab('solution')}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                activeTab === 'solution'
+                  ? 'text-[#F37168] border border-[#F37168]/30 bg-transparent shadow-sm'
+                  : 'text-[#4b5563] border border-transparent'
+              }`}
+            >
+              Решение
+            </button>
+          </div>
+          <span className="px-3 py-1 text-[12px] font-medium text-[#F37168] border border-[#F37168]/30 rounded-full bg-transparent">
+            Попыток: 5/5
+          </span>
+        </div>
+
+        {/* Content based on active tab */}
+        {activeTab === 'testing' ? (
+          <div>
+            <h3 className="text-lg font-bold text-[#111827] mb-2">Проверьте ваш промпт</h3>
+            <p className="text-sm text-[#4b5563] mb-4">Напишите вариант промта и протестируйте результат перед отправкой.</p>
+            <Textarea
+              value={testingPrompt}
+              onChange={(e) => setTestingPrompt(e.target.value)}
+              placeholder="Напишите промт для его тестирования"
+              className="min-h-[160px] bg-[#f9fafb] border-[#4b5563] rounded-xl mb-3"
+              maxLength={4000}
+            />
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-[12px] font-medium text-[#4b5563]">{testingPrompt.length}/4000 символов</span>
+            </div>
+            <Button 
+              className="w-full py-3 bg-[#FFFFFF] text-[#F37168] border-2 border-[#F37168] rounded-xl font-medium hover:bg-[#F37168] hover:text-white transition-all shadow-none"
+              disabled={!testingPrompt.trim()}
+            >
+              Протестировать промпт
+            </Button>
+          </div>
+        ) : (
+          <div>
+            <h3 className="text-lg font-bold text-[#111827] mb-2">Финальное решение</h3>
+            <p className="text-sm text-[#4b5563] mb-4">Вставьте итоговый промпт, который вы считаете лучшим.</p>
+            <Textarea
+              value={solutionPrompt}
+              onChange={(e) => setSolutionPrompt(e.target.value)}
+              placeholder="Вставьте ваш финальный промт здесь"
+              className="min-h-[160px] bg-[#FFFFFF] border-[#4b5563] rounded-xl mb-3"
+              maxLength={4000}
+            />
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-[12px] font-medium text-[#4b5563]">{solutionPrompt.length}/4000 символов</span>
+            </div>
+            <Button 
+              className="w-full py-3 bg-[#FFFFFF] text-[#F37168] border-2 border-[#F37168] rounded-xl font-medium hover:bg-[#F37168] hover:text-white transition-all shadow-none"
+              disabled={!solutionPrompt.trim()}
+            >
               Отправить на проверку
             </Button>
           </div>
-        </>
-      ) : (
-        <div className="space-y-4">
-          <div className="space-y-4 mb-6">
-            {chatMessages.map((msg, idx) => (
-              <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] ${msg.role === 'user' ? 'order-1' : 'order-2'}`}>
-                  {msg.role === 'tutor' && (
-                    <div className="flex items-center gap-2 mb-1">
-                      <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
-                        <Bot className="w-3 h-3 text-primary" />
-                      </div>
-                      <span className="text-xs font-medium text-primary">AI-тьютор</span>
-                    </div>
-                  )}
-                  <div className={`rounded-2xl px-4 py-3 ${
-                    msg.role === 'user' 
-                      ? 'bg-primary text-primary-foreground rounded-br-md' 
-                      : 'bg-muted rounded-bl-md'
-                  }`}>
-                    {msg.role === 'tutor' ? (
-                      <div className="space-y-3">
-                        {formatAssistantMessage(msg.content).map((paragraph, pIdx) => (
-                          <p key={pIdx} className="text-sm leading-relaxed">{paragraph}</p>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
-                    )}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1 px-2">
-                    {new Date(msg.timestamp).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <Card className="sticky bottom-4">
-            <CardContent className="p-3">
-              <div className="flex gap-2">
-                <Textarea
-                  value={currentMessage}
-                  onChange={(e) => setCurrentMessage(e.target.value)}
-                  placeholder="Задайте вопрос AI-тьютору..."
-                  className="min-h-[44px] max-h-[120px] resize-none"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                    }
-                  }}
-                />
-                <Button 
-                  size="icon"
-                  disabled={!currentMessage.trim()}
-                  className="h-11 w-11 shrink-0"
-                >
-                  <Send className="w-4 h-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
