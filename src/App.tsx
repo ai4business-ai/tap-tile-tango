@@ -16,6 +16,7 @@ import WebinarRecords from "./pages/WebinarRecords";
 import MyProgress from "./pages/MyProgress";
 import MyProgressDemo from "./pages/MyProgressDemo";
 import SkillAssignments from "./pages/SkillAssignments";
+import SkillAssignmentsDemo from "./pages/SkillAssignmentsDemo";
 import TaskDocumentAnalysis from "./pages/TaskDocumentAnalysis";
 import TaskDeepResearch from "./pages/TaskDeepResearch";
 import TaskSpecializedGPT from "./pages/TaskSpecializedGPT";
@@ -57,6 +58,7 @@ const App = () => {
                       <Route path="/webinar-records" element={<WebinarRecords />} />
                       <Route path="/my-progress" element={<MyProgress />} />
                       <Route path="/skill-assignments/:skillName" element={<SkillAssignments />} />
+                      <Route path="/skill-assignments/:skillName/demo" element={<SkillAssignmentsDemo />} />
                       <Route path="/task/document-analysis" element={<TaskDocumentAnalysis />} />
                       <Route path="/task/deep-research" element={<TaskDeepResearch />} />
                       <Route path="/task/specialized-gpt" element={<TaskSpecializedGPT />} />
