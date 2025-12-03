@@ -75,8 +75,8 @@ const PromptsLibrary = () => {
         </button>
         <div>
           <h1 className="text-xl font-semibold text-[#111827]">Готовые промпты</h1>
-          <p className="text-sm text-[#F37168] font-medium">
-            {totalPrompts} промптов
+          <p className="text-sm text-[#4b5563]">
+            Идеальные решения для каждого задания
           </p>
         </div>
       </div>
