@@ -21,18 +21,18 @@ const TaskClientResponseDemo = () => {
           <ArrowLeft className="w-6 h-6 text-[#4b5563]" />
         </button>
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-xl font-bold text-[#111827]">Ответ клиенту</h1>
+          <h1 className="text-xl font-bold text-[#111827] mb-1">Ответ клиенту</h1>
+          <div className="flex items-center gap-2">
             <span className="px-2 py-0.5 text-xs font-medium text-[#F37168] border border-[#F37168]/30 rounded-full bg-transparent">
               Basic
             </span>
+            <p className="text-sm text-[#4b5563]">Коммуникация и работа в команде</p>
           </div>
-          <p className="text-sm text-[#4b5563]">Коммуникация и работа в команде</p>
         </div>
       </div>
 
       {/* Описание и Контекст */}
-      <div className="bg-[#FFFFFF] border border-[#4b5563] rounded-xl shadow-sm p-6 mb-6">
+      <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6 mb-6">
         {/* Описание задания */}
         <div className="mb-6">
           <h2 className="text-xl font-bold text-[#111827] mb-4">Описание задания</h2>
@@ -67,10 +67,10 @@ const TaskClientResponseDemo = () => {
         </div>
 
         {/* Дополнительная информация */}
-        <div className="relative bg-[#FFFFFF] border border-[#4b5563] rounded-xl shadow-sm p-6">
-          <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#8277EC] rounded-l-xl"></div>
-          <h3 className="text-lg font-bold text-[#111827] mb-4">Дополнительная информация</h3>
-          <ul className="space-y-3">
+        <div className="relative bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6 overflow-hidden">
+          <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#8277EC]"></div>
+          <h3 className="text-lg font-bold text-[#111827] mb-4 pl-3">Дополнительная информация</h3>
+          <ul className="space-y-3 pl-3">
             <li className="flex items-start gap-3">
               <span className="h-1.5 w-1.5 rounded-full bg-[#1956FF] mt-2 flex-shrink-0"></span>
               <span className="text-[#4b5563]">Управляющая компания бизнес-центра не предоставила доступ к кабельной инфраструктуре в срок из-за проверок госорганов</span>
@@ -92,7 +92,7 @@ const TaskClientResponseDemo = () => {
       </div>
 
       {/* Ваша задача */}
-      <div className="bg-[#FFFFFF] border border-[#4b5563] rounded-xl shadow-sm p-6 mb-6">
+      <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6 mb-6">
         <h2 className="text-xl font-bold text-[#111827] mb-4">Ваша задача</h2>
         <p className="text-[#4b5563] mb-6">
           Составьте промпт для ИИ, чтобы он сгенерировал для вас черновик письма Анне Ковалевой, максимально соответствующий требованиям ниже.
@@ -130,11 +130,11 @@ const TaskClientResponseDemo = () => {
         </div>
 
         {/* Подсказка */}
-        <div className="relative bg-[#FFFFFF] border border-[#4b5563] rounded-xl shadow-sm p-6">
-          <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#8277EC] rounded-l-xl"></div>
-          <h3 className="font-bold text-[#111827] mb-3">💡 Подсказка</h3>
-          <p className="text-sm font-medium text-[#111827] mb-4">Подумайте над структурой вашего промпта. Что должен знать ИИ, чтобы помочь вам?</p>
-          <ul className="space-y-2">
+        <div className="relative bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6 overflow-hidden">
+          <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#8277EC]"></div>
+          <h3 className="font-bold text-[#111827] mb-3 pl-3">💡 Подсказка</h3>
+          <p className="text-sm font-medium text-[#111827] mb-4 pl-3">Подумайте над структурой вашего промпта. Что должен знать ИИ, чтобы помочь вам?</p>
+          <ul className="space-y-2 pl-3">
             <li className="flex items-start gap-3">
               <span className="h-1.5 w-1.5 rounded-full bg-[#1956FF] mt-2 flex-shrink-0"></span>
               <span className="text-sm text-[#4b5563]"><span className="font-bold text-[#111827]">Роль:</span> Кто я? (Специалист отдела по работе с клиентами...)</span>
@@ -160,7 +160,7 @@ const TaskClientResponseDemo = () => {
       </div>
 
       {/* Критерии оценки */}
-      <div className="bg-[#FFFFFF] border border-[#4b5563] rounded-xl shadow-sm p-6 mb-6">
+      <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6 mb-6">
         <h2 className="text-lg font-bold text-[#111827] mb-4">Критерии оценки</h2>
         <ul className="space-y-3">
           <li className="flex items-start gap-3">
@@ -187,7 +187,7 @@ const TaskClientResponseDemo = () => {
       </div>
 
       {/* Рабочая область */}
-      <div className="bg-[#FFFFFF] border border-[#4b5563] rounded-xl shadow-lg shadow-gray-100 p-6">
+      <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6">
         {/* Tabs */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex gap-2">
