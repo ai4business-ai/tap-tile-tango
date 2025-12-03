@@ -68,7 +68,7 @@ const TaskClientResponseDemo = () => {
 
         {/* Дополнительная информация */}
         <div className="relative bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6 overflow-hidden">
-          <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#8277EC]"></div>
+          <div className="absolute top-0 left-0 h-full w-1 bg-[#8277EC] rounded-l-3xl"></div>
           <h3 className="text-lg font-bold text-[#111827] mb-4 pl-3">Дополнительная информация</h3>
           <ul className="space-y-3 pl-3">
             <li className="flex items-start gap-3">
@@ -131,8 +131,8 @@ const TaskClientResponseDemo = () => {
 
         {/* Подсказка */}
         <div className="relative bg-white/85 backdrop-blur-xl rounded-3xl border border-white/60 shadow-lg p-6 overflow-hidden">
-          <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#8277EC]"></div>
-          <h3 className="font-bold text-[#111827] mb-3 pl-3">💡 Подсказка</h3>
+          <div className="absolute top-0 left-0 h-full w-1 bg-[#8277EC] rounded-l-3xl"></div>
+          <h3 className="font-bold text-[#111827] mb-3 pl-3">Подсказка</h3>
           <p className="text-sm font-medium text-[#111827] mb-4 pl-3">Подумайте над структурой вашего промпта. Что должен знать ИИ, чтобы помочь вам?</p>
           <ul className="space-y-2 pl-3">
             <li className="flex items-start gap-3">
@@ -226,7 +226,7 @@ const TaskClientResponseDemo = () => {
               value={testingPrompt}
               onChange={(e) => setTestingPrompt(e.target.value)}
               placeholder="Напишите промт для его тестирования"
-              className="min-h-[160px] bg-[#f9fafb] border-[#4b5563] rounded-xl mb-3"
+              className="min-h-[160px] bg-[#f9fafb] border-[#4b5563] rounded-xl mb-3 placeholder:text-[#4b5563]"
               maxLength={4000}
             />
             <div className="flex justify-between items-center mb-4">
@@ -247,7 +247,7 @@ const TaskClientResponseDemo = () => {
               value={solutionPrompt}
               onChange={(e) => setSolutionPrompt(e.target.value)}
               placeholder="Вставьте ваш финальный промт здесь"
-              className="min-h-[160px] bg-[#FFFFFF] border-[#4b5563] rounded-xl mb-3"
+              className="min-h-[160px] bg-[#FFFFFF] border-[#4b5563] rounded-xl mb-3 placeholder:text-[#4b5563]"
               maxLength={4000}
             />
             <div className="flex justify-between items-center mb-4">
