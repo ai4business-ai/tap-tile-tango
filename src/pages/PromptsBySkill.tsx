@@ -149,7 +149,7 @@ const PromptsBySkill = () => {
             <Card className="border-0 shadow-lg bg-white overflow-hidden">
               <CardContent className="p-0">
                 <div className="px-4 py-4 flex items-center gap-3">
-                  <Lock className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                  <Lock className="w-5 h-5 text-[#111827] flex-shrink-0" />
                   <span className="font-semibold text-[#111827]">
                     {promptsData.prompts[promptsData.prompts.length - 1].title}
                   </span>
