@@ -21,6 +21,7 @@ import TaskDeepResearch from "./pages/TaskDeepResearch";
 import TaskSpecializedGPT from "./pages/TaskSpecializedGPT";
 import TaskClientResponse from "./pages/TaskClientResponse";
 import TaskClientResponseDemo from "./pages/TaskClientResponseDemo";
+import TasksDemo from "./pages/TasksDemo";
 import TaskMeetingAgenda from "./pages/TaskMeetingAgenda";
 import TaskFeedback from "./pages/TaskFeedback";
 import PromptsLibrary from "./pages/PromptsLibrary";
@@ -52,6 +53,7 @@ const App = () => {
                       <Route path="/demo" element={<Demo />} />
                       <Route path="/playground" element={<IndexPlayground />} />
                       <Route path="/tasks" element={<Tasks />} />
+                      <Route path="/tasks/demo" element={<TasksDemo />} />
                       <Route path="/webinar-records" element={<WebinarRecords />} />
                       <Route path="/my-progress" element={<MyProgress />} />
                       <Route path="/skill-assignments/:skillName" element={<SkillAssignments />} />
