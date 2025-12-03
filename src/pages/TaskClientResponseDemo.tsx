@@ -32,7 +32,7 @@ const TaskClientResponseDemo = () => {
       </div>
 
       {/* Описание и Контекст */}
-      <div className="bg-white border-0 shadow-xl rounded-3xl p-6 mb-6">
+      <div className="bg-white border border-gray-100 shadow-xl rounded-3xl p-6 mb-6">
         {/* Описание задания */}
         <div className="mb-6">
           <h2 className="text-xl font-bold text-[#111827] mb-4">Описание задания</h2>
@@ -91,7 +91,7 @@ const TaskClientResponseDemo = () => {
       </div>
 
       {/* Ваша задача */}
-      <div className="bg-white border-0 shadow-xl rounded-3xl p-6 mb-6">
+      <div className="bg-white border border-gray-100 shadow-xl rounded-3xl p-6 mb-6">
         <h2 className="text-xl font-bold text-[#111827] mb-4">Ваша задача</h2>
         <p className="text-[#4b5563] mb-6">
           Составьте промпт для ИИ, чтобы он сгенерировал для вас черновик письма Анне Ковалевой, максимально соответствующий требованиям ниже.
@@ -158,7 +158,7 @@ const TaskClientResponseDemo = () => {
       </div>
 
       {/* Критерии оценки */}
-      <div className="bg-white border-0 shadow-xl rounded-3xl p-6 mb-6">
+      <div className="bg-white border border-gray-100 shadow-xl rounded-3xl p-6 mb-6">
         <h2 className="text-lg font-bold text-[#111827] mb-4">Критерии оценки</h2>
         <ul className="space-y-3">
           <li className="flex items-start gap-3">
@@ -185,7 +185,7 @@ const TaskClientResponseDemo = () => {
       </div>
 
       {/* Рабочая область */}
-      <div className="bg-white border-0 shadow-xl rounded-3xl p-6">
+      <div className="bg-white border border-gray-100 shadow-xl rounded-3xl p-6">
         {/* Tabs */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex gap-2">
