@@ -193,8 +193,8 @@ const TaskClientResponseDemo = () => {
               onClick={() => setActiveTab('testing')}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
                 activeTab === 'testing'
-                  ? 'text-[#F37168] border border-[#F37168]/30 bg-transparent'
-                  : 'text-[#4b5563] border border-transparent bg-transparent'
+                  ? 'text-[#F37168] border border-[#F37168]/30 bg-transparent shadow-sm'
+                  : 'text-[#4b5563] border border-transparent'
               }`}
             >
               Тестирование
@@ -203,8 +203,8 @@ const TaskClientResponseDemo = () => {
               onClick={() => setActiveTab('solution')}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
                 activeTab === 'solution'
-                  ? 'text-[#F37168] border border-[#F37168]/30 bg-transparent'
-                  : 'text-[#4b5563] border border-transparent bg-transparent'
+                  ? 'text-[#F37168] border border-[#F37168]/30 bg-transparent shadow-sm'
+                  : 'text-[#4b5563] border border-transparent'
               }`}
             >
               Решение
