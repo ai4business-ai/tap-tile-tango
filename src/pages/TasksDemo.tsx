@@ -1,7 +1,9 @@
-import { ChevronLeft, Lock } from "lucide-react";
+import { ChevronLeft, ChevronRight, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent } from "@/components/ui/card";
+import { getSkillIcon, getSkillColor } from "@/utils/skillIconsDemo";
 
 interface Skill {
   id: string;
@@ -64,10 +66,12 @@ const TasksDemo = () => {
     navigate(`/skill-assignments/${slug}`);
   };
 
+  const totalAssignments = skills.reduce((sum, s) => sum + s.assignment_count, 0);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background p-4">
-        <div className="max-w-lg mx-auto">
+        <div className="max-w-md mx-auto">
           <div className="text-center py-8">Загрузка...</div>
         </div>
       </div>
@@ -75,51 +79,59 @@ const TasksDemo = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 px-4 pb-4 md:px-6 md:pb-6 lg:px-8 lg:pb-8 md:max-w-md mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 px-4 pb-24 md:max-w-md mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={() => navigate('/')}
-            className="w-10 h-10 glass-subtle rounded-2xl flex items-center justify-center"
-          >
-            <ChevronLeft className="w-6 h-6 text-glass" />
-          </button>
-          <div>
-            <h1 className="text-xl font-semibold text-glass">Мои задания</h1>
-            <p className="text-sm text-glass-muted">
-              {skills.reduce((sum, s) => sum + s.assignment_count, 0)} заданий
-            </p>
-          </div>
+      <div className="flex items-center gap-4 py-6">
+        <button 
+          onClick={() => navigate('/')}
+          className="w-10 h-10 glass-subtle rounded-2xl flex items-center justify-center"
+        >
+          <ChevronLeft className="w-6 h-6 text-[#111827]" />
+        </button>
+        <div>
+          <h1 className="text-xl font-semibold text-[#111827]">Мои задания</h1>
+          <p className="text-sm text-[#F37168] font-medium">
+            {totalAssignments} заданий
+          </p>
         </div>
       </div>
 
-      {/* Tasks List */}
-      <div className="space-y-3 pb-24">
+      {/* Skills List */}
+      <div className="space-y-3">
         {skills.map((skill) => (
-          <div
+          <Card
             key={skill.id}
             onClick={() => handleTaskClick(skill.slug, skill.is_locked)}
-            className={`bg-card border border-border rounded-lg p-5 ${
+            className={`border-0 shadow-lg bg-white transition-all ${
               skill.is_locked
                 ? "opacity-60 cursor-not-allowed"
-                : "cursor-pointer hover:border-primary/50 transition-colors"
+                : "cursor-pointer hover:shadow-xl hover:-translate-y-1"
             }`}
           >
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <h3 className="text-lg font-medium text-foreground mb-1">
-                  {skill.name}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {skill.assignment_count} заданий
-                </p>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-4">
+                <div 
+                  className={`w-16 h-16 rounded-2xl ${getSkillColor(skill.slug)} flex items-center justify-center shadow-lg flex-shrink-0`}
+                  style={{ boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)' }}
+                >
+                  {getSkillIcon(skill.slug)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-[#111827] text-base mb-1">
+                    {skill.name}
+                  </h3>
+                  <p className="text-sm text-[#F37168] font-medium">
+                    {skill.assignment_count} заданий
+                  </p>
+                </div>
+                {skill.is_locked ? (
+                  <Lock className="w-5 h-5 text-[#111827] flex-shrink-0" />
+                ) : (
+                  <ChevronRight className="w-5 h-5 text-[#F37168] flex-shrink-0" />
+                )}
               </div>
-              {skill.is_locked && (
-                <Lock className="w-5 h-5 text-muted-foreground" />
-              )}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>
