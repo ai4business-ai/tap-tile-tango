@@ -82,19 +82,11 @@ const SkillAssignmentsDemo = () => {
         >
           <ChevronLeft className="w-6 h-6 text-[#111827]" />
         </button>
-        <div className="flex items-center gap-3 flex-1">
-          <div 
-            className={`w-12 h-12 rounded-2xl ${getSkillColor(skillName || '')} flex items-center justify-center shadow-lg flex-shrink-0`}
-            style={{ boxShadow: '0 8px 16px rgba(25, 86, 255, 0.4)' }}
-          >
-            {getSkillIcon(skillName || '')}
-          </div>
-          <div>
-            <h1 className="text-xl font-semibold text-[#111827]">{skillTitle}</h1>
-            <p className="text-sm text-[#F37168] font-medium">
-              {assignments.length} заданий
-            </p>
-          </div>
+        <div className="flex-1">
+          <h1 className="text-xl font-semibold text-[#111827]">{skillTitle}</h1>
+          <p className="text-sm text-[#F37168] font-medium">
+            {assignments.length} заданий
+          </p>
         </div>
       </div>
 
@@ -113,30 +105,25 @@ const SkillAssignmentsDemo = () => {
               <CardContent className="p-5">
                 {/* Level Header */}
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <span className="px-3 py-1 text-xs font-medium text-[#F37168] border border-[#F37168]/30 rounded-full bg-transparent">
-                      {level}
-                    </span>
-                    <span className="text-sm text-[#4b5563]">
-                      {levelAssignments.filter(a => a.submission?.status === 'completed').length}/{levelAssignments.length} выполнено
-                    </span>
-                  </div>
+                  <span className="px-4 py-1.5 text-sm font-medium text-[#F37168] border border-[#F37168]/30 rounded-full bg-transparent">
+                    {level}
+                  </span>
                   {isLocked && (
                     <Lock className="w-5 h-5 text-[#111827]" />
                   )}
                 </div>
                 
-                {/* Educational Content - Simple blocks */}
+                {/* Educational Content - Blue left border blocks */}
                 <div className="space-y-3 mb-4">
                   <div 
-                    className={`bg-white border border-gray-100 rounded-xl p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-all ${isLocked ? 'opacity-60' : ''}`}
+                    className="bg-[#f0f7ff] border-l-4 border-l-[#1956FF] rounded-xl p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-all"
                   >
                     <span className="font-medium text-[#111827]">Обучающее видео</span>
                     <ChevronRight className="w-5 h-5 text-[#F37168]" />
                   </div>
 
                   <div 
-                    className={`bg-white border border-gray-100 rounded-xl p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-all ${isLocked ? 'opacity-60' : ''}`}
+                    className="bg-[#f0f7ff] border-l-4 border-l-[#1956FF] rounded-xl p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-all"
                   >
                     <span className="font-medium text-[#111827]">Дополнительные материалы</span>
                     <ChevronRight className="w-5 h-5 text-[#F37168]" />
