@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, Copy } from 'lucide-react';
+import { ChevronLeft, CheckCircle, Copy } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Accordion,
@@ -60,10 +60,9 @@ const BasicPrompts = () => {
         <div className="max-w-md mx-auto px-4">
           <button
             onClick={() => navigate('/prompts')}
-            className="flex items-center gap-2 text-white/90 hover:text-white mb-6 transition-colors"
+            className="w-8 h-8 flex items-center justify-center text-white/90 hover:text-white mb-6 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="text-base">Назад к навыкам</span>
+            <ChevronLeft className="w-6 h-6" />
           </button>
 
           <h1 className="text-3xl font-bold text-white">Базовые промпты</h1>

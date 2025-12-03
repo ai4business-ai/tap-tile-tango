@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,7 +18,7 @@ const TaskClientResponseDemo = () => {
           onClick={() => navigate(-1)}
           className="w-8 h-8 flex items-center justify-center"
         >
-          <ArrowLeft className="w-6 h-6 text-[#4b5563]" />
+          <ChevronLeft className="w-6 h-6 text-[#4b5563]" />
         </button>
         <div className="flex-1">
           <h1 className="text-xl font-bold text-[#111827] mb-1">Ответ клиенту</h1>
