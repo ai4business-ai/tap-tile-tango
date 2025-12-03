@@ -188,13 +188,13 @@ const TaskClientResponseDemo = () => {
       <div className="bg-white border border-gray-100 shadow-xl rounded-3xl p-6">
         {/* Tabs */}
         <div className="flex items-center justify-between mb-6">
-          <div className="inline-flex p-1 bg-white border border-gray-200 rounded-xl">
+          <div className="inline-flex p-1 bg-[#f3f4f6] rounded-xl">
             <button
               onClick={() => setActiveTab('testing')}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
                 activeTab === 'testing'
-                  ? 'text-[#F37168] border border-[#F37168]/30 bg-transparent shadow-sm'
-                  : 'text-[#4b5563] border border-transparent'
+                  ? 'text-[#F37168] border border-[#F37168]/30 bg-white shadow-sm'
+                  : 'text-[#4b5563]'
               }`}
             >
               Тестирование
@@ -203,8 +203,8 @@ const TaskClientResponseDemo = () => {
               onClick={() => setActiveTab('solution')}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
                 activeTab === 'solution'
-                  ? 'text-[#F37168] border border-[#F37168]/30 bg-transparent shadow-sm'
-                  : 'text-[#4b5563] border border-transparent'
+                  ? 'text-[#F37168] border border-[#F37168]/30 bg-white shadow-sm'
+                  : 'text-[#4b5563]'
               }`}
             >
               Решение
