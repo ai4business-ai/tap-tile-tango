@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useNextAssignment } from '@/hooks/useNextAssignment';
 import { useUserSkills } from '@/hooks/useUserSkills';
 import { useUserAssignmentStats } from '@/hooks/useUserAssignmentStats';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { TrendingUp, ChevronRight, FileText, Video } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
@@ -52,6 +53,7 @@ const Index = () => {
   const { getNextTaskPath } = useNextAssignment();
   const { skills, loading } = useUserSkills(user?.id);
   const { stats } = useUserAssignmentStats(user?.id);
+  const isMobile = useIsMobile();
   const [isBannerCollapsed, setIsBannerCollapsed] = useState(() => {
     return localStorage.getItem('guestBannerCollapsed') === 'true';
   });
@@ -131,7 +133,7 @@ const Index = () => {
         >
           <CardContent className="p-6">
             <div className="relative">
-              <ResponsiveContainer width="100%" height={320}>
+              <ResponsiveContainer width="100%" height={isMobile ? 280 : 320}>
                 <RadarChart data={radarData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                   <PolarGrid stroke="#E5E7EB" strokeWidth={1} />
                   <PolarAngleAxis 
@@ -142,7 +144,8 @@ const Index = () => {
                       
                       const angle = (index * 360) / skills.length - 90;
                       const rad = (angle * Math.PI) / 180;
-                      const iconRadius = 135;
+                      const iconRadius = isMobile ? 100 : 135;
+                      const iconSize = isMobile ? 40 : 48;
                       const iconX = cx + iconRadius * Math.cos(rad);
                       const iconY = cy + iconRadius * Math.sin(rad);
 
@@ -150,11 +153,11 @@ const Index = () => {
                       
                       return (
                         <g transform={`translate(${iconX},${iconY})`}>
-                          <foreignObject x={-24} y={-24} width={48} height={48}>
+                          <foreignObject x={-(iconSize / 2)} y={-(iconSize / 2)} width={iconSize} height={iconSize}>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <div 
-                                  className={`w-12 h-12 rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-transform`}
+                                  className={`${isMobile ? 'w-10 h-10' : 'w-12 h-12'} rounded-2xl ${getSkillColor(skill.skill.slug)} flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-transform`}
                                   onClick={(e) => e.stopPropagation()}
                                 >
                                   {getSkillIcon(skill.skill.slug)}
