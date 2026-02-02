@@ -270,6 +270,7 @@ export type Database = {
         Returns: Database["public"]["Enums"]["environment_type"]
       }
       initialize_user_skills:
+        | { Args: { p_user_id: string }; Returns: undefined }
         | {
             Args: {
               p_environment?: Database["public"]["Enums"]["environment_type"]
@@ -277,7 +278,6 @@ export type Database = {
             }
             Returns: undefined
           }
-        | { Args: { p_user_id: string }; Returns: undefined }
       log_security_event: {
         Args: { details?: Json; event_type: string; user_id?: string }
         Returns: undefined
