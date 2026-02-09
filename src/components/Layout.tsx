@@ -27,7 +27,7 @@ export const Layout = ({ children }: LayoutProps) => {
   }, []);
 
   const showBanner = !user && !isBannerCollapsed;
-  const mainPadding = showBanner ? 'pt-36' : 'pt-28';
+  const mainPadding = showBanner ? 'pt-40' : 'pt-32';
 
   return (
     <>
