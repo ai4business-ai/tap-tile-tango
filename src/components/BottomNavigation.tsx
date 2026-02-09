@@ -19,11 +19,11 @@ export const BottomNavigation = () => {
   const [selected, setSelected] = useState<number | null>(null);
 
   const tabs = [
-    { title: "Прогресс", icon: TrendingUp, path: "/my-progress" },
+    { title: "Главная", icon: Home, path: "/" },
     { title: "Задания", icon: ClipboardList, path: "/tasks" },
     { title: "Следующее", icon: PlayCircle, path: "next" },
+    { title: "Прогресс", icon: TrendingUp, path: "/my-progress" },
     { title: "Теория", icon: BookOpen, path: "/webinar-records" },
-    { title: "Главная", icon: Home, path: "/" },
   ];
 
   useEffect(() => {
@@ -32,7 +32,9 @@ export const BottomNavigation = () => {
     const index = tabs.findIndex(tab => 
       tab.path !== "next" && currentPath === tab.path
     );
-    setSelected(index !== -1 ? index : null);
+    if (index !== -1) {
+      setSelected(index);
+    }
   }, [location.pathname]);
 
   const handleChange = async (index: number | null) => {
