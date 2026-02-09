@@ -89,14 +89,14 @@ export const TopHeader = () => {
                   <button onClick={() => window.open('https://t.me/your_support', '_blank')} className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors">
                     Поддержка
                   </button>
-                  <button onClick={handleSignOut} className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors">
+                  <button onClick={() => { setMenuOpen(false); handleSignOut(); }} className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors">
                     Выйти
                   </button>
                 </> : <>
-                  <button onClick={() => navigate('/auth')} className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors">
+                  <button onClick={() => { setMenuOpen(false); navigate('/auth'); }} className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors">
                     Войти
                   </button>
-                  <button onClick={() => navigate('/auth')} className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors">
+                  <button onClick={() => { setMenuOpen(false); navigate('/auth'); }} className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors">
                     Зарегистрироваться
                   </button>
                   <button onClick={() => window.open('https://t.me/your_support', '_blank')} className="block w-full text-left px-2 py-2 text-sm hover:bg-white/10 rounded-lg transition-colors">
