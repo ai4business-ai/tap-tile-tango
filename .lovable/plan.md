@@ -1,33 +1,34 @@
 
 
-# Минимальное значение прогресса вместо скрытия слоя
+# Легенда цветов на радар-чарте
 
-## Проблема
-При `progress_percent = 0` Recharts рисует артефакт -- вертикальную линию из центра. Скрывать слой целиком не нужно -- лучше показать крошечное кольцо, визуально воспринимаемое как "ноль".
+## Что добавляем
+Две небольшие сноски-легенды в верхних углах карточки с радар-чартом:
+- **Левый верхний угол**: фиолетовый кружок + текст "Прогресс"
+- **Правый верхний угол**: оранжевый пунктирный кружок + текст "Цель"
 
-## Решение
-В `radarData` заменить `value: 0` на `value: 1` (1% из 100) -- это создаст едва заметное фиолетовое кольцо у центра, без артефактов.
+Это поможет пользователю понять, что означают два слоя на радаре.
 
-## Изменения
+## Технические изменения
 
 ### `src/pages/Index.tsx`
-В формировании `radarData` заменить:
+Внутри `<CardContent>` радар-чарта, перед `<ResponsiveContainer>`, добавить div с двумя элементами легенды:
+
 ```tsx
-value: skill.progress_percent,
-```
-на:
-```tsx
-value: Math.max(skill.progress_percent, 1),
+<div className="flex items-center justify-between mb-2 px-1">
+  <div className="flex items-center gap-1.5">
+    <div className="w-3 h-3 rounded-full bg-[#8B5CF6]" />
+    <span className="text-xs text-muted-foreground">Прогресс</span>
+  </div>
+  <div className="flex items-center gap-1.5">
+    <div className="w-3 h-3 rounded-full border-2 border-dashed border-[#F97316]" />
+    <span className="text-xs text-muted-foreground">Цель</span>
+  </div>
+</div>
 ```
 
 ### `src/pages/MyProgress.tsx`
-Та же правка в `radarData`:
-```tsx
-value: Math.max(skill.progress_percent, 1),
-```
+Та же легенда в аналогичном месте -- внутри `<CardContent>` радар-чарта, перед `<ResponsiveContainer>`.
 
-### `PolarGrid gridCount={3}`
-Также добавляем `gridCount={3}` к `<PolarGrid>` в обоих файлах, чтобы сетка соответствовала трем уровням (Basic/Pro/AI-Native).
-
-## Итого: 2 файла, по 2 строки в каждом
+## Итого: 2 файла, добавление одного блока в каждый
 
