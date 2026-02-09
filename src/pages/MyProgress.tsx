@@ -93,7 +93,7 @@ const MyProgress = () => {
         feature="Изменение целевого уровня навыков"
       />
 
-      <div className="max-w-md mx-auto px-4 pb-24">
+      <div className="pb-24">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
