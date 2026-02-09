@@ -94,6 +94,16 @@ const MyProgress = () => {
         {/* Radar Chart */}
         <Card className="border-0 shadow-xl bg-white mb-6">
           <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-2 px-1">
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-[#8B5CF6]" />
+                <span className="text-xs text-muted-foreground">Прогресс</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 rounded-full border-2 border-dashed border-[#F97316]" />
+                <span className="text-xs text-muted-foreground">Цель</span>
+              </div>
+            </div>
             <div className="relative">
               <ResponsiveContainer width="100%" height={320}>
                 <RadarChart data={radarData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
