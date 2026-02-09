@@ -57,7 +57,7 @@ const Index = () => {
   // Prepare radar chart data with target and progress layers
   const radarData = skills.map(skill => ({
     subject: skill.skill.slug,
-    value: skill.progress_percent,
+    value: Math.max(skill.progress_percent, 1),
     target: levelToPercent(skill.target_level),
     fullMark: 100,
   }));
