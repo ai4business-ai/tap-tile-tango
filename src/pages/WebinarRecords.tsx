@@ -84,7 +84,7 @@ const WebinarRecords = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 p-4 md:p-6 lg:p-8 md:max-w-md mx-auto">
+    <div className="min-h-screen p-4 md:p-6 lg:p-8 md:max-w-md mx-auto">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
         <button 

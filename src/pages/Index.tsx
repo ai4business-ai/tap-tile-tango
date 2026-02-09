@@ -92,7 +92,7 @@ const Index = () => {
   const headerPadding = showBanner ? 'pt-44' : 'pt-36';
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+    <div className="min-h-screen">
       {/* Purple Header */}
       <div className={`bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] px-6 ${headerPadding} pb-40 relative ${headerOffset} transition-all duration-300`}>
         <div className="max-w-md mx-auto">
