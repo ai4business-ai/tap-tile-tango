@@ -33,7 +33,7 @@ export const GuestBanner = () => {
             className="overflow-hidden"
           >
             <div className="bg-background/95 backdrop-blur-md border-b border-orange-500/30 shadow-sm">
-              <div className="max-w-2xl mx-auto px-4 py-3">
+              <div className="max-w-md mx-auto px-4 py-3">
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                   <div className="flex items-center gap-3 flex-1">
                     <Lock className="w-5 h-5 text-orange-500 flex-shrink-0" />

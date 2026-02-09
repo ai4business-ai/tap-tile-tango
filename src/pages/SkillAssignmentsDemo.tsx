@@ -73,7 +73,7 @@ const SkillAssignmentsDemo = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 px-4 pb-24 md:max-w-md mx-auto">
+    <div className="min-h-screen px-4 pb-24 md:max-w-md mx-auto">
       {/* Header */}
       <div className="flex items-center gap-4 py-6">
         <button 

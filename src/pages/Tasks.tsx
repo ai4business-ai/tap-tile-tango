@@ -75,7 +75,7 @@ const Tasks = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 px-4 pb-4 md:px-6 md:pb-6 lg:px-8 lg:pb-8 md:max-w-md mx-auto">
+    <div className="min-h-screen px-4 pb-4 md:px-6 md:pb-6 lg:px-8 lg:pb-8 md:max-w-md mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">

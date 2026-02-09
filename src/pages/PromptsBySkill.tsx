@@ -79,7 +79,7 @@ const PromptsBySkill = () => {
   const isLastPrompt = (index: number) => index === promptsData.prompts.length - 1;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 pb-24">
+    <div className="min-h-screen pb-24">
       {/* Header */}
       <div className="bg-[#8277EC] pt-36 pb-16 -mt-28">
         <div className="max-w-md mx-auto px-4">
