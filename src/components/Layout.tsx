@@ -34,7 +34,9 @@ export const Layout = ({ children }: LayoutProps) => {
       {!user && <GuestBanner />}
       <TopHeader />
       <main className={`pb-28 ${mainPadding} transition-all duration-300`}>
-        {children}
+        <div className="max-w-md mx-auto px-4">
+          {children}
+        </div>
       </main>
       <BottomNavigation />
     </>

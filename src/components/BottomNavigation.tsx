@@ -51,7 +51,7 @@ export const BottomNavigation = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bottom-navigation pb-4 px-4">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-md mx-auto">
         <ExpandableTabs
           tabs={tabs}
           onChange={handleChange}
