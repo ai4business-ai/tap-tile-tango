@@ -4,15 +4,23 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
 const DAILY_LIMIT = 5;
+
+const TASK_DESCRIPTIONS: Record<string, string> = {
+  'document-analysis': 'Анализ документов: составление executive summary, выделение ключевых тезисов и структурирование информации из документа.',
+  'deep-research': 'Глубокое исследование: формулировка исследовательских вопросов, поиск и анализ данных, систематизация найденной информации.',
+  'specialized-gpt': 'Создание специализированного GPT-ассистента: написание системной инструкции (system prompt) для кастомного AI-помощника.',
+  'client-response': 'Ответ клиенту: составление профессионального, вежливого и структурированного письма клиенту.',
+  'meeting-agenda': 'Повестка встречи: подготовка структурированной повестки (agenda) и follow-up письма по итогам встречи.',
+  'feedback-colleagues': 'Обратная связь коллегам: составление конструктивного, доброжелательного и полезного фидбека.',
+};
 
 function getToday(): string {
   return new Date().toISOString().slice(0, 10);
@@ -36,7 +44,7 @@ async function getCurrentCount(deviceId: string, taskId: string, environment: st
   return data?.count ?? 0;
 }
 
-async function incrementAndGet(deviceId: string, taskId: string, environment: string): Promise<{ allowed: boolean; remaining: number; count: number }>{
+async function incrementAndGet(deviceId: string, taskId: string, environment: string): Promise<{ allowed: boolean; remaining: number; count: number }> {
   const today = getToday();
   const current = await getCurrentCount(deviceId, taskId, environment);
 
@@ -54,7 +62,6 @@ async function incrementAndGet(deviceId: string, taskId: string, environment: st
     });
     if (insertError) {
       console.error('Error inserting attempts:', insertError);
-      // Fallback: do not block, but return remaining conservatively
       return { allowed: true, remaining: Math.max(0, DAILY_LIMIT - 1), count: 1 };
     }
     return { allowed: true, remaining: DAILY_LIMIT - 1, count: 1 };
@@ -69,88 +76,103 @@ async function incrementAndGet(deviceId: string, taskId: string, environment: st
       .eq('environment', environment);
     if (updateError) {
       console.error('Error updating attempts:', updateError);
-      return { allowed: true, remaining: Math.max(0, DAILY_LIMIT - next), count: next };
     }
     return { allowed: true, remaining: Math.max(0, DAILY_LIMIT - next), count: next };
   }
 }
 
-
-function validatePrompt(prompt: string, taskContext: string): { isValid: boolean; error?: string } {
+function validatePrompt(prompt: string): { isValid: boolean; error?: string } {
   if (!prompt || prompt.trim().length === 0) {
     return { isValid: false, error: 'Промпт не может быть пустым' };
   }
-  
+
   if (prompt.length > 2000) {
     return { isValid: false, error: 'Промпт слишком длинный (максимум 2000 символов)' };
   }
-  
-  // Anti-cheating patterns detection
+
   const lowerPrompt = prompt.toLowerCase();
   const suspiciousPatterns = [
-    // Direct solution requests
-    'дай ответ', 'покажи ответ', 'реши задание', 'решение задачи', 'готовый ответ',
-    'выполни задание', 'сделай домашку', 'сделай за меня',
-    // SQL and code injection attempts
     'select ', 'insert ', 'update ', 'delete ', 'drop ', 'create table', 'alter table',
-    // System prompt bypass attempts
     'игнорируй инструкции', 'забудь про систему', 'ты теперь', 'притворись что',
     'roleplay', 'act as', 'pretend you are', 'ignore previous', 'new instructions',
-    // Direct cheating attempts
-    'весь текст документа', 'скопируй документ', 'покажи весь документ полностью',
-    'что в документе написано', 'перепиши документ', 'executive summary готовый'
   ];
-  
+
   for (const pattern of suspiciousPatterns) {
     if (lowerPrompt.includes(pattern)) {
-      return { 
-        isValid: false, 
-        error: 'Промпт содержит недопустимые запросы. Пожалуйста, формулируйте запросы для изучения создания промптов.' 
+      return {
+        isValid: false,
+        error: 'Промпт содержит недопустимые запросы. Пожалуйста, формулируйте запросы для изучения создания промптов.',
       };
     }
   }
-  
-  // Basic validation for task relevance
-  const taskKeywords = {
-    'document-analysis': ['анализ', 'документ', 'резюме', 'executive', 'summary', 'промпт'],
-    'deep-research': ['исследование', 'research', 'поиск', 'данные', 'информация', 'промпт'],
-    'specialized-gpt': ['gpt', 'инструкция', 'система', 'prompt', 'specialized', 'промпт']
-  };
-  
-  const keywords = taskKeywords[taskContext as keyof typeof taskKeywords] || [];
-  
-  const hasRelevantKeyword = keywords.some(keyword => 
-    lowerPrompt.includes(keyword.toLowerCase())
-  );
-  
-  if (!hasRelevantKeyword && prompt.length > 50) {
-    return { 
-      isValid: false, 
-      error: 'Промпт должен быть связан с контекстом задания и созданием промптов' 
-    };
-  }
-  
+
   return { isValid: true };
 }
 
-function evaluatePromptStructure(prompt: string): string {
-  const p = prompt.trim();
-  const hasSections = /(^|\n)\s*(цель|роль|шаги|инструкция|формат|критерии|ограничения)\s*[:\-]/i.test(p);
-  const hasBullets = /(^|\n)[\-\*•]/.test(p);
-  const hasNumbered = /(^|\n)\s*\d+\./.test(p);
-  const lengthOK = p.length >= 40;
-
-  const wellStructured = (hasSections || hasBullets || hasNumbered) && lengthOK;
-
-  if (wellStructured) {
-    return 'Промпт имеет четкую структуру. Я проверяю только структуру промптов, не выполняю задания.';
+async function evaluateWithAI(prompt: string, taskContext: string): Promise<string> {
+  const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+  if (!LOVABLE_API_KEY) {
+    console.error('LOVABLE_API_KEY is not configured');
+    return 'Сервис временно недоступен. Попробуйте позже.';
   }
-  return 'Я проверяю только структуру промптов, не выполняю задания. Рекомендую сделать формулировки более конкретными и структурировать разделами.';
+
+  const taskDescription = TASK_DESCRIPTIONS[taskContext] || `Задание: ${taskContext}`;
+
+  const systemPrompt = `Ты — эксперт по оценке промптов для AI-моделей. Твоя задача — оценить СТРУКТУРУ и КАЧЕСТВО промпта пользователя и дать рекомендации по улучшению.
+
+КОНТЕКСТ ЗАДАНИЯ: ${taskDescription}
+
+СТРОГИЕ ПРАВИЛА:
+1. Оценивай ТОЛЬКО промпты, которые относятся к указанному заданию. Промпт пользователя — это текст, который он собирается отправить в ChatGPT/другую AI-модель для выполнения этого задания.
+2. Если пользователь просит что-то НЕ связанное с заданием (рассказать сказку, написать пост в Telegram, ответить на общие вопросы, сгенерировать код и т.д.) — вежливо откажи и объясни, что этот инструмент предназначен ТОЛЬКО для тренировки промптов по текущему упражнению.
+3. НИКОГДА не выполняй задание за пользователя. Не давай готовых ответов, executive summary, писем, текстов.
+4. Давай 2-3 конкретные рекомендации по улучшению структуры промпта.
+5. Отвечай на русском языке, кратко (до 300 слов).
+
+КРИТЕРИИ ОЦЕНКИ ПРОМПТА:
+- Четкость формулировки цели/задачи
+- Указание роли для AI
+- Структурированность (разделы, пункты, шаги)
+- Указание формата ожидаемого результата
+- Наличие контекста и ограничений`;
+
+  try {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-3-flash-preview',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: prompt },
+        ],
+      }),
+    });
+
+    if (response.status === 429) {
+      return 'Слишком много запросов. Пожалуйста, подождите немного и попробуйте снова.';
+    }
+    if (response.status === 402) {
+      return 'Сервис временно недоступен. Попробуйте позже.';
+    }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('AI gateway error:', response.status, errorText);
+      return 'Не удалось получить оценку от AI. Попробуйте позже.';
+    }
+
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content || 'Не удалось получить ответ от AI.';
+  } catch (error) {
+    console.error('Error calling AI gateway:', error);
+    return 'Произошла ошибка при обращении к AI. Попробуйте позже.';
+  }
 }
 
-
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -161,37 +183,33 @@ serve(async (req) => {
     const device = (deviceId && String(deviceId))
       || (req.headers.get('x-device-id') || (req.headers.get('user-agent') || 'unknown')).slice(0, 64);
 
-    // Get environment from header (set by client)
     const environment = req.headers.get('x-environment') || 'dev';
 
-    // Increment attempts first (counts any request with a non-empty prompt)
     const attempts = await incrementAndGet(device, taskId, environment);
     if (!attempts.allowed) {
       console.log(`Prompt test request - Task: ${taskContext}, Remaining attempts: 0`);
       return new Response(JSON.stringify({
         error: 'Превышен лимит попыток на сегодня (5 попыток в день)',
-        remaining: 0
+        remaining: 0,
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Validate prompt after counting the attempt
-    const validation = validatePrompt(prompt, taskContext);
+    const validation = validatePrompt(prompt);
     if (!validation.isValid) {
       return new Response(JSON.stringify({ error: validation.error, remaining: attempts.remaining }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Generate a strictly limited structural feedback (no task answers)
-    const aiResponse = evaluatePromptStructure(prompt);
+    const aiResponse = await evaluateWithAI(prompt, taskContext);
 
     console.log(`Prompt test request - Task: ${taskContext}, Remaining attempts: ${attempts.remaining}`);
 
     return new Response(JSON.stringify({
       response: aiResponse,
-      remaining: attempts.remaining
+      remaining: attempts.remaining,
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
