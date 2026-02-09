@@ -10,6 +10,7 @@ import { GuestBanner } from '@/components/GuestBanner';
 import { GuestLimitDialog } from '@/components/GuestLimitDialog';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
 import { getSkillIcon, getSkillColor } from '@/utils/skillIcons';
+import { levelToPercent } from '@/utils/skillLevels';
 import {
   Dialog,
   DialogContent,
@@ -32,33 +33,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const demoProgressBySlug: Record<string, number> = {
-  'communication': 23,
-  'knowledge-management': 50,
-  'content-creation': 15,
-  'problem-solving': 88,
-  'research': 67,
-  'automation': 10,
-  'data-analysis': 40,
-  'productivity': 92,
-};
-
-const demoCompletedBySlug: Record<string, { completed: number; total: number }> = {
-  'communication': { completed: 2, total: 11 },
-  'knowledge-management': { completed: 5, total: 11 },
-  'content-creation': { completed: 1, total: 11 },
-  'problem-solving': { completed: 9, total: 11 },
-  'research': { completed: 8, total: 13 },
-  'automation': { completed: 1, total: 11 },
-  'data-analysis': { completed: 4, total: 11 },
-  'productivity': { completed: 10, total: 11 },
-};
-
-const getDisplayProgress = (slug: string, actualProgress: number) => {
-  if (actualProgress && actualProgress > 0) return actualProgress;
-  return demoProgressBySlug[slug] ?? 0;
-};
-
 const MyProgress = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -69,7 +43,8 @@ const MyProgress = () => {
   // Prepare radar chart data
   const radarData = skills.map(skill => ({
     subject: skill.skill.slug,
-    value: getDisplayProgress(skill.skill.slug, skill.progress_percent),
+    value: skill.progress_percent,
+    target: levelToPercent(skill.target_level),
     fullMark: 100,
   }));
 
@@ -135,7 +110,7 @@ const MyProgress = () => {
                       const iconX = cx + iconRadius * Math.cos(rad);
                       const iconY = cy + iconRadius * Math.sin(rad);
 
-                      const stats = demoCompletedBySlug[skill.skill.slug] || { completed: 0, total: 0 };
+                      const progressPercent = skill.progress_percent;
                       
                       return (
                         <g transform={`translate(${iconX},${iconY})`}>
@@ -160,9 +135,9 @@ const MyProgress = () => {
                                 <DropdownMenuSeparator />
                                 <div className="px-2 py-3">
                                   <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                                    <span className="text-sm text-muted-foreground">Выполнено заданий</span>
+                                    <span className="text-sm text-muted-foreground">Прогресс</span>
                                     <span className="text-xl font-bold text-[#8B5CF6]">
-                                      {stats.completed}/{stats.total}
+                                      {progressPercent}%
                                     </span>
                                   </div>
                                 </div>
@@ -172,6 +147,15 @@ const MyProgress = () => {
                         </g>
                       );
                     }}
+                  />
+                  <Radar 
+                    name="Цель" 
+                    dataKey="target" 
+                    stroke="#F97316" 
+                    fill="#F97316" 
+                    fillOpacity={0.08}
+                    strokeWidth={2}
+                    strokeDasharray="6 4"
                   />
                   <Radar 
                     name="Прогресс" 
@@ -208,10 +192,10 @@ const MyProgress = () => {
                           {skill.current_level === 1 ? 'Basic' : skill.current_level === 2 ? 'Pro' : 'AI-Native'}
                         </span>
                         <span className="text-sm font-bold text-[#8B5CF6]">
-                          {getDisplayProgress(skill.skill.slug, skill.progress_percent)}%
+                          {skill.progress_percent}%
                         </span>
                       </div>
-                      <Progress value={getDisplayProgress(skill.skill.slug, skill.progress_percent)} className="h-2" />
+                      <Progress value={skill.progress_percent} className="h-2" />
                     </div>
                   </div>
                 </CardContent>
