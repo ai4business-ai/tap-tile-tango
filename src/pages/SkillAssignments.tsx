@@ -74,7 +74,7 @@ const SkillAssignments = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="px-4 pb-4 md:px-6 md:pb-6 lg:px-8 lg:pb-8 md:max-w-md mx-auto">
+      <div>
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
           <button 

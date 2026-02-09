@@ -11,7 +11,7 @@ const TaskClientResponseDemo = () => {
   const [solutionPrompt, setSolutionPrompt] = useState('');
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] px-4 pb-8 pt-4 w-full md:max-w-md mx-auto">
+    <div className="min-h-screen">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <button 
