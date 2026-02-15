@@ -12,6 +12,13 @@ interface BlurredAnswerBlockProps {
   canSubmit?: boolean;
   taskDescription?: string;
   placeholder?: string;
+  label?: string;
+  maxLength?: number;
+  secondValue?: string;
+  onSecondChange?: (value: string) => void;
+  secondPlaceholder?: string;
+  secondLabel?: string;
+  secondMaxLength?: number;
 }
 
 export const BlurredAnswerBlock = ({
@@ -22,9 +29,17 @@ export const BlurredAnswerBlock = ({
   isSubmitting = false,
   canSubmit = true,
   taskDescription,
-  placeholder = "Введите ваш ответ..."
+  placeholder = "Введите ваш ответ...",
+  label = "Ваш ответ:",
+  maxLength = 4000,
+  secondValue,
+  onSecondChange,
+  secondPlaceholder = "Введите ваш ответ...",
+  secondLabel = "Второе поле:",
+  secondMaxLength = 2000,
 }: BlurredAnswerBlockProps) => {
   const [isUnlocked, setIsUnlocked] = useState(false);
+  const hasSecondField = secondValue !== undefined && onSecondChange !== undefined;
 
   const handleUnlock = () => {
     setIsUnlocked(true);
@@ -53,19 +68,39 @@ export const BlurredAnswerBlock = ({
         
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-foreground block mb-2">Ваш ответ:</label>
+            <label className="text-sm font-medium text-foreground block mb-2">{label}</label>
             <Textarea
               value={value}
               onChange={(e) => onChange(e.target.value)}
               placeholder={placeholder}
               className="min-h-[120px]"
               disabled={disabled}
-              maxLength={4000}
+              maxLength={maxLength}
             />
             <div className="text-sm text-muted-foreground mt-1">
-              {value.length}/4000 символов
+              {value.length}/{maxLength} символов
             </div>
           </div>
+
+          {hasSecondField && (
+            <>
+              <div className="h-px bg-border" />
+              <div>
+                <label className="text-sm font-medium text-foreground block mb-2">{secondLabel}</label>
+                <Textarea
+                  value={secondValue}
+                  onChange={(e) => onSecondChange(e.target.value)}
+                  placeholder={secondPlaceholder}
+                  className="min-h-[120px]"
+                  disabled={disabled}
+                  maxLength={secondMaxLength}
+                />
+                <div className="text-sm text-muted-foreground mt-1">
+                  {secondValue.length}/{secondMaxLength} символов
+                </div>
+              </div>
+            </>
+          )}
           
           <Button
             onClick={onSubmit}

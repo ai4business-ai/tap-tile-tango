@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { BlurredAnswerBlock } from '@/components/BlurredAnswerBlock';
 import { useChatAssistant } from '@/hooks/useChatAssistant';
 import { useToast } from '@/hooks/use-toast';
 import { PromptTester } from '@/components/PromptTester';
@@ -324,59 +325,22 @@ const TaskMeetingAgenda = () => {
 
       {!isChatMode ? (
         <>
-          <Card className="mb-6">
-            <CardContent className="pt-6 space-y-6">
-              <div className="space-y-3">
-                <label className="text-sm font-medium text-foreground block">Промпт для создания адженды:</label>
-                <Textarea
-                  value={agendaPrompt}
-                  onChange={(e) => setAgendaPrompt(e.target.value)}
-                  placeholder="Напишите промпт для создания повестки встречи..."
-                  className="min-h-[150px]"
-                  maxLength={2000}
-                />
-                <div className="text-sm text-muted-foreground">
-                  {agendaPrompt.length}/2000 символов
-                </div>
-              </div>
-
-              <div className="h-px bg-border"></div>
-
-              <div className="space-y-3">
-                <label className="text-sm font-medium text-foreground block">Промпт для follow-up письма:</label>
-                <Textarea
-                  value={followupPrompt}
-                  onChange={(e) => setFollowupPrompt(e.target.value)}
-                  placeholder="Напишите промпт для создания итогового письма..."
-                  className="min-h-[150px]"
-                  maxLength={2000}
-                />
-                <div className="text-sm text-muted-foreground">
-                  {followupPrompt.length}/2000 символов
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="mt-6 mb-4 px-4 max-w-sm mx-auto">
-            <Button 
-              onClick={handleSubmitTask}
-              disabled={(!agendaPrompt.trim() && !followupPrompt.trim()) || isLoading}
-              className="w-full py-4 text-base font-medium"
-            >
-              {isLoading ? (
-                <>
-                  <Send className="w-4 h-4 mr-2 animate-spin" />
-                  Отправляем...
-                </>
-              ) : (
-                <>
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Отправить на проверку
-                </>
-              )}
-            </Button>
-          </div>
+          <BlurredAnswerBlock
+            value={agendaPrompt}
+            onChange={setAgendaPrompt}
+            onSubmit={handleSubmitTask}
+            isSubmitting={isLoading}
+            canSubmit={!!(agendaPrompt.trim() || followupPrompt.trim())}
+            taskDescription="Составьте промпты для создания повестки встречи и follow-up письма"
+            placeholder="Напишите промпт для создания повестки встречи..."
+            label="Промпт для создания адженды:"
+            maxLength={2000}
+            secondValue={followupPrompt}
+            onSecondChange={setFollowupPrompt}
+            secondPlaceholder="Напишите промпт для создания итогового письма..."
+            secondLabel="Промпт для follow-up письма:"
+            secondMaxLength={2000}
+          />
         </>
       ) : (
         <div className="space-y-4">
