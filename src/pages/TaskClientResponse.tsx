@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { BlurredAnswerBlock } from '@/components/BlurredAnswerBlock';
 import { useChatAssistant } from '@/hooks/useChatAssistant';
 import { useToast } from '@/hooks/use-toast';
 import { PromptTester } from '@/components/PromptTester';
@@ -287,41 +288,16 @@ const TaskClientResponse = () => {
 
       {!isChatMode ? (
         <>
-          <Card className="mb-6">
-            <CardContent className="pt-6 space-y-3">
-              <label className="text-sm font-medium text-foreground block">Ваш промпт для ИИ:</label>
-              <Textarea
-                value={userAnswer}
-                onChange={(e) => setUserAnswer(e.target.value)}
-                placeholder="Напишите промпт, который поможет ИИ создать идеальное письмо клиенту..."
-                className="min-h-[200px]"
-                maxLength={4000}
-              />
-              <div className="text-sm text-muted-foreground">
-                {userAnswer.length}/4000 символов
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="mt-6 mb-4 px-4 max-w-sm mx-auto">
-            <Button 
-              onClick={handleSubmitTask}
-              disabled={!userAnswer.trim() || isLoading}
-              className="w-full py-4 text-base font-medium"
-            >
-              {isLoading ? (
-                <>
-                  <Send className="w-4 h-4 mr-2 animate-spin" />
-                  Отправляем...
-                </>
-              ) : (
-                <>
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Отправить на проверку
-                </>
-              )}
-            </Button>
-          </div>
+          <BlurredAnswerBlock
+            value={userAnswer}
+            onChange={setUserAnswer}
+            onSubmit={handleSubmitTask}
+            isSubmitting={isLoading}
+            canSubmit={!!userAnswer.trim()}
+            taskDescription="Напишите промпт, который поможет ИИ создать идеальное письмо клиенту"
+            placeholder="Напишите промпт, который поможет ИИ создать идеальное письмо клиенту..."
+            label="Ваш промпт для ИИ:"
+          />
         </>
       ) : (
         <div className="space-y-4">
