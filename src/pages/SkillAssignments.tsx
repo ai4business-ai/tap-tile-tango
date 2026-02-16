@@ -3,8 +3,11 @@ import { ArrowLeft, Play, BookOpen, FileText, Lock, Check, Clock, PlayCircle } f
 import { useNavigate, useParams } from 'react-router-dom';
 import { GuestBanner } from '@/components/GuestBanner';
 import { useUserAssignments } from '@/hooks/useUserAssignments';
+import { useUserSkills } from '@/hooks/useUserSkills';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+
+const levelToNumber: Record<string, number> = { 'Basic': 1, 'Pro': 2, 'AI-Native': 3 };
 
 const SkillAssignments = () => {
   const navigate = useNavigate();
@@ -27,6 +30,11 @@ const SkillAssignments = () => {
   }, [skillName]);
 
   const { assignments, loading } = useUserAssignments(user?.id, skillName);
+  const { skills: userSkills } = useUserSkills(user?.id);
+
+  // Find target_level for current skill
+  const currentSkillData = userSkills.find(s => s.skill.slug === skillName);
+  const targetLevel = currentSkillData?.target_level ?? 1;
 
   // Group assignments by level
   const groupedAssignments = assignments.reduce((acc, assignment) => {
@@ -37,14 +45,16 @@ const SkillAssignments = () => {
     return acc;
   }, {} as Record<string, typeof assignments>);
 
-  // Determine level status based on submissions
+  // Determine level status based on submissions and target_level
   const getLevelStatus = (level: string) => {
     const levelAssignments = groupedAssignments[level] || [];
     const completedCount = levelAssignments.filter(a => a.submission?.status === 'completed').length;
     const totalCount = levelAssignments.length;
+    const levelNum = levelToNumber[level] || 1;
 
     if (completedCount === totalCount && totalCount > 0) return 'completed';
-    if (completedCount > 0 || levelAssignments.some(a => a.submission?.status === 'submitted')) return 'planned';
+    if (completedCount > 0 || levelAssignments.some(a => a.submission?.status === 'submitted')) return 'in_progress';
+    if (levelNum === 1 || targetLevel >= levelNum) return 'planned';
     return 'locked';
   };
 
@@ -99,7 +109,8 @@ const SkillAssignments = () => {
           const getStatusColor = (status: string) => {
             switch (status) {
               case 'completed': return 'bg-green-500/10 border-green-500/20';
-              case 'planned': return 'bg-yellow-400/10 border-yellow-400/20';
+              case 'in_progress': return 'bg-yellow-400/10 border-yellow-400/20';
+              case 'planned': return 'bg-blue-400/10 border-blue-400/20';
               default: return 'bg-card/60 border-white/10';
             }
           };
@@ -107,7 +118,8 @@ const SkillAssignments = () => {
           const getStatusBadge = (status: string) => {
             switch (status) {
               case 'completed': return { text: 'Выполнено', color: 'bg-green-500' };
-              case 'planned': return { text: 'Запланировано', color: 'bg-yellow-400' };
+              case 'in_progress': return { text: 'В процессе', color: 'bg-yellow-400' };
+              case 'planned': return { text: 'Запланировано', color: 'bg-blue-400' };
               default: return { text: 'Заблокировано', color: 'bg-gray-500' };
             }
           };
