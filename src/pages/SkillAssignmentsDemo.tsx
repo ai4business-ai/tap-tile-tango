@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Lock, Check, Clock } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useUserAssignments } from '@/hooks/useUserAssignments';
+import { useUserSkills } from '@/hooks/useUserSkills';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { getSkillIcon, getSkillColor } from '@/utils/skillIconsDemo';
+
+const levelToNumber: Record<string, number> = { 'Basic': 1, 'Pro': 2, 'AI-Native': 3 };
 
 const SkillAssignmentsDemo = () => {
   const navigate = useNavigate();
@@ -27,6 +30,10 @@ const SkillAssignmentsDemo = () => {
   }, [skillName]);
 
   const { assignments, loading } = useUserAssignments(user?.id, skillName);
+  const { skills: userSkills } = useUserSkills(user?.id);
+
+  const currentSkillData = userSkills.find(s => s.skill.slug === skillName);
+  const targetLevel = currentSkillData?.target_level ?? 1;
 
   // Group assignments by level
   const groupedAssignments = assignments.reduce((acc, assignment) => {
@@ -42,9 +49,11 @@ const SkillAssignmentsDemo = () => {
     const levelAssignments = groupedAssignments[level] || [];
     const completedCount = levelAssignments.filter(a => a.submission?.status === 'completed').length;
     const totalCount = levelAssignments.length;
+    const levelNum = levelToNumber[level] || 1;
 
     if (completedCount === totalCount && totalCount > 0) return 'completed';
     if (completedCount > 0 || levelAssignments.some(a => a.submission?.status === 'submitted')) return 'in_progress';
+    if (levelNum === 1 || targetLevel >= levelNum) return 'planned';
     return 'locked';
   };
 
@@ -109,9 +118,21 @@ const SkillAssignmentsDemo = () => {
                   <span className="px-4 py-1.5 text-sm font-medium text-[#F37168] border border-[#F37168]/30 rounded-full bg-transparent">
                     {level}
                   </span>
-                  {isLevelLocked && (
+                  {isLevelLocked ? (
                     <Lock className="w-5 h-5 text-[#111827]" />
-                  )}
+                  ) : levelStatus === 'planned' ? (
+                    <span className="text-xs font-medium text-blue-500 bg-blue-50 px-2.5 py-1 rounded-full">
+                      Запланировано
+                    </span>
+                  ) : levelStatus === 'in_progress' ? (
+                    <span className="text-xs font-medium text-yellow-600 bg-yellow-50 px-2.5 py-1 rounded-full">
+                      В процессе
+                    </span>
+                  ) : levelStatus === 'completed' ? (
+                    <span className="text-xs font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
+                      Выполнено
+                    </span>
+                  ) : null}
                 </div>
                 
                 {/* Educational Content - Purple left border blocks */}
