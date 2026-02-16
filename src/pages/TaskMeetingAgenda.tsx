@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { PromptTester } from '@/components/PromptTester';
 import { useUserAssignments } from '@/hooks/useUserAssignments';
 import { useAuth } from '@/hooks/useAuth';
+import { renderFormattedText } from '@/lib/utils';
 
 const formatAssistantMessage = (content: string): string[] => {
   if (!content) return [content];
@@ -343,60 +344,66 @@ const TaskMeetingAgenda = () => {
           />
         </>
       ) : (
-        <div className="space-y-4">
-          <div className="space-y-4 mb-6">
-            {chatMessages.map((msg, idx) => (
-              <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                {msg.role === 'tutor' && (
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                    <Bot className="w-5 h-5 text-primary" />
-                  </div>
-                )}
-                <div className={`max-w-[80%] rounded-2xl p-4 ${
-                  msg.role === 'user' 
-                    ? 'bg-primary text-primary-foreground ml-auto' 
-                    : 'bg-card border border-border'
-                }`}>
-                  {msg.role === 'tutor' ? (
-                    <div className="space-y-3">
-                      {formatAssistantMessage(msg.content).map((paragraph, pIdx) => (
-                        <p key={pIdx} className="text-sm text-card-foreground leading-relaxed">
-                          {paragraph}
-                        </p>
-                      ))}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+            <Bot className="w-5 h-5 text-primary" />
+            Чат с тьютором
+          </h3>
+          <div className="space-y-4">
+            <div className="space-y-4 mb-6">
+              {chatMessages.map((msg, idx) => (
+                <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  {msg.role === 'tutor' && (
+                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <Bot className="w-5 h-5 text-primary" />
                     </div>
-                  ) : (
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                   )}
+                  <div className={`max-w-[80%] rounded-2xl p-4 ${
+                    msg.role === 'user' 
+                      ? 'bg-primary text-primary-foreground ml-auto' 
+                      : 'bg-card border border-border'
+                  }`}>
+                    {msg.role === 'tutor' ? (
+                      <div className="space-y-3">
+                        {formatAssistantMessage(msg.content).map((paragraph, pIdx) => (
+                          <p key={pIdx} className="text-sm text-card-foreground leading-relaxed">
+                            {renderFormattedText(paragraph)}
+                          </p>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          <div className="flex gap-2">
-            <Textarea
-              value={currentMessage}
-              onChange={(e) => setCurrentMessage(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSendMessage();
-                }
-              }}
-              placeholder="Задайте вопрос тьютору..."
-              className="min-h-[80px]"
-              disabled={isLoading}
-            />
-            <Button 
-              onClick={handleSendMessage}
-              disabled={!currentMessage.trim() || isLoading}
-              size="icon"
-              className="h-[80px] w-12"
-            >
-              <Send className="w-5 h-5" />
-            </Button>
+            <div className="flex gap-2">
+              <Textarea
+                value={currentMessage}
+                onChange={(e) => setCurrentMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+                placeholder="Задайте вопрос тьютору..."
+                className="min-h-[80px]"
+                disabled={isLoading}
+              />
+              <Button 
+                onClick={handleSendMessage}
+                disabled={!currentMessage.trim() || isLoading}
+                size="icon"
+                className="h-[80px] w-12"
+              >
+                <Send className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
-        </div>
+        </Card>
       )}
     </div>
   );
