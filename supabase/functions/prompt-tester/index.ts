@@ -86,8 +86,8 @@ function validatePrompt(prompt: string): { isValid: boolean; error?: string } {
     return { isValid: false, error: 'Промпт не может быть пустым' };
   }
 
-  if (prompt.length > 2000) {
-    return { isValid: false, error: 'Промпт слишком длинный (максимум 2000 символов)' };
+  if (prompt.length > 4000) {
+    return { isValid: false, error: 'Промпт слишком длинный (максимум 4000 символов)' };
   }
 
   const lowerPrompt = prompt.toLowerCase();
@@ -101,7 +101,7 @@ function validatePrompt(prompt: string): { isValid: boolean; error?: string } {
     if (lowerPrompt.includes(pattern)) {
       return {
         isValid: false,
-        error: 'Промпт содержит недопустимые запросы. Пожалуйста, формулируйте запросы для изучения создания промптов.',
+        error: 'Промпт содержит недопустимые запросы. Пожалуйста, формулируйте запросы в рамках задания.',
       };
     }
   }
@@ -109,7 +109,7 @@ function validatePrompt(prompt: string): { isValid: boolean; error?: string } {
   return { isValid: true };
 }
 
-async function evaluateWithAI(prompt: string, taskContext: string): Promise<string> {
+async function executePrompt(prompt: string, taskContext: string): Promise<string> {
   const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
   if (!LOVABLE_API_KEY) {
     console.error('LOVABLE_API_KEY is not configured');
@@ -118,23 +118,16 @@ async function evaluateWithAI(prompt: string, taskContext: string): Promise<stri
 
   const taskDescription = TASK_DESCRIPTIONS[taskContext] || `Задание: ${taskContext}`;
 
-  const systemPrompt = `Ты — эксперт по оценке промптов для AI-моделей. Твоя задача — оценить СТРУКТУРУ и КАЧЕСТВО промпта пользователя и дать рекомендации по улучшению.
+  const systemPrompt = `Ты — AI-ассистент. Твоя задача — выполнить запрос пользователя как обычная нейросеть.
 
 КОНТЕКСТ ЗАДАНИЯ: ${taskDescription}
 
-СТРОГИЕ ПРАВИЛА:
-1. Оценивай ТОЛЬКО промпты, которые относятся к указанному заданию. Промпт пользователя — это текст, который он собирается отправить в ChatGPT/другую AI-модель для выполнения этого задания.
-2. Если пользователь просит что-то НЕ связанное с заданием (рассказать сказку, написать пост в Telegram, ответить на общие вопросы, сгенерировать код и т.д.) — вежливо откажи и объясни, что этот инструмент предназначен ТОЛЬКО для тренировки промптов по текущему упражнению.
-3. НИКОГДА не выполняй задание за пользователя. Не давай готовых ответов, executive summary, писем, текстов.
-4. Давай 2-3 конкретные рекомендации по улучшению структуры промпта.
-5. Отвечай на русском языке, кратко (до 300 слов).
-
-КРИТЕРИИ ОЦЕНКИ ПРОМПТА:
-- Четкость формулировки цели/задачи
-- Указание роли для AI
-- Структурированность (разделы, пункты, шаги)
-- Указание формата ожидаемого результата
-- Наличие контекста и ограничений`;
+ПРАВИЛА:
+1. Выполняй запрос пользователя полностью и качественно, как если бы ты был ChatGPT.
+2. Если запрос пользователя относится к теме задания — выполни его максимально хорошо. Дай полный, развернутый ответ.
+3. Если запрос пользователя НЕ связан с темой задания (например, просит рассказать сказку, написать код, обсудить погоду и т.д.) — вежливо откажи и объясни: "Этот инструмент предназначен для тестирования промптов по текущему заданию: ${taskDescription}. Пожалуйста, сформулируйте запрос в рамках задания."
+4. Отвечай на русском языке.
+5. Форматируй ответ используя markdown (жирный текст, списки, заголовки) для лучшей читаемости.`;
 
   try {
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -161,7 +154,7 @@ async function evaluateWithAI(prompt: string, taskContext: string): Promise<stri
     if (!response.ok) {
       const errorText = await response.text();
       console.error('AI gateway error:', response.status, errorText);
-      return 'Не удалось получить оценку от AI. Попробуйте позже.';
+      return 'Не удалось получить ответ от AI. Попробуйте позже.';
     }
 
     const data = await response.json();
@@ -203,7 +196,7 @@ serve(async (req) => {
       });
     }
 
-    const aiResponse = await evaluateWithAI(prompt, taskContext);
+    const aiResponse = await executePrompt(prompt, taskContext);
 
     console.log(`Prompt test request - Task: ${taskContext}, Remaining attempts: ${attempts.remaining}`);
 

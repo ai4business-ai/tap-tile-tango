@@ -1,19 +1,15 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Bot, CheckCircle, Target, Lightbulb, Trophy } from 'lucide-react';
+import { ArrowLeft, Bot, CheckCircle, Target } from 'lucide-react';
 import { PromptTester } from '@/components/PromptTester';
-import { BlurredAnswerBlock } from '@/components/BlurredAnswerBlock';
+import { TutorChat } from '@/components/TutorChat';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const TaskSpecializedGPT = () => {
   const navigate = useNavigate();
-  const [userAnswer, setUserAnswer] = useState('');
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
       <div className="flex items-center gap-4 mb-6">
         <button 
           onClick={() => navigate('/skill-assignments/research')}
@@ -58,7 +54,6 @@ const TaskSpecializedGPT = () => {
               <li>• Создайте инструкцию (system prompt) для GPT</li>
             </ul>
           </div>
-          
           <div className="space-y-2">
             <h4 className="text-sm font-medium text-foreground">GPT должен уметь:</h4>
             <ul className="space-y-1 text-sm text-muted-foreground">
@@ -68,7 +63,6 @@ const TaskSpecializedGPT = () => {
               <li>• Задавать уточняющие вопросы при необходимости</li>
             </ul>
           </div>
-
           <div className="space-y-2">
             <h4 className="text-sm font-medium text-foreground">Включите в промпт:</h4>
             <ul className="space-y-1 text-sm text-muted-foreground">
@@ -109,17 +103,16 @@ const TaskSpecializedGPT = () => {
       <PromptTester 
         taskContext="specialized-gpt"
         taskId="specialized-gpt-task"
-        placeholder="Создай инструкцию для GPT-ассистента, который анализирует документы..."
+        placeholder="Напишите system prompt для GPT-ассистента и получите ответ нейросети..."
       />
 
-      {/* Блок ответа */}
-      <BlurredAnswerBlock
-        value={userAnswer}
-        onChange={setUserAnswer}
-        onSubmit={() => console.log('Задание отправлено:', userAnswer)}
-        canSubmit={userAnswer.trim().length >= 10}
-        taskDescription="Создайте специализированный GPT для анализа документов и опишите ваш подход."
-        placeholder="Опишите создание вашего специализированного GPT..."
+      {/* Tutor Chat */}
+      <TutorChat
+        taskContext="specialized-gpt"
+        taskId="specialized-gpt"
+        skillSlug="research"
+        placeholder="Вставьте ваш system prompt для оценки тьютором..."
+        label="Ваш system prompt:"
       />
     </div>
   );
