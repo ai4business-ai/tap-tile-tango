@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.set-user-environment]
 verify_jwt = false
+
+[functions.tutor-chat]
+verify_jwt = false

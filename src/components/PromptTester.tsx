@@ -207,12 +207,12 @@ const deviceIdRef = useRef<string>('');
     if (placeholder) return placeholder;
     
     const placeholders = {
-      'document-analysis': 'Напишите промпт для анализа документов (система проверит только структуру)...',
-      'deep-research': 'Напишите промпт для исследовательских задач (система проверит только структуру)...',
-      'specialized-gpt': 'Напишите промпт для GPT-ассистента (система проверит только структуру)...'
+      'document-analysis': 'Напишите промпт для анализа документов и получите ответ нейросети...',
+      'deep-research': 'Напишите промпт для исследовательских задач и получите ответ нейросети...',
+      'specialized-gpt': 'Напишите промпт для GPT-ассистента и получите ответ нейросети...'
     };
     
-    return placeholders[taskContext as keyof typeof placeholders] || 'Введите промпт для проверки структуры...';
+    return placeholders[taskContext as keyof typeof placeholders] || 'Введите промпт и получите ответ нейросети...';
   };
 
   return (
@@ -230,11 +230,11 @@ const deviceIdRef = useRef<string>('');
               </PopoverTrigger>
               <PopoverContent className="w-80">
                 <div className="space-y-2">
-                  <h4 className="font-medium">О тестировании промптов</h4>
+                  <h4 className="font-medium">Песочница для промптов</h4>
                   <p className="text-sm text-muted-foreground">
-                    <strong>ВАЖНО:</strong> Этот инструмент проверяет ТОЛЬКО структуру ваших промптов.
-                    Он НЕ выполняет задания и НЕ дает готовые ответы.
-                    У вас есть 5 попыток в день для улучшения формулировки промптов.
+                    Здесь вы можете протестировать ваш промпт и увидеть, как нейросеть на него ответит.
+                    Используйте песочницу, чтобы итеративно улучшать промпт до идеального результата.
+                    У вас есть 5 попыток в день.
                   </p>
                 </div>
               </PopoverContent>
