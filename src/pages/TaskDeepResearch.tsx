@@ -9,6 +9,7 @@ import { useChatAssistant } from '@/hooks/useChatAssistant';
 import { PromptTester } from '@/components/PromptTester';
 import { BlurredAnswerBlock } from '@/components/BlurredAnswerBlock';
 import { useToast } from '@/hooks/use-toast';
+import { renderFormattedText } from '@/lib/utils';
 
 // Helper function to format assistant messages into paragraphs
 const formatAssistantMessage = (content: string): string[] => {
@@ -315,7 +316,7 @@ const TaskDeepResearch = () => {
                       <div className="space-y-2">
                         {formatAssistantMessage(message.content).map((paragraph, pIndex) => (
                           <p key={pIndex} className="leading-relaxed">
-                            {paragraph.endsWith('.') ? paragraph : paragraph + '.'}
+                            {renderFormattedText(paragraph.endsWith('.') ? paragraph : paragraph + '.')}
                           </p>
                         ))}
                       </div>

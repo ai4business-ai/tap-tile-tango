@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Loader2, TestTube, Copy, Info, Send, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { renderFormattedText } from '@/lib/utils';
 
 interface PromptTesterProps {
   taskContext: string;
@@ -277,7 +278,7 @@ const deviceIdRef = useRef<string>('');
                       : 'bg-secondary/50 text-secondary-foreground border'
                   }`}
                 >
-                  <div className="whitespace-pre-wrap break-words">{message.content}</div>
+                  <div className="whitespace-pre-wrap break-words">{message.type === 'ai' ? renderFormattedText(message.content) : message.content}</div>
                   <div className={`text-xs mt-1 opacity-70 ${
                     message.type === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
                   }`}>
