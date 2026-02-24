@@ -13,10 +13,7 @@ const TaskDocumentAnalysis = () => {
   const { toast } = useToast();
   const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
   const [documents, setDocuments] = useState<Array<{
-    id: string;
-    title: string;
-    description: string;
-    file_path: string;
+    id: string; title: string; description: string; file_path: string;
   }>>([]);
   const [isLoadingDocuments, setIsLoadingDocuments] = useState(true);
   const [showDescription, setShowDescription] = useState(true);
@@ -31,7 +28,6 @@ const TaskDocumentAnalysis = () => {
           .select('id, title, description, file_path')
           .eq('task_type', 'document-analysis')
           .order('created_at', { ascending: true });
-
         if (error) {
           console.error('Error loading documents:', error);
           toast({ title: "Ошибка", description: "Не удалось загрузить документы", variant: "destructive" });
@@ -51,46 +47,31 @@ const TaskDocumentAnalysis = () => {
   const handleDocumentSelect = (documentId: string) => {
     setSelectedDocument(documentId);
     const selectedDoc = documents.find(doc => doc.id === documentId);
-    if (selectedDoc) {
-      handleDocumentDownload(documentId, selectedDoc.title);
-    }
+    if (selectedDoc) handleDocumentDownload(documentId, selectedDoc.title);
   };
 
   const handleDocumentDownload = async (documentId: string, displayName: string) => {
     try {
       const selectedDoc = documents.find(doc => doc.id === documentId);
       if (!selectedDoc) throw new Error('Document not found');
-
       const { data, error } = await supabase.storage.from('documents').download(selectedDoc.file_path);
       if (!error && data) {
         const blobUrl = URL.createObjectURL(data);
         const link = document.createElement('a');
-        link.href = blobUrl;
-        link.download = `${displayName}.pdf`;
-        link.target = '_blank';
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        link.href = blobUrl; link.download = `${displayName}.pdf`; link.target = '_blank'; link.style.display = 'none';
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
         setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
         toast({ title: 'Файл скачивается', description: `"${displayName}" начинает загрузку` });
         return;
       }
-
       const { data: urlData } = supabase.storage.from('documents').getPublicUrl(selectedDoc.file_path);
       if (urlData?.publicUrl) {
         const link = document.createElement('a');
-        link.href = urlData.publicUrl;
-        link.download = `${displayName}.pdf`;
-        link.target = '_blank';
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        link.href = urlData.publicUrl; link.download = `${displayName}.pdf`; link.target = '_blank'; link.style.display = 'none';
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
         toast({ title: 'Файл скачивается', description: `"${displayName}" начинает загрузку (public URL)` });
         return;
       }
-
       const deriveLocalFileName = (path: string) => {
         let name = path.split('/').pop() || path;
         const parts = name.split('.');
@@ -98,17 +79,11 @@ const TaskDocumentAnalysis = () => {
         while (idx < parts.length - 1 && /^\d+$/.test(parts[idx])) idx++;
         return parts.slice(idx).join('.');
       };
-
       const fallbackName = deriveLocalFileName(selectedDoc.file_path);
       const localUrl = `/documents/${fallbackName}`;
       const link = document.createElement('a');
-      link.href = localUrl;
-      link.download = fallbackName;
-      link.target = '_blank';
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      link.href = localUrl; link.download = fallbackName; link.target = '_blank'; link.style.display = 'none';
+      document.body.appendChild(link); link.click(); document.body.removeChild(link);
       toast({ title: 'Файл скачивается', description: `"${displayName}" открыт по локальной ссылке` });
     } catch (error) {
       console.error('Download error:', error);
@@ -116,19 +91,8 @@ const TaskDocumentAnalysis = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen">
-      <div className="flex items-center gap-4 mb-6">
-        <button onClick={() => navigate('/skill-assignments/research')} className="w-8 h-8 flex items-center justify-center">
-          <ArrowLeft className="w-6 h-6 text-foreground" />
-        </button>
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Анализ объемного документа</h1>
-          <p className="text-sm text-muted-foreground">BASIC уровень | Исследования и обработка информации</p>
-        </div>
-      </div>
-
-      {/* Task Description */}
+  const taskContent = (
+    <>
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base">
@@ -150,7 +114,6 @@ const TaskDocumentAnalysis = () => {
         )}
       </Card>
 
-      {/* Task Requirements */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base">
@@ -176,7 +139,6 @@ const TaskDocumentAnalysis = () => {
                 <li>• Все это на 1 странице A4</li>
               </ul>
             </div>
-            
             <div className="space-y-3">
               <h4 className="text-sm font-medium text-foreground">Выберите документ для анализа:</h4>
               {isLoadingDocuments ? (
@@ -190,7 +152,6 @@ const TaskDocumentAnalysis = () => {
                       { color: 'text-purple-accent', bgColor: 'bg-secondary/50 border-border', selectedBg: 'bg-secondary border-purple-accent' }
                     ];
                     const colorTheme = colors[index % colors.length];
-                    
                     return (
                       <div 
                         key={doc.id}
@@ -204,19 +165,11 @@ const TaskDocumentAnalysis = () => {
                         <FileText className={`w-5 h-5 ${colorTheme.color}`} />
                         <div className="flex-1">
                           <span className="text-sm text-foreground block">{doc.title}</span>
-                          {doc.description && (
-                            <span className="text-xs text-muted-foreground">{doc.description}</span>
-                          )}
+                          {doc.description && <span className="text-xs text-muted-foreground">{doc.description}</span>}
                         </div>
                         <div className="flex items-center gap-2">
                           {selectedDocument === doc.id && <Check className="w-4 h-4 text-primary" />}
-                          <Download 
-                            className="w-4 h-4 text-muted-foreground" 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDocumentDownload(doc.id, doc.title);
-                            }}
-                          />
+                          <Download className="w-4 h-4 text-muted-foreground" onClick={(e) => { e.stopPropagation(); handleDocumentDownload(doc.id, doc.title); }} />
                         </div>
                       </div>
                     );
@@ -233,8 +186,7 @@ const TaskDocumentAnalysis = () => {
         )}
       </Card>
 
-      {/* Success Criteria */}
-      <Card className="mb-6">
+      <Card className="mb-6 lg:mb-0">
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base">
             <div className="flex items-center gap-2">
@@ -263,16 +215,17 @@ const TaskDocumentAnalysis = () => {
           </CardContent>
         )}
       </Card>
+    </>
+  );
 
-      {/* Prompt Tester */}
+  const workContent = (
+    <>
       <PromptTester 
         taskContext="document-analysis"
         taskId="document-analysis-task"
         documentId={selectedDocument}
         placeholder="Напишите промпт для анализа документа и получите ответ нейросети..."
       />
-
-      {/* Tutor Chat */}
       <TutorChat
         taskContext="document-analysis"
         taskId="document-analysis"
@@ -280,6 +233,25 @@ const TaskDocumentAnalysis = () => {
         placeholder="Вставьте ваш промпт для оценки тьютором..."
         label="Ваш промпт для анализа документа:"
       />
+    </>
+  );
+
+  return (
+    <div className="min-h-screen">
+      <div className="flex items-center gap-4 mb-6">
+        <button onClick={() => navigate('/skill-assignments/research')} className="w-8 h-8 flex items-center justify-center">
+          <ArrowLeft className="w-6 h-6 text-foreground" />
+        </button>
+        <div>
+          <h1 className="text-xl font-semibold text-foreground">Анализ объемного документа</h1>
+          <p className="text-sm text-muted-foreground">BASIC уровень | Исследования и обработка информации</p>
+        </div>
+      </div>
+
+      <div className="lg:grid lg:grid-cols-2 lg:gap-6">
+        <div className="lg:sticky lg:top-8 lg:self-start">{taskContent}</div>
+        <div>{workContent}</div>
+      </div>
     </div>
   );
 };

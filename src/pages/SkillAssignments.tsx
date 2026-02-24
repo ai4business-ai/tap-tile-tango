@@ -100,7 +100,7 @@ const SkillAssignments = () => {
         </div>
 
         {/* Levels */}
-        <div className="space-y-6">
+        <div className="space-y-6 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0">
         {['Basic', 'Pro', 'AI-Native'].map((level) => {
           const levelAssignments = groupedAssignments[level] || [];
           const levelStatus = getLevelStatus(level);

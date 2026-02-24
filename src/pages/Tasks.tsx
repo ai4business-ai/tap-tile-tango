@@ -95,7 +95,7 @@ const Tasks = () => {
       </div>
 
       {/* Tasks List */}
-      <div className="space-y-3 pb-24">
+      <div className="space-y-3 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-4 lg:space-y-0 pb-24 lg:pb-8">
         {skills.map((skill) => (
           <div
             key={skill.id}

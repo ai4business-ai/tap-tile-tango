@@ -52,7 +52,7 @@ const WebinarRecords = () => {
   };
 
   const renderItems = (items: TheoryItem[]) => (
-    <div className="space-y-4">
+    <div className="space-y-4 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-4 lg:space-y-0">
       {items.map((item) => (
         <div key={item.id} className="glass-card rounded-2xl p-4 shadow-xl">
           <div className="flex items-center justify-between mb-3">

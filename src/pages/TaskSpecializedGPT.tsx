@@ -8,22 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 const TaskSpecializedGPT = () => {
   const navigate = useNavigate();
 
-  return (
-    <div className="min-h-screen">
-      <div className="flex items-center gap-4 mb-6">
-        <button 
-          onClick={() => navigate('/skill-assignments/research')}
-          className="w-8 h-8 flex items-center justify-center"
-        >
-          <ArrowLeft className="w-6 h-6 text-foreground" />
-        </button>
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Создание специализированного GPT</h1>
-          <p className="text-sm text-muted-foreground">AI-NATIVE уровень | Исследования и обработка информации</p>
-        </div>
-      </div>
-
-      {/* Task Description */}
+  const taskContent = (
+    <>
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
@@ -38,7 +24,6 @@ const TaskSpecializedGPT = () => {
         </CardContent>
       </Card>
 
-      {/* Task Requirements */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
@@ -75,8 +60,7 @@ const TaskSpecializedGPT = () => {
         </CardContent>
       </Card>
 
-      {/* Success Criteria */}
-      <Card className="mb-6">
+      <Card className="mb-6 lg:mb-0">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <CheckCircle className="w-5 h-5 text-primary" />
@@ -98,15 +82,16 @@ const TaskSpecializedGPT = () => {
           </div>
         </CardContent>
       </Card>
+    </>
+  );
 
-      {/* Prompt Tester */}
+  const workContent = (
+    <>
       <PromptTester 
         taskContext="specialized-gpt"
         taskId="specialized-gpt-task"
         placeholder="Напишите system prompt для GPT-ассистента и получите ответ нейросети..."
       />
-
-      {/* Tutor Chat */}
       <TutorChat
         taskContext="specialized-gpt"
         taskId="specialized-gpt"
@@ -114,6 +99,28 @@ const TaskSpecializedGPT = () => {
         placeholder="Вставьте ваш system prompt для оценки тьютором..."
         label="Ваш system prompt:"
       />
+    </>
+  );
+
+  return (
+    <div className="min-h-screen">
+      <div className="flex items-center gap-4 mb-6">
+        <button 
+          onClick={() => navigate('/skill-assignments/research')}
+          className="w-8 h-8 flex items-center justify-center"
+        >
+          <ArrowLeft className="w-6 h-6 text-foreground" />
+        </button>
+        <div>
+          <h1 className="text-xl font-semibold text-foreground">Создание специализированного GPT</h1>
+          <p className="text-sm text-muted-foreground">AI-NATIVE уровень | Исследования и обработка информации</p>
+        </div>
+      </div>
+
+      <div className="lg:grid lg:grid-cols-2 lg:gap-6">
+        <div className="lg:sticky lg:top-8 lg:self-start">{taskContent}</div>
+        <div>{workContent}</div>
+      </div>
     </div>
   );
 };
