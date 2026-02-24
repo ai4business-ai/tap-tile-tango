@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   TrendingUp,
-  ClipboardList,
+  GraduationCap,
   PlayCircle,
-  BookOpen,
+  Search,
   Home
 } from 'lucide-react';
 import { ExpandableTabs } from '@/components/ui/expandable-tabs';
@@ -20,10 +20,10 @@ export const BottomNavigation = () => {
 
   const tabs = [
     { title: "Главная", icon: Home, path: "/" },
-    { title: "Задания", icon: ClipboardList, path: "/tasks" },
+    { title: "Курсы", icon: GraduationCap, path: "/my-courses" },
     { title: "Следующее", icon: PlayCircle, path: "next" },
     { title: "Прогресс", icon: TrendingUp, path: "/my-progress" },
-    { title: "Теория", icon: BookOpen, path: "/webinar-records" },
+    { title: "Каталог", icon: Search, path: "/catalog" },
   ];
 
   useEffect(() => {
