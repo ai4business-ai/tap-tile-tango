@@ -5,8 +5,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { useNextAssignment } from '@/hooks/useNextAssignment';
 import { useUserSkills } from '@/hooks/useUserSkills';
 import { useUserAssignmentStats } from '@/hooks/useUserAssignmentStats';
+import { useUserCourses } from '@/hooks/useUserCourses';
+import { useCourses } from '@/hooks/useCourses';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { TrendingUp, ChevronRight, FileText, Video } from 'lucide-react';
+import { TrendingUp, ChevronRight, FileText } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
@@ -20,11 +22,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getSkillIcon, getSkillColor } from '@/utils/skillIcons';
 import { levelToPercent } from '@/utils/skillLevels';
+import MyCoursesWidget from '@/components/home/MyCoursesWidget';
+import StreakWidget from '@/components/home/StreakWidget';
+import CourseCatalogWidget from '@/components/home/CourseCatalogWidget';
 
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { getNextTaskPath } = useNextAssignment();
+  const { userCourses, loading: coursesLoading } = useUserCourses(user?.id);
+  const { courses } = useCourses();
   const { skills, loading } = useUserSkills(user?.id);
   const { stats } = useUserAssignmentStats(user?.id);
   const isMobile = useIsMobile();
@@ -191,6 +198,14 @@ const Index = () => {
           </Card>
         </div>
 
+        {/* Section 2: My Courses + Streak */}
+        <div className="lg:grid lg:grid-cols-3 lg:gap-6 space-y-4 lg:space-y-0">
+          <div className="lg:col-span-2">
+            <MyCoursesWidget userCourses={userCourses} loading={coursesLoading} />
+          </div>
+          <StreakWidget />
+        </div>
+
         {/* Bottom cards: 3-col on desktop */}
         <div className="lg:grid lg:grid-cols-3 lg:gap-6 space-y-4 lg:space-y-0">
           {/* Next Task Card */}
@@ -237,21 +252,8 @@ const Index = () => {
             </div>
           </TapCard>
 
-          {/* Webinar Records Card */}
-          <TapCard onClick={() => navigate('/webinar-records')}>
-            <div className="glass-card rounded-3xl p-6 relative overflow-hidden h-full">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-deep-purple to-primary-orange flex items-center justify-center shadow-md">
-                  <Video className="w-6 h-6 text-white" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold text-deep-purple">Записи вебинаров</h3>
-                  <p className="text-sm text-muted-foreground">6 вебинаров доступно</p>
-                </div>
-                <ChevronRight className="w-5 h-5 text-muted-foreground" />
-              </div>
-            </div>
-          </TapCard>
+          {/* Course Catalog Card */}
+          <CourseCatalogWidget coursesCount={courses.length} />
         </div>
       </div>
     </div>
