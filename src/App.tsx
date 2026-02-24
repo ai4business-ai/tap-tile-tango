@@ -30,6 +30,8 @@ import PromptsBySkill from "./pages/PromptsBySkill";
 import BasicPrompts from "./pages/BasicPrompts";
 import CourseCatalog from "./pages/CourseCatalog";
 import MyCourses from "./pages/MyCourses";
+import CoursePage from "./pages/CoursePage";
+import LessonView from "./pages/LessonView";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -73,6 +75,8 @@ const App = () => {
                       <Route path="/prompts/:skillSlug" element={<PromptsBySkill />} />
                       <Route path="/catalog" element={<CourseCatalog />} />
                       <Route path="/my-courses" element={<MyCourses />} />
+                      <Route path="/course/:courseSlug" element={<CoursePage />} />
+                      <Route path="/course/:courseSlug/lesson/:lessonId" element={<LessonView />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>
