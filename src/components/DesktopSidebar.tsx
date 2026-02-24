@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, ClipboardList, TrendingUp, BookOpen, PlayCircle, LogOut, LogIn } from 'lucide-react';
+import { Home, GraduationCap, TrendingUp, Search, PlayCircle, LogOut, LogIn } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNextAssignment } from '@/hooks/useNextAssignment';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,9 +7,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const navItems = [
   { title: 'Главная', icon: Home, path: '/' },
-  { title: 'Задания', icon: ClipboardList, path: '/tasks' },
+  { title: 'Мои курсы', icon: GraduationCap, path: '/my-courses' },
+  { title: 'Каталог', icon: Search, path: '/catalog' },
   { title: 'Прогресс', icon: TrendingUp, path: '/my-progress' },
-  { title: 'Теория', icon: BookOpen, path: '/webinar-records' },
 ];
 
 export const DesktopSidebar = () => {

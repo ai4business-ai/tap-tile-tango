@@ -28,6 +28,8 @@ import TaskFeedback from "./pages/TaskFeedback";
 import PromptsLibrary from "./pages/PromptsLibrary";
 import PromptsBySkill from "./pages/PromptsBySkill";
 import BasicPrompts from "./pages/BasicPrompts";
+import CourseCatalog from "./pages/CourseCatalog";
+import MyCourses from "./pages/MyCourses";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -69,6 +71,8 @@ const App = () => {
                       <Route path="/prompts" element={<PromptsLibrary />} />
                       <Route path="/prompts/basic" element={<BasicPrompts />} />
                       <Route path="/prompts/:skillSlug" element={<PromptsBySkill />} />
+                      <Route path="/catalog" element={<CourseCatalog />} />
+                      <Route path="/my-courses" element={<MyCourses />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>
