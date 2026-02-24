@@ -55,6 +55,144 @@ export type Database = {
           },
         ]
       }
+      course_lessons: {
+        Row: {
+          content_json: Json
+          created_at: string
+          id: string
+          lesson_type: Database["public"]["Enums"]["lesson_type"]
+          module_id: string
+          order_index: number
+          title: string
+          trainer_assignment_id: string | null
+          trainer_skill_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          content_json?: Json
+          created_at?: string
+          id?: string
+          lesson_type?: Database["public"]["Enums"]["lesson_type"]
+          module_id: string
+          order_index?: number
+          title: string
+          trainer_assignment_id?: string | null
+          trainer_skill_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          content_json?: Json
+          created_at?: string
+          id?: string
+          lesson_type?: Database["public"]["Enums"]["lesson_type"]
+          module_id?: string
+          order_index?: number
+          title?: string
+          trainer_assignment_id?: string | null
+          trainer_skill_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_lessons_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "course_modules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_lessons_trainer_assignment_id_fkey"
+            columns: ["trainer_assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_lessons_trainer_skill_id_fkey"
+            columns: ["trainer_skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_modules: {
+        Row: {
+          course_id: string
+          created_at: string
+          description: string | null
+          id: string
+          order_index: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_index?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_index?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_modules_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          course_type: Database["public"]["Enums"]["course_type"]
+          cover_image_url: string | null
+          created_at: string
+          description: string
+          id: string
+          is_published: boolean
+          order_index: number
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          course_type?: Database["public"]["Enums"]["course_type"]
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          is_published?: boolean
+          order_index?: number
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          course_type?: Database["public"]["Enums"]["course_type"]
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          is_published?: boolean
+          order_index?: number
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       documents: {
         Row: {
           created_at: string
@@ -213,6 +351,89 @@ export type Database = {
           },
         ]
       }
+      user_courses: {
+        Row: {
+          course_id: string
+          enrolled_at: string
+          environment: Database["public"]["Enums"]["environment_type"]
+          id: string
+          last_lesson_id: string | null
+          progress_percent: number
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          enrolled_at?: string
+          environment?: Database["public"]["Enums"]["environment_type"]
+          id?: string
+          last_lesson_id?: string | null
+          progress_percent?: number
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          enrolled_at?: string
+          environment?: Database["public"]["Enums"]["environment_type"]
+          id?: string
+          last_lesson_id?: string | null
+          progress_percent?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_courses_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_courses_last_lesson_id_fkey"
+            columns: ["last_lesson_id"]
+            isOneToOne: false
+            referencedRelation: "course_lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_lesson_progress: {
+        Row: {
+          completed_at: string | null
+          environment: Database["public"]["Enums"]["environment_type"]
+          id: string
+          lesson_id: string
+          score: number | null
+          status: Database["public"]["Enums"]["lesson_status"]
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          environment?: Database["public"]["Enums"]["environment_type"]
+          id?: string
+          lesson_id: string
+          score?: number | null
+          status?: Database["public"]["Enums"]["lesson_status"]
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          environment?: Database["public"]["Enums"]["environment_type"]
+          id?: string
+          lesson_id?: string
+          score?: number | null
+          status?: Database["public"]["Enums"]["lesson_status"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_lesson_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "course_lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_skills: {
         Row: {
           created_at: string
@@ -293,7 +514,10 @@ export type Database = {
         | "in_progress"
         | "submitted"
         | "completed"
+      course_type: "trainer" | "theory_practice" | "video" | "quiz"
       environment_type: "dev" | "prod"
+      lesson_status: "not_started" | "in_progress" | "completed"
+      lesson_type: "theory" | "practice" | "video" | "quiz" | "trainer_task"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -427,7 +651,10 @@ export const Constants = {
         "submitted",
         "completed",
       ],
+      course_type: ["trainer", "theory_practice", "video", "quiz"],
       environment_type: ["dev", "prod"],
+      lesson_status: ["not_started", "in_progress", "completed"],
+      lesson_type: ["theory", "practice", "video", "quiz", "trainer_task"],
     },
   },
 } as const
