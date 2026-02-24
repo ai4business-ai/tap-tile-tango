@@ -2,6 +2,7 @@ import { ReactNode, useState, useEffect } from 'react';
 import { BottomNavigation } from './BottomNavigation';
 import { TopHeader } from './TopHeader';
 import { GuestBanner } from './GuestBanner';
+import { DesktopSidebar } from './DesktopSidebar';
 import { useAuth } from '@/hooks/useAuth';
 
 interface LayoutProps {
@@ -31,14 +32,25 @@ export const Layout = ({ children }: LayoutProps) => {
 
   return (
     <>
-      {!user && <GuestBanner />}
-      <TopHeader />
-      <main className={`pb-28 ${mainPadding} transition-all duration-300`}>
-        <div className="max-w-md mx-auto px-4">
+      {/* Desktop sidebar */}
+      <DesktopSidebar />
+
+      {/* Mobile-only elements */}
+      <div className="lg:hidden">
+        {!user && <GuestBanner />}
+        <TopHeader />
+      </div>
+
+      <main className={`pb-28 lg:pb-8 ${mainPadding} lg:pt-8 transition-all duration-300 lg:ml-60`}>
+        <div className="max-w-md lg:max-w-5xl mx-auto px-4 lg:px-8">
           {children}
         </div>
       </main>
-      <BottomNavigation />
+
+      {/* Mobile-only bottom nav */}
+      <div className="lg:hidden">
+        <BottomNavigation />
+      </div>
     </>
   );
 };

@@ -12,22 +12,8 @@ const TaskFeedback = () => {
   const [showTask, setShowTask] = useState(true);
   const [showCriteria, setShowCriteria] = useState(true);
 
-  return (
-    <div className="min-h-screen">
-      <div className="flex items-center gap-4 mb-6">
-        <button 
-          onClick={() => navigate('/skill-assignments/communication')}
-          className="w-8 h-8 flex items-center justify-center"
-        >
-          <ArrowLeft className="w-6 h-6 text-foreground" />
-        </button>
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Обратная связь коллегам</h1>
-          <p className="text-sm text-muted-foreground">BASIC уровень | Коммуникация и работа в команде</p>
-        </div>
-      </div>
-
-      {/* Task Description */}
+  const taskContent = (
+    <>
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base">
@@ -84,7 +70,6 @@ const TaskFeedback = () => {
         )}
       </Card>
 
-      {/* Task Requirements */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base">
@@ -138,8 +123,7 @@ const TaskFeedback = () => {
         )}
       </Card>
 
-      {/* Evaluation Criteria */}
-      <Card className="mb-6">
+      <Card className="mb-6 lg:mb-0">
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base">
             <div className="flex items-center gap-2">
@@ -164,15 +148,16 @@ const TaskFeedback = () => {
           </CardContent>
         )}
       </Card>
+    </>
+  );
 
-      {/* Prompt Tester */}
+  const workContent = (
+    <>
       <PromptTester 
         taskContext="feedback-colleagues"
         taskId="feedback-colleagues-task"
         placeholder="Напишите промпт для составления конструктивной обратной связи юристам..."
       />
-
-      {/* Tutor Chat */}
       <TutorChat
         taskContext="feedback-colleagues"
         taskId="feedback-colleagues"
@@ -180,6 +165,28 @@ const TaskFeedback = () => {
         placeholder="Вставьте ваш промпт для оценки тьютором..."
         label="Ваш промпт для ИИ:"
       />
+    </>
+  );
+
+  return (
+    <div className="min-h-screen">
+      <div className="flex items-center gap-4 mb-6">
+        <button 
+          onClick={() => navigate('/skill-assignments/communication')}
+          className="w-8 h-8 flex items-center justify-center"
+        >
+          <ArrowLeft className="w-6 h-6 text-foreground" />
+        </button>
+        <div>
+          <h1 className="text-xl font-semibold text-foreground">Обратная связь коллегам</h1>
+          <p className="text-sm text-muted-foreground">BASIC уровень | Коммуникация и работа в команде</p>
+        </div>
+      </div>
+
+      <div className="lg:grid lg:grid-cols-2 lg:gap-6">
+        <div className="lg:sticky lg:top-8 lg:self-start">{taskContent}</div>
+        <div>{workContent}</div>
+      </div>
     </div>
   );
 };

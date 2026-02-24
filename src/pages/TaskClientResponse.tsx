@@ -12,21 +12,8 @@ const TaskClientResponse = () => {
   const [showTask, setShowTask] = useState(true);
   const [showCriteria, setShowCriteria] = useState(true);
 
-  return (
-    <div className="min-h-screen">
-      <div className="flex items-center gap-4 mb-6">
-        <button 
-          onClick={() => navigate('/skill-assignments/communication')}
-          className="w-8 h-8 flex items-center justify-center"
-        >
-          <ArrowLeft className="w-6 h-6 text-foreground" />
-        </button>
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Ответ клиенту</h1>
-          <p className="text-sm text-muted-foreground">BASIC уровень | Коммуникация и работа в команде</p>
-        </div>
-      </div>
-
+  const taskContent = (
+    <>
       {/* Task Description */}
       <Card className="mb-6">
         <CardHeader>
@@ -42,16 +29,13 @@ const TaskClientResponse = () => {
         </CardHeader>
         {showDescription && (
           <CardContent className="space-y-4">
-            
             <div className="space-y-3">
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Вы — специалист отдела по работе с корпоративными клиентами телеком-компании «СвязьБизнес». Ваш клиент, ООО «Торговые сети», управляет сетью из 30 супермаркетов в городе. Два месяца назад вы заключили с ними выгодный контракт на предоставление пакета услуг: выделенные интернет-каналы, облачная АТС и видеонаблюдение.
               </p>
-              
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Сегодня утром вы получили электронное письмо от IT-директора ООО «Торговые сети», Анны Ковалевой. Письмо написано в резком и раздраженном тоне. Клиент требует объяснений, почему перенос офисных линий в новый бизнес-центр, запланированный и согласованный на 15 октября, был перенесен на 5 ноября без ее ведома. Она угрожает расторжением договора и переходом к конкуренту, так как из-за переноса срывается открытие их флагманского магазина.
               </p>
-
               <div className="bg-muted/50 rounded-lg p-4 border border-border">
                 <h4 className="text-sm font-semibold text-foreground mb-2">Выдержка из письма клиента:</h4>
                 <div className="space-y-2 text-sm text-muted-foreground">
@@ -62,7 +46,6 @@ const TaskClientResponse = () => {
                   <p className="mt-2">"Требую в течение дня предоставить официальные разъяснения и новый, окончательный план работ. В противном случае мы будем вынуждены расторгнуть все договоры и обратиться к вашему конкуренту."</p>
                 </div>
               </div>
-
               <div className="bg-accent/20 rounded-lg p-4 border border-accent">
                 <h4 className="text-sm font-semibold text-foreground mb-2">Дополнительная информация:</h4>
                 <ul className="space-y-1 text-sm text-muted-foreground list-disc list-inside">
@@ -122,7 +105,7 @@ const TaskClientResponse = () => {
       </Card>
 
       {/* Evaluation Criteria */}
-      <Card className="mb-6">
+      <Card className="mb-6 lg:mb-0">
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base">
             <div className="flex items-center gap-2">
@@ -146,15 +129,16 @@ const TaskClientResponse = () => {
           </CardContent>
         )}
       </Card>
+    </>
+  );
 
-      {/* Prompt Tester */}
+  const workContent = (
+    <>
       <PromptTester 
         taskContext="client-response"
         taskId="client-response-task"
         placeholder="Напишите промпт для ИИ, чтобы он составил письмо клиенту..."
       />
-
-      {/* Tutor Chat */}
       <TutorChat
         taskContext="client-response"
         taskId="client-response"
@@ -162,6 +146,29 @@ const TaskClientResponse = () => {
         placeholder="Вставьте ваш промпт для оценки тьютором..."
         label="Ваш промпт для ИИ:"
       />
+    </>
+  );
+
+  return (
+    <div className="min-h-screen">
+      <div className="flex items-center gap-4 mb-6">
+        <button 
+          onClick={() => navigate('/skill-assignments/communication')}
+          className="w-8 h-8 flex items-center justify-center"
+        >
+          <ArrowLeft className="w-6 h-6 text-foreground" />
+        </button>
+        <div>
+          <h1 className="text-xl font-semibold text-foreground">Ответ клиенту</h1>
+          <p className="text-sm text-muted-foreground">BASIC уровень | Коммуникация и работа в команде</p>
+        </div>
+      </div>
+
+      {/* Desktop: 2-col, Mobile: stacked */}
+      <div className="lg:grid lg:grid-cols-2 lg:gap-6">
+        <div className="lg:sticky lg:top-8 lg:self-start">{taskContent}</div>
+        <div>{workContent}</div>
+      </div>
     </div>
   );
 };

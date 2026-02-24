@@ -12,22 +12,8 @@ const TaskMeetingAgenda = () => {
   const [showTask, setShowTask] = useState(true);
   const [showCriteria, setShowCriteria] = useState(true);
 
-  return (
-    <div className="min-h-screen">
-      <div className="flex items-center gap-4 mb-6">
-        <button 
-          onClick={() => navigate('/skill-assignments/communication')}
-          className="w-8 h-8 flex items-center justify-center"
-        >
-          <ArrowLeft className="w-6 h-6 text-foreground" />
-        </button>
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Повестка встречи</h1>
-          <p className="text-sm text-muted-foreground">BASIC уровень | Коммуникация и работа в команде</p>
-        </div>
-      </div>
-
-      {/* Task Description */}
+  const taskContent = (
+    <>
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base">
@@ -87,7 +73,6 @@ const TaskMeetingAgenda = () => {
         )}
       </Card>
 
-      {/* Task Requirements */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base">
@@ -108,15 +93,11 @@ const TaskMeetingAgenda = () => {
             <div className="space-y-3">
               <div className="bg-muted/30 rounded-lg p-3 border border-border">
                 <h4 className="text-sm font-semibold text-foreground mb-2">1. Промпт для адженды (agenda)</h4>
-                <p className="text-sm text-muted-foreground">
-                  ИИ должен помочь составить и разослать четкую повестку с целями, списком вопросов для обсуждения и таймингом.
-                </p>
+                <p className="text-sm text-muted-foreground">ИИ должен помочь составить и разослать четкую повестку с целями, списком вопросов для обсуждения и таймингом.</p>
               </div>
               <div className="bg-muted/30 rounded-lg p-3 border border-border">
                 <h4 className="text-sm font-semibold text-foreground mb-2">2. Промпт для follow-up письма</h4>
-                <p className="text-sm text-muted-foreground">
-                  ИИ должен превратить ваши заметки после встречи в хорошее письмо с ключевыми решениями, назначенными задачами, ответственными и сроками.
-                </p>
+                <p className="text-sm text-muted-foreground">ИИ должен превратить ваши заметки после встречи в хорошее письмо с ключевыми решениями, назначенными задачами, ответственными и сроками.</p>
               </div>
             </div>
             <div className="bg-primary/10 rounded-lg p-4 border border-primary/30">
@@ -141,8 +122,7 @@ const TaskMeetingAgenda = () => {
         )}
       </Card>
 
-      {/* Evaluation Criteria */}
-      <Card className="mb-6">
+      <Card className="mb-6 lg:mb-0">
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base">
             <div className="flex items-center gap-2">
@@ -178,15 +158,16 @@ const TaskMeetingAgenda = () => {
           </CardContent>
         )}
       </Card>
+    </>
+  );
 
-      {/* Prompt Tester */}
+  const workContent = (
+    <>
       <PromptTester 
         taskContext="meeting-agenda"
         taskId="meeting-agenda-task"
         placeholder="Протестируйте ваши промпты для адженды и follow-up письма..."
       />
-
-      {/* Tutor Chat */}
       <TutorChat
         taskContext="meeting-agenda"
         taskId="meeting-agenda"
@@ -194,6 +175,28 @@ const TaskMeetingAgenda = () => {
         placeholder="Вставьте ваш промпт (или оба промпта) для оценки тьютором..."
         label="Ваш промпт для ИИ:"
       />
+    </>
+  );
+
+  return (
+    <div className="min-h-screen">
+      <div className="flex items-center gap-4 mb-6">
+        <button 
+          onClick={() => navigate('/skill-assignments/communication')}
+          className="w-8 h-8 flex items-center justify-center"
+        >
+          <ArrowLeft className="w-6 h-6 text-foreground" />
+        </button>
+        <div>
+          <h1 className="text-xl font-semibold text-foreground">Повестка встречи</h1>
+          <p className="text-sm text-muted-foreground">BASIC уровень | Коммуникация и работа в команде</p>
+        </div>
+      </div>
+
+      <div className="lg:grid lg:grid-cols-2 lg:gap-6">
+        <div className="lg:sticky lg:top-8 lg:self-start">{taskContent}</div>
+        <div>{workContent}</div>
+      </div>
     </div>
   );
 };
