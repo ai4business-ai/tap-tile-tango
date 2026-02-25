@@ -3,6 +3,7 @@ import { BottomNavigation } from './BottomNavigation';
 import { TopHeader } from './TopHeader';
 import { GuestBanner } from './GuestBanner';
 import { DesktopSidebar } from './DesktopSidebar';
+import { AiAssistant } from './AiAssistant';
 import { useAuth } from '@/hooks/useAuth';
 
 interface LayoutProps {
@@ -51,6 +52,8 @@ export const Layout = ({ children }: LayoutProps) => {
       <div className="lg:hidden">
         <BottomNavigation />
       </div>
+
+      <AiAssistant />
     </>
   );
 };
